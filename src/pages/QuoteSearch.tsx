@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Filter, Copy, ArrowRightCircle, Eye, X, AlertTriangle, ChevronDown } from "lucide-react";
+import { Search, Copy, ArrowRightCircle, Eye, X, AlertTriangle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,15 +9,10 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
   quotes, branches, customers, getStatusColor, getOriginColor, getGMColor, getDaysUntilExpiration, formatCurrency,
   type QuoteStatus,
 } from "@/data/mockData";
-import {
-  Collapsible, CollapsibleContent, CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { SearchableSelect } from "@/components/SearchableSelect";
 
 const statusOptions: QuoteStatus[] = ["Draft", "Sent", "Negotiating", "Won", "Lost", "Expired"];
 
@@ -28,7 +23,6 @@ export default function QuoteSearch() {
   const [branchFilter, setBranchFilter] = useState<string>("all");
   const [customerFilter, setCustomerFilter] = useState<string>("all");
   const [showExpiredOnly, setShowExpiredOnly] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return quotes.filter((q) => {
@@ -70,7 +64,7 @@ export default function QuoteSearch() {
         </div>
       </div>
 
-      {/* Search + Filter Bar */}
+      {/* Search + Filters */}
       <Card className="p-3">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
@@ -82,75 +76,52 @@ export default function QuoteSearch() {
               className="h-8 pl-8 text-xs"
             />
           </div>
-          <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
-            <CollapsibleTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 text-xs gap-1">
-                <Filter className="h-3 w-3" />
-                Filters
-                {hasFilters && <Badge variant="default" className="h-4 px-1 text-[10px] ml-1">{[statusFilter !== "all", branchFilter !== "all", customerFilter !== "all", showExpiredOnly].filter(Boolean).length}</Badge>}
-                <ChevronDown className={`h-3 w-3 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
-              </Button>
-            </CollapsibleTrigger>
-          </Collapsible>
           {hasFilters && (
             <Button variant="ghost" size="sm" className="h-8 text-xs gap-1 text-muted-foreground" onClick={clearFilters}>
               <X className="h-3 w-3" /> Clear
             </Button>
           )}
         </div>
-        <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
-          <CollapsibleContent>
-            <div className="grid grid-cols-4 gap-3 mt-3 pt-3 border-t border-border">
-              <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Status</label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-xs">All Statuses</SelectItem>
-                    {statusOptions.map((s) => (
-                      <SelectItem key={s} value={s} className="text-xs">{s}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Branch</label>
-                <Select value={branchFilter} onValueChange={setBranchFilter}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-xs">All Branches</SelectItem>
-                    {branches.map((b) => (
-                      <SelectItem key={b.id} value={b.id} className="text-xs">{b.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Customer</label>
-                <Select value={customerFilter} onValueChange={setCustomerFilter}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-xs">All Customers</SelectItem>
-                    {customers.map((c) => (
-                      <SelectItem key={c.id} value={c.id} className="text-xs">{c.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-end">
-                <Button
-                  variant={showExpiredOnly ? "default" : "outline"}
-                  size="sm"
-                  className="h-8 text-xs gap-1 w-full"
-                  onClick={() => setShowExpiredOnly(!showExpiredOnly)}
-                >
-                  <AlertTriangle className="h-3 w-3" />
-                  Expired Only
-                </Button>
-              </div>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+        <div className="grid grid-cols-4 gap-3 mt-3 pt-3 border-t border-border">
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Status</label>
+            <SearchableSelect
+              value={statusFilter}
+              onValueChange={setStatusFilter}
+              allLabel="All Statuses"
+              options={statusOptions.map((s) => ({ value: s, label: s }))}
+            />
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Branch</label>
+            <SearchableSelect
+              value={branchFilter}
+              onValueChange={setBranchFilter}
+              allLabel="All Branches"
+              options={branches.map((b) => ({ value: b.id, label: b.name }))}
+            />
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Customer</label>
+            <SearchableSelect
+              value={customerFilter}
+              onValueChange={setCustomerFilter}
+              allLabel="All Customers"
+              options={customers.map((c) => ({ value: c.id, label: c.name }))}
+            />
+          </div>
+          <div className="flex items-end">
+            <Button
+              variant={showExpiredOnly ? "default" : "outline"}
+              size="sm"
+              className="h-8 text-xs gap-1 w-full"
+              onClick={() => setShowExpiredOnly(!showExpiredOnly)}
+            >
+              <AlertTriangle className="h-3 w-3" />
+              Expired Only
+            </Button>
+          </div>
+        </div>
       </Card>
 
       {/* Results Table */}
