@@ -1,20 +1,18 @@
-import { ChevronDown } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function TopHeader() {
   return (
-    <header className="h-12 border-b border-border bg-card flex items-center px-3 gap-3 shrink-0">
-      <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
+    <header className="h-14 border-b border-border bg-card flex items-center px-6 gap-4 shrink-0">
+      <SidebarTrigger className="text-muted-foreground/60 hover:text-foreground transition-colors" />
 
       <div className="flex-1" />
 
-      <div className="flex items-center gap-2 cursor-pointer">
-        <Avatar className="h-7 w-7">
-          <AvatarFallback className="text-[10px] bg-primary text-primary-foreground font-semibold">JS</AvatarFallback>
+      <div className="flex items-center gap-3 cursor-pointer group">
+        <Avatar className="h-8 w-8 ring-1 ring-border">
+          <AvatarFallback className="text-2xs bg-secondary text-secondary-foreground font-medium">JS</AvatarFallback>
         </Avatar>
-        <span className="text-xs font-medium hidden lg:inline">J. Smith</span>
-        <ChevronDown className="h-3 w-3 text-muted-foreground hidden lg:inline" />
+        <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors hidden lg:inline">J. Smith</span>
       </div>
     </header>
   );

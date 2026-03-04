@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Search, Copy, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -59,35 +58,38 @@ export default function QuoteSearch() {
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">Quote Search</h1>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{filtered.length} of {quotes.length} quotes</span>
+    <div className="space-y-6 max-w-[1400px]">
+      {/* Page header */}
+      <div className="flex items-baseline justify-between">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">Quotes</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {filtered.length} of {quotes.length} quotes
+          </p>
         </div>
       </div>
 
       {/* Search + Filters */}
-      <Card className="p-3">
-        <div className="flex items-center gap-2">
+      <div className="bg-card rounded-lg border border-border shadow-subtle p-4 space-y-4">
+        <div className="flex items-center gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
             <Input
-              placeholder="Search by Quote ID, Customer, PO#, Job#, Transaction Ref..."
+              placeholder="Search by Quote ID, Customer, PO#, Job#..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-8 pl-8 text-xs"
+              className="h-9 pl-9 text-sm bg-background"
             />
           </div>
           {hasFilters && (
-            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1 text-muted-foreground" onClick={clearFilters}>
-              <X className="h-3 w-3" /> Clear
+            <Button variant="ghost" size="sm" className="h-9 text-xs gap-1.5 text-muted-foreground hover:text-foreground" onClick={clearFilters}>
+              <X className="h-3.5 w-3.5" /> Clear filters
             </Button>
           )}
         </div>
-        <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-border">
+        <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Status</label>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Status</label>
             <SearchableSelect
               value={statusFilter}
               onValueChange={setStatusFilter}
@@ -96,7 +98,7 @@ export default function QuoteSearch() {
             />
           </div>
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Branch</label>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Branch</label>
             <SearchableSelect
               value={branchFilter}
               onValueChange={setBranchFilter}
@@ -105,7 +107,7 @@ export default function QuoteSearch() {
             />
           </div>
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Customer</label>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Customer</label>
             <SearchableSelect
               value={customerFilter}
               onValueChange={setCustomerFilter}
@@ -114,21 +116,21 @@ export default function QuoteSearch() {
             />
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* Results Table */}
-      <Card>
+      <div className="bg-card rounded-lg border border-border shadow-subtle overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3">Quote Name</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3">Quote ID</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3">Customer</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3">Branch</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3">Origin</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3">Status</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3">Expiration</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-9 px-3 text-right">Amount</TableHead>
+            <TableRow className="hover:bg-transparent border-b border-border">
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Quote Name</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Quote ID</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Customer</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Branch</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Origin</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Status</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Expiration</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4 text-right">Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -138,57 +140,57 @@ export default function QuoteSearch() {
               return (
                 <TableRow
                   key={q.id}
-                  className={isAgility ? "group" : "cursor-pointer group"}
+                  className={`${isAgility ? "" : "cursor-pointer"} group transition-colors duration-100 hover:bg-muted/50`}
                   onClick={() => !isAgility && navigate(`/quotes/${q.id}`)}
                 >
-                  <TableCell className="px-3 py-2 text-xs font-medium">{q.customerName}</TableCell>
-                  <TableCell className="px-3 py-2 text-xs font-mono font-medium">
+                  <TableCell className="px-4 py-3 text-sm font-medium text-foreground">{q.customerName}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm font-mono">
                     {isAgility ? (
-                      <span className="flex items-center gap-1.5 text-muted-foreground">
+                      <span className="flex items-center gap-2 text-muted-foreground">
                         {q.id}
                         <button
-                          className="text-muted-foreground/60 hover:text-foreground"
+                          className="text-muted-foreground/40 hover:text-foreground transition-colors"
                           onClick={(e) => copyToClipboard(e, q.id)}
                           title="Copy Quote ID"
                         >
-                          <Copy className="h-3 w-3" />
+                          <Copy className="h-3.5 w-3.5" />
                         </button>
                       </span>
                     ) : (
-                      <span className="text-primary">{q.id}</span>
+                      <span className="text-brand">{q.id}</span>
                     )}
                   </TableCell>
-                  <TableCell className="px-3 py-2 text-xs">{q.customerName}</TableCell>
-                  <TableCell className="px-3 py-2 text-xs text-muted-foreground">{q.branchName}</TableCell>
-                  <TableCell className="px-3 py-2">
-                    <span className={`inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded border ${getOriginColor(q.origin)}`}>
+                  <TableCell className="px-4 py-3 text-sm text-muted-foreground">{q.customerName}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm text-muted-foreground">{q.branchName}</TableCell>
+                  <TableCell className="px-4 py-3">
+                    <span className={`inline-flex items-center text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(q.origin)}`}>
                       {q.origin}
                     </span>
                   </TableCell>
-                  <TableCell className="px-3 py-2">
-                    <span className={`inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded ${getStatusColor(q.status)}`}>
+                  <TableCell className="px-4 py-3">
+                    <span className={`inline-flex items-center text-2xs font-medium px-2 py-0.5 rounded-full ${getStatusColor(q.status)}`}>
                       {q.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-3 py-2 text-xs">
-                    <span className={daysLeft < 0 ? "text-destructive" : daysLeft <= 7 ? "text-warning" : "text-muted-foreground"}>
+                  <TableCell className="px-4 py-3 text-sm">
+                    <span className={daysLeft < 0 ? "text-destructive" : daysLeft <= 7 ? "text-warning font-medium" : "text-muted-foreground"}>
                       {daysLeft < 0 ? `${Math.abs(daysLeft)}d ago` : daysLeft === 0 ? "Today" : `${daysLeft}d left`}
                     </span>
                   </TableCell>
-                  <TableCell className="px-3 py-2 text-xs text-right font-mono">{formatCurrency(q.totalAmount)}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm text-right font-mono font-medium">{formatCurrency(q.totalAmount)}</TableCell>
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
-      </Card>
+      </div>
 
       {/* Keyboard hint */}
-      <div className="flex items-center justify-center gap-4 text-[10px] text-muted-foreground py-2">
-        <span><kbd className="px-1 py-0.5 bg-muted rounded text-[9px] font-mono">↑↓</kbd> Navigate</span>
-        <span><kbd className="px-1 py-0.5 bg-muted rounded text-[9px] font-mono">Enter</kbd> Open</span>
-        <span><kbd className="px-1 py-0.5 bg-muted rounded text-[9px] font-mono">/</kbd> Search</span>
-        <span><kbd className="px-1 py-0.5 bg-muted rounded text-[9px] font-mono">N</kbd> New Quote</span>
+      <div className="flex items-center justify-center gap-6 text-2xs text-muted-foreground/60 py-1">
+        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">↑↓</kbd> Navigate</span>
+        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">Enter</kbd> Open</span>
+        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">/</kbd> Search</span>
+        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">N</kbd> New Quote</span>
       </div>
     </div>
   );
