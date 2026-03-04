@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
-  ArrowLeft, Mail, RefreshCw, Printer, Pencil, Plus, Minus,
-  ArrowRightCircle, AlertTriangle, Save, Share2,
+  ArrowLeft, Printer, Pencil, Plus, Minus,
+  ArrowRightCircle, AlertTriangle, Share2, Copy, Link,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import {
   getGMColor, getGMBgColor, getStatusColor, getOriginColor, formatCurrency,
   type Quote,
 } from "@/data/mockData";
+import { toast } from "sonner";
 
 interface QuoteDetailHeaderProps {
   quote: Quote;
@@ -44,14 +45,15 @@ export default function QuoteDetailHeader({
 }: QuoteDetailHeaderProps) {
   const [expanded, setExpanded] = useState(false);
 
-  // Editable header fields
   const [customerName, setCustomerName] = useState(quote.customerName);
   const [poNumber, setPoNumber] = useState(quote.poNumber || "");
   const [refNumber, setRefNumber] = useState(quote.transactionRef || "");
   const [expDeliveryDate, setExpDeliveryDate] = useState(quote.expirationDate);
   const [shipVia, setShipVia] = useState("Deliver HLS Truck");
+  const [quotedBy, setQuotedBy] = useState(quote.assignedTo);
+  const [createdDate, setCreatedDate] = useState(quote.createdDate);
+  const [expirationDate, setExpirationDate] = useState(quote.expirationDate);
 
-  // Mock ship-to data
   const [shipTo, setShipTo] = useState({
     name: quote.customerName.toUpperCase(),
     address1: "8940 GREENFIELD ROAD",
@@ -61,6 +63,11 @@ export default function QuoteDetailHeader({
     zip: "55357",
     phone: "7634987574",
   });
+
+  const copyUrl = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("URL copied to clipboard");
+  };
 
   return (
     <div className="space-y-3">
@@ -79,44 +86,28 @@ export default function QuoteDetailHeader({
             </Button>
           )}
           <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-            <Mail className="h-4 w-4" /> Email
-          </button>
-          <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-            <RefreshCw className="h-4 w-4" /> Reprice Quote
-          </button>
-          <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
             <Printer className="h-4 w-4" /> Print Preview
           </button>
         </div>
       </div>
 
       {/* Status banner */}
-      {true && (
-        <div className="flex items-center justify-between px-4 py-2.5 rounded-md border bg-accent/50 border-accent">
-          <div>
-            <span className="text-xs font-semibold">Quote Status: </span>
-            <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getStatusColor(quote.status)}`}>
-              {quote.status}
-            </span>
-            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ml-2 ${getOriginColor(quote.origin)}`}>
-              {quote.origin}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
-              <Save className="h-3 w-3" /> Save
-            </Button>
-            <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
-              <Share2 className="h-3 w-3" /> Copy Quote
-            </Button>
-            {!isExpired && quote.status !== "Received (Awarded)" && quote.status !== "Received (Not Awarded)" && (
-              <Button size="sm" className="h-7 text-xs gap-1" onClick={onConvert} disabled={orderableCount === 0}>
-                <ArrowRightCircle className="h-3 w-3" /> Order Items ({orderableCount})
-              </Button>
-            )}
-          </div>
+      <div className="flex items-center justify-between px-4 py-2.5 rounded-md border bg-accent/50 border-accent">
+        <div>
+          <span className="text-xs font-semibold">Quote Status: </span>
+          <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getStatusColor(quote.status)}`}>
+            {quote.status}
+          </span>
+          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ml-2 ${getOriginColor(quote.origin)}`}>
+            {quote.origin}
+          </span>
         </div>
-      )}
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={copyUrl}>
+            <Link className="h-3 w-3" /> Copy URL
+          </Button>
+        </div>
+      </div>
 
       {/* Main header card */}
       <div className="border border-border rounded-lg overflow-hidden">
@@ -184,11 +175,21 @@ export default function QuoteDetailHeader({
               </div>
               <div>
                 <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Created Date:</label>
-                <p className="text-xs mt-0.5">{quote.createdDate}</p>
+                <Input
+                  type="date"
+                  value={createdDate}
+                  onChange={(e) => setCreatedDate(e.target.value)}
+                  className="h-7 text-xs mt-0.5"
+                />
               </div>
               <div>
                 <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Expiration Date:</label>
-                <p className="text-xs mt-0.5">{quote.expirationDate}</p>
+                <Input
+                  type="date"
+                  value={expirationDate}
+                  onChange={(e) => setExpirationDate(e.target.value)}
+                  className="h-7 text-xs mt-0.5"
+                />
               </div>
               <div />
             </div>
@@ -197,7 +198,11 @@ export default function QuoteDetailHeader({
             <div className="grid grid-cols-5 gap-4 px-4 py-3 border-b border-border bg-muted/10">
               <div>
                 <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quoted by:</label>
-                <p className="text-xs mt-0.5">{quote.assignedTo}</p>
+                <Input
+                  value={quotedBy}
+                  onChange={(e) => setQuotedBy(e.target.value)}
+                  className="h-7 text-xs mt-0.5"
+                />
               </div>
               <div>
                 <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Ref #:</label>
@@ -323,6 +328,15 @@ export default function QuoteDetailHeader({
           </div>
         )}
       </div>
+
+      {/* Order Items button - below header */}
+      {!isExpired && quote.status !== "Received (Awarded)" && quote.status !== "Received (Not Awarded)" && (
+        <div className="flex justify-end">
+          <Button size="sm" className="h-8 text-xs gap-1" onClick={onConvert} disabled={orderableCount === 0}>
+            <ArrowRightCircle className="h-3.5 w-3.5" /> Order Items ({orderableCount})
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
