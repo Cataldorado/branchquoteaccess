@@ -224,12 +224,6 @@ export default function QuoteDetail() {
           <div className="px-2 text-center">Quote Qty</div>
           <div className="px-2 text-center">
             <span>Purchase Qty</span>
-            <button
-              className="block mx-auto mt-0.5 text-[9px] text-primary hover:underline font-medium normal-case tracking-normal"
-              onClick={populated ? resetQtyToZero : populateRemainingQty}
-            >
-              {populated ? "Reset Qty to 0" : "Populate Remaining"}
-            </button>
           </div>
           <div className="px-2 text-right">Price</div>
           <div className="px-2 text-center">UOM</div>
@@ -267,29 +261,6 @@ export default function QuoteDetail() {
                 <button className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground ml-2">
                   <FileText className="h-3 w-3" /> Add Section Note
                 </button>
-                <button
-                  className="flex items-center gap-1 text-[10px] text-primary hover:underline font-medium ml-2"
-                  onClick={() => {
-                    setGroups((prev) =>
-                      prev.map((g) => {
-                        if (g.id !== group.id) return g;
-                        const allPopulated = g.items.every((i) => i.purchaseQty >= i.quoteQty);
-                        return {
-                          ...g,
-                          items: g.items.map((item) => ({
-                            ...item,
-                            purchaseQty: allPopulated ? 0 : item.quoteQty,
-                          })),
-                        };
-                      })
-                    );
-                    const grp = groups.find((g) => g.id === group.id);
-                    const allPop = grp?.items.every((i) => i.purchaseQty >= i.quoteQty);
-                    toast.info(allPop ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
-                  }}
-                >
-                  {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining"}
-                </button>
 
                 <div className="flex-1" />
 
@@ -299,6 +270,37 @@ export default function QuoteDetail() {
                 <span className="text-[10px] text-muted-foreground ml-2">Total :</span>
                 <span className="text-xs font-semibold font-mono ml-1">{formatCurrency(gt.amount)}</span>
               </div>
+
+              {/* Per-group Populate Remaining Qty row */}
+              {!isCollapsed && (
+                <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-1 border-b border-border/50 bg-muted/5">
+                  <div /><div /><div /><div />
+                  <div className="px-1 text-center">
+                    <button
+                      className="text-[9px] text-primary hover:underline font-medium"
+                      onClick={() => {
+                        const allPopulated = group.items.every((i) => i.purchaseQty >= i.quoteQty);
+                        setGroups((prev) =>
+                          prev.map((g) => {
+                            if (g.id !== group.id) return g;
+                            return {
+                              ...g,
+                              items: g.items.map((item) => ({
+                                ...item,
+                                purchaseQty: allPopulated ? 0 : item.quoteQty,
+                              })),
+                            };
+                          })
+                        );
+                        toast.info(allPopulated ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
+                      }}
+                    >
+                      {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining Qty"}
+                    </button>
+                  </div>
+                  <div /><div /><div /><div /><div />
+                </div>
+              )}
 
               {/* Group Items */}
               {!isCollapsed && group.items.map((item) => (
