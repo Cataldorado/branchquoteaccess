@@ -6,15 +6,15 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 export default function Dashboard() {
   const today = new Date().toISOString().split("T")[0];
   const quotesToday = quotes.filter((q) => q.createdDate === today).length;
-  const pendingConversion = quotes.filter((q) => ["Sent", "Negotiating"].includes(q.status)).length;
+  const pendingConversion = quotes.filter((q) => ["Customer Review", "Sales Review"].includes(q.status)).length;
   const expiringSoon = quotes.filter((q) => {
     const days = Math.ceil((new Date(q.expirationDate).getTime() - Date.now()) / 86400000);
-    return days >= 0 && days <= 7 && !["Won", "Lost", "Expired"].includes(q.status);
+    return days >= 0 && days <= 7 && !["Received (Awarded)", "Received (Not Awarded)", "Expired"].includes(q.status);
   }).length;
   const avgGM = Math.round((quotes.reduce((s, q) => s + q.gmPercent, 0) / quotes.length) * 10) / 10;
 
   // Conversion funnel
-  const statusCounts = ["Draft", "Sent", "Negotiating", "Won", "Lost", "Expired"].map((s) => ({
+  const statusCounts = ["Customer Review", "Sales Review", "Received (Awarded)", "Received (Not Awarded)", "Partial", "Expired", "New", "Partially Released"].map((s) => ({
     name: s,
     count: quotes.filter((q) => q.status === s).length,
   }));
@@ -26,7 +26,7 @@ export default function Dashboard() {
     return {
       name: b.name,
       quotes: bQuotes.length,
-      won: bQuotes.filter((q) => q.status === "Won").length,
+      won: bQuotes.filter((q) => q.status === "Received (Awarded)").length,
       avgGM: avgGm,
       totalValue: bQuotes.reduce((s, q) => s + q.totalAmount, 0),
     };

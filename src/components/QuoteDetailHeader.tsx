@@ -91,7 +91,7 @@ export default function QuoteDetailHeader({
       </div>
 
       {/* Status banner */}
-      {quote.status !== "Draft" && (
+      {true && (
         <div className="flex items-center justify-between px-4 py-2.5 rounded-md border bg-accent/50 border-accent">
           <div>
             <span className="text-xs font-semibold">Quote Status: </span>
@@ -109,7 +109,7 @@ export default function QuoteDetailHeader({
             <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
               <Share2 className="h-3 w-3" /> Copy Quote
             </Button>
-            {!isExpired && quote.status !== "Won" && quote.status !== "Lost" && (
+            {!isExpired && quote.status !== "Received (Awarded)" && quote.status !== "Received (Not Awarded)" && (
               <Button size="sm" className="h-7 text-xs gap-1" onClick={onConvert} disabled={orderableCount === 0}>
                 <ArrowRightCircle className="h-3 w-3" /> Order Items ({orderableCount})
               </Button>

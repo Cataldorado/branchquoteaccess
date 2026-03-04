@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/table";
 import {
   quotes, branches, customers, getStatusColor, getOriginColor, getDaysUntilExpiration, formatCurrency,
-  type QuoteStatus,
+  allStatusOptions, type QuoteStatus,
 } from "@/data/mockData";
 import { SearchableSelect } from "@/components/SearchableSelect";
 import { toast } from "sonner";
 
-const statusOptions: QuoteStatus[] = ["Draft", "Sent", "Negotiating", "Won", "Lost", "Expired"];
+const statusOptions = allStatusOptions;
 
 export default function QuoteSearch() {
   const navigate = useNavigate();
