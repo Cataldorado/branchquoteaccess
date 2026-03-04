@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  ChevronRight, ChevronDown, Plus, Trash2, GripVertical, FileText, StickyNote, ArrowLeftRight,
+  ChevronRight, ChevronDown, Plus, Trash2, FileText, StickyNote, ArrowLeftRight,
   RefreshCw, AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -267,6 +267,29 @@ export default function QuoteDetail() {
                 <button className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground ml-2">
                   <FileText className="h-3 w-3" /> Add Section Note
                 </button>
+                <button
+                  className="flex items-center gap-1 text-[10px] text-primary hover:underline font-medium ml-2"
+                  onClick={() => {
+                    setGroups((prev) =>
+                      prev.map((g) => {
+                        if (g.id !== group.id) return g;
+                        const allPopulated = g.items.every((i) => i.purchaseQty >= i.quoteQty);
+                        return {
+                          ...g,
+                          items: g.items.map((item) => ({
+                            ...item,
+                            purchaseQty: allPopulated ? 0 : item.quoteQty,
+                          })),
+                        };
+                      })
+                    );
+                    const grp = groups.find((g) => g.id === group.id);
+                    const allPop = grp?.items.every((i) => i.purchaseQty >= i.quoteQty);
+                    toast.info(allPop ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
+                  }}
+                >
+                  {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining"}
+                </button>
 
                 <div className="flex-1" />
 
@@ -284,7 +307,6 @@ export default function QuoteDetail() {
                   className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-1.5 border-b border-border/50 last:border-0 hover:bg-muted/30 items-center"
                 >
                   <div className="flex items-center gap-1.5 px-2 min-w-0">
-                    <GripVertical className="h-3 w-3 text-muted-foreground/50 flex-shrink-0 cursor-grab" />
                     <button className="flex-shrink-0 text-muted-foreground/50 hover:text-primary" title="Item note">
                       <StickyNote className="h-3 w-3" />
                     </button>
