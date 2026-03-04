@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ChevronRight, ChevronDown, Plus, Trash2, GripVertical, FileText, StickyNote, ArrowLeftRight,
@@ -36,11 +36,66 @@ export default function QuoteDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const quote = quotes.find((q) => q.id === id);
-  const [groups, setGroups] = useState<ProductGroup[]>(quote?.productGroups || []);
+
+  // Ensure at least 2 product groups for display
+  const initialGroups = useMemo(() => {
+    if (!quote) return [];
+    const groups = [...quote.productGroups];
+    if (groups.length < 2) {
+      // Add a second product group with some items
+      const extraItems: QuoteItem[] = [
+        {
+          id: "QI-EXTRA-1",
+          productId: "P008",
+          productName: '2" PVC Pipe Schedule 40 (10ft)',
+          sku: "PVC-40-200-10",
+          quoteQty: 25,
+          purchaseQty: 0,
+          unitCost: 4.80,
+          unitPrice: 8.50,
+          gmPercent: calcGM(4.80, 8.50),
+          uom: "EA" as UOM,
+        },
+        {
+          id: "QI-EXTRA-2",
+          productId: "P010",
+          productName: 'Pressure Reducing Valve 3/4"',
+          sku: "PRV-075",
+          quoteQty: 10,
+          purchaseQty: 0,
+          unitCost: 45.00,
+          unitPrice: 72.50,
+          gmPercent: calcGM(45.00, 72.50),
+          uom: "EA" as UOM,
+        },
+        {
+          id: "QI-EXTRA-3",
+          productId: "P012",
+          productName: "Expansion Tank 2 Gal",
+          sku: "ET-002",
+          quoteQty: 8,
+          purchaseQty: 0,
+          unitCost: 28.00,
+          unitPrice: 44.50,
+          gmPercent: calcGM(28.00, 44.50),
+          uom: "EA" as UOM,
+        },
+      ];
+      groups.push({
+        id: "PG-EXTRA",
+        name: "Valves & Accessories",
+        items: extraItems,
+      });
+    }
+    return groups;
+  }, [quote]);
+
+  const [groups, setGroups] = useState<ProductGroup[]>(initialGroups);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
   const [convertOpen, setConvertOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [expiredResolutionOpen, setExpiredResolutionOpen] = useState(false);
+  const [populated, setPopulated] = useState(false);
 
   if (!quote) {
     return (
@@ -64,6 +119,15 @@ export default function QuoteDetail() {
       next.has(groupId) ? next.delete(groupId) : next.add(groupId);
       return next;
     });
+  };
+
+  const allExpanded = collapsedGroups.size === 0;
+  const toggleAllGroups = () => {
+    if (allExpanded) {
+      setCollapsedGroups(new Set(groups.map((g) => g.id)));
+    } else {
+      setCollapsedGroups(new Set());
+    }
   };
 
   const updateItemField = (groupId: string, itemId: string, field: string, value: number | string) => {
@@ -101,6 +165,7 @@ export default function QuoteDetail() {
         items: g.items.map((item) => ({ ...item, purchaseQty: 0 })),
       }))
     );
+    setPopulated(false);
     toast.info("All purchase quantities reset to 0");
   };
 
@@ -114,6 +179,7 @@ export default function QuoteDetail() {
         })),
       }))
     );
+    setPopulated(true);
     toast.info("Purchase quantities populated with remaining qty");
   };
 
@@ -145,8 +211,8 @@ export default function QuoteDetail() {
         {/* Table Header */}
         <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border">
           <div />
-          <button className="text-xs text-primary hover:underline font-medium" onClick={resetQtyToZero}>
-            Reset Qty to 0
+          <button className="text-xs text-primary hover:underline font-medium" onClick={toggleAllGroups}>
+            {allExpanded ? "Collapse All" : "Expand All"}
           </button>
         </div>
 
@@ -158,8 +224,11 @@ export default function QuoteDetail() {
           <div className="px-2 text-center">Quote Qty</div>
           <div className="px-2 text-center">
             <span>Purchase Qty</span>
-            <button className="block mx-auto mt-0.5 text-[9px] text-primary hover:underline font-medium normal-case tracking-normal" onClick={populateRemainingQty}>
-              Populate Remaining
+            <button
+              className="block mx-auto mt-0.5 text-[9px] text-primary hover:underline font-medium normal-case tracking-normal"
+              onClick={populated ? resetQtyToZero : populateRemainingQty}
+            >
+              {populated ? "Reset Qty to 0" : "Populate Remaining"}
             </button>
           </div>
           <div className="px-2 text-right">Price</div>
@@ -214,7 +283,6 @@ export default function QuoteDetail() {
                   key={item.id}
                   className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-1.5 border-b border-border/50 last:border-0 hover:bg-muted/30 items-center"
                 >
-                  {/* Product Description */}
                   <div className="flex items-center gap-1.5 px-2 min-w-0">
                     <GripVertical className="h-3 w-3 text-muted-foreground/50 flex-shrink-0 cursor-grab" />
                     <button className="flex-shrink-0 text-muted-foreground/50 hover:text-primary" title="Item note">
@@ -228,17 +296,14 @@ export default function QuoteDetail() {
                     </button>
                   </div>
 
-                  {/* Item # */}
                   <div className="px-2 text-xs font-mono text-muted-foreground truncate" title={item.sku}>
                     {item.sku}
                   </div>
 
-                  {/* Cost */}
                   <div className="px-2 text-xs text-right font-mono text-muted-foreground">
                     $ {item.unitCost.toFixed(2)}
                   </div>
 
-                  {/* Quote Qty */}
                   <div className="px-1">
                     <Input
                       type="number"
@@ -248,7 +313,6 @@ export default function QuoteDetail() {
                     />
                   </div>
 
-                  {/* Purchase Qty */}
                   <div className="px-1">
                     <Input
                       type="number"
@@ -258,7 +322,6 @@ export default function QuoteDetail() {
                     />
                   </div>
 
-                  {/* Price */}
                   <div className="px-1">
                     <div className="flex items-center h-7 rounded border border-success/30 bg-success/10 overflow-hidden">
                       <span className="px-1.5 text-xs font-semibold text-success bg-success/20 h-full flex items-center">$</span>
@@ -272,7 +335,6 @@ export default function QuoteDetail() {
                     </div>
                   </div>
 
-                  {/* UOM */}
                   <div className="px-1">
                     <Select
                       value={item.uom}
@@ -289,19 +351,16 @@ export default function QuoteDetail() {
                     </Select>
                   </div>
 
-                  {/* GM% */}
                   <div className="px-2 text-right">
                     <span className={`text-xs font-semibold font-mono px-1.5 py-0.5 rounded ${getGMBgColor(item.gmPercent)}`}>
                       {item.gmPercent.toFixed(2)} %
                     </span>
                   </div>
 
-                  {/* Ext. Price */}
                   <div className="px-2 text-xs text-right font-mono font-medium">
                     {formatCurrency(item.unitPrice * item.quoteQty)}
                   </div>
 
-                  {/* Delete */}
                   <div className="flex justify-center">
                     <Button
                       variant="ghost"
