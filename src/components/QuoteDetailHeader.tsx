@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
-  ArrowLeft, Printer, Pencil, Plus, Minus,
-  ArrowRightCircle, AlertTriangle, Share2, Copy, Link,
+  ArrowLeft, Pencil, Plus, Minus,
+  ArrowRightCircle, AlertTriangle, Link,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,9 +85,6 @@ export default function QuoteDetailHeader({
               <AlertTriangle className="h-3 w-3" /> Resolve
             </Button>
           )}
-          <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-            <Printer className="h-4 w-4" /> Print Preview
-          </button>
         </div>
       </div>
 
@@ -117,9 +114,8 @@ export default function QuoteDetailHeader({
             <Input
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="text-lg font-semibold border-0 bg-transparent h-8 px-1 focus-visible:ring-1 max-w-sm"
-            />
-            <Pencil className="h-3.5 w-3.5 text-muted-foreground/50" />
+              className="text-lg font-semibold border-0 bg-transparent h-8 px-1 focus-visible:ring-1 max-w-sm w-auto"
+            /><Pencil className="h-3.5 w-3.5 text-muted-foreground/50 -ml-1" />
           </div>
 
           <div className="flex items-center gap-6 flex-shrink-0">
