@@ -143,7 +143,13 @@ export default function QuoteSearch() {
                   className={`${isAgility ? "" : "cursor-pointer"} group transition-colors duration-100 hover:bg-muted/50`}
                   onClick={() => !isAgility && navigate(`/quotes/${q.id}`)}
                 >
-                  <TableCell className="px-4 py-3 text-sm font-medium text-foreground">{q.customerName}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm font-medium">
+                    {isAgility ? (
+                      <span className="text-foreground">{q.customerName}</span>
+                    ) : (
+                      <span className="text-brand cursor-pointer hover:underline">{q.customerName}</span>
+                    )}
+                  </TableCell>
                   <TableCell className="px-4 py-3 text-sm font-mono">
                     {isAgility ? (
                       <span className="flex items-center gap-2 text-muted-foreground">
