@@ -16,16 +16,27 @@ export interface Customer {
   contactPhone: string;
 }
 
+export type UOM = "EA" | "FT" | "LF" | "BX" | "CS" | "RL";
+
 export interface QuoteItem {
   id: string;
   productId: string;
   productName: string;
   sku: string;
-  quantity: number;
+  quoteQty: number;
+  purchaseQty: number;
   unitCost: number;
   unitPrice: number;
   gmPercent: number;
+  uom: UOM;
   qtyReleased?: number;
+}
+
+export interface ProductGroup {
+  id: string;
+  name: string;
+  items: QuoteItem[];
+  note?: string;
 }
 
 export interface PricingHistory {
@@ -49,6 +60,7 @@ export interface Quote {
   poNumber?: string;
   jobNumber?: string;
   transactionRef?: string;
+  productGroups: ProductGroup[];
   items: QuoteItem[];
   gmPercent: number;
   totalAmount: number;
@@ -122,6 +134,7 @@ function calcGM(cost: number, price: number): number {
 }
 
 function makeItems(indices: number[], qtyRange: [number, number], priceVariance: number): QuoteItem[] {
+  const uoms: UOM[] = ["EA", "FT", "LF", "BX", "CS", "RL"];
   return indices.map((i, idx) => {
     const p = products[i];
     const qty = Math.floor(Math.random() * (qtyRange[1] - qtyRange[0] + 1)) + qtyRange[0];
@@ -131,17 +144,37 @@ function makeItems(indices: number[], qtyRange: [number, number], priceVariance:
       productId: p.id,
       productName: p.name,
       sku: p.sku,
-      quantity: qty,
+      quoteQty: qty,
+      purchaseQty: Math.random() > 0.4 ? qty : 0,
       unitCost: p.unitCost,
       unitPrice: price,
       gmPercent: calcGM(p.unitCost, price),
+      uom: p.category === "PEX" || p.category === "Cast Iron" ? "FT" as UOM : uoms[0],
     };
   });
 }
 
+function makeProductGroups(items: QuoteItem[]): ProductGroup[] {
+  // Split items into groups of varying sizes
+  const groups: ProductGroup[] = [];
+  let remaining = [...items];
+  let groupIdx = 1;
+  while (remaining.length > 0) {
+    const size = Math.min(remaining.length, Math.floor(Math.random() * 4) + 2);
+    const groupItems = remaining.splice(0, size);
+    groups.push({
+      id: `PG-${groupIdx}`,
+      name: `Product Group ${groupIdx}`,
+      items: groupItems,
+    });
+    groupIdx++;
+  }
+  return groups;
+}
+
 function quoteFromItems(items: QuoteItem[]): { totalAmount: number; totalCost: number; gmPercent: number } {
-  const totalAmount = items.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
-  const totalCost = items.reduce((s, i) => s + i.unitCost * i.quantity, 0);
+  const totalAmount = items.reduce((s, i) => s + i.unitPrice * i.quoteQty, 0);
+  const totalCost = items.reduce((s, i) => s + i.unitCost * i.quoteQty, 0);
   return { totalAmount: Math.round(totalAmount * 100) / 100, totalCost: Math.round(totalCost * 100) / 100, gmPercent: calcGM(totalCost, totalAmount) };
 }
 
@@ -216,6 +249,7 @@ function generateQuotes(): Quote[] {
 
   return configs.map((c, idx) => {
     const items = makeItems(c.itemIndices, c.qtyRange, c.priceVar);
+    const productGroups = makeProductGroups(items);
     const { totalAmount, totalCost, gmPercent } = quoteFromItems(items);
     const cust = customers[c.custIdx];
     const branch = branches[c.branchIdx];
@@ -236,6 +270,7 @@ function generateQuotes(): Quote[] {
       poNumber: c.po,
       jobNumber: c.job,
       transactionRef: c.txRef,
+      productGroups,
       items,
       gmPercent,
       totalAmount,
