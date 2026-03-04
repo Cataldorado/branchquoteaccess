@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Trash2, Search, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -42,16 +42,18 @@ export default function QuoteCreate() {
       productId: p.id,
       productName: p.name,
       sku: p.sku,
-      quantity: 1,
+      quoteQty: 1,
+      purchaseQty: 0,
       unitCost: p.unitCost,
       unitPrice: p.listPrice,
       gmPercent: gm,
+      uom: "EA",
     }]);
   };
 
   const removeItem = (id: string) => setItems(items.filter((i) => i.id !== id));
 
-  const updateItem = (id: string, field: "quantity" | "unitPrice", value: number) => {
+  const updateItem = (id: string, field: "quoteQty" | "unitPrice", value: number) => {
     setItems(items.map((item) => {
       if (item.id !== id) return item;
       const updated = { ...item, [field]: value };
@@ -62,8 +64,8 @@ export default function QuoteCreate() {
     }));
   };
 
-  const totalAmount = items.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
-  const totalCost = items.reduce((s, i) => s + i.unitCost * i.quantity, 0);
+  const totalAmount = items.reduce((s, i) => s + i.unitPrice * i.quoteQty, 0);
+  const totalCost = items.reduce((s, i) => s + i.unitCost * i.quoteQty, 0);
   const overallGM = totalAmount > 0 ? Math.round(((totalAmount - totalCost) / totalAmount) * 1000) / 10 : 0;
 
   const handleSubmit = () => {
@@ -208,12 +210,12 @@ export default function QuoteCreate() {
                     <TableRow key={item.id}>
                       <TableCell className="px-3 py-1.5 text-xs">{item.productName}</TableCell>
                       <TableCell className="px-3 py-1.5 text-right">
-                        <Input type="number" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", parseInt(e.target.value) || 0)} className="h-7 w-16 text-xs text-right ml-auto" />
+                        <Input type="number" value={item.quoteQty} onChange={(e) => updateItem(item.id, "quoteQty", parseInt(e.target.value) || 0)} className="h-7 w-16 text-xs text-right ml-auto" />
                       </TableCell>
                       <TableCell className="px-3 py-1.5 text-right">
                         <Input type="number" step="0.01" value={item.unitPrice} onChange={(e) => updateItem(item.id, "unitPrice", parseFloat(e.target.value) || 0)} className="h-7 w-24 text-xs text-right ml-auto font-mono" />
                       </TableCell>
-                      <TableCell className="px-3 py-1.5 text-xs text-right font-mono">{formatCurrency(item.unitPrice * item.quantity)}</TableCell>
+                      <TableCell className="px-3 py-1.5 text-xs text-right font-mono">{formatCurrency(item.unitPrice * item.quoteQty)}</TableCell>
                       <TableCell className="px-3 py-1.5 text-right">
                         <span className={`text-xs font-semibold font-mono px-1.5 py-0.5 rounded ${getGMBgColor(item.gmPercent)}`}>{item.gmPercent}%</span>
                       </TableCell>

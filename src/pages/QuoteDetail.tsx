@@ -2,30 +2,42 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Save, Share2, ArrowRightCircle, RefreshCw, Clock, Building2, AlertTriangle,
-  History, ChevronRight,
+  ChevronRight, ChevronDown, Plus, Trash2, GripVertical, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   quotes, getStatusColor, getOriginColor, getGMColor, getGMBgColor, getDaysUntilExpiration, formatCurrency,
-  type QuoteItem,
+  type QuoteItem, type ProductGroup, type UOM,
 } from "@/data/mockData";
 import { toast } from "sonner";
+
+function calcGM(cost: number, price: number): number {
+  return price > 0 ? Math.round(((price - cost) / price) * 1000) / 10 : 0;
+}
+
+function groupTotal(items: QuoteItem[]) {
+  const amount = items.reduce((s, i) => s + i.unitPrice * i.quoteQty, 0);
+  const cost = items.reduce((s, i) => s + i.unitCost * i.quoteQty, 0);
+  return { amount, cost, gm: calcGM(cost, amount) };
+}
+
+const uomOptions: UOM[] = ["EA", "FT", "LF", "BX", "CS", "RL"];
 
 export default function QuoteDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const quote = quotes.find((q) => q.id === id);
-  const [items, setItems] = useState<QuoteItem[]>(quote?.items || []);
+  const [groups, setGroups] = useState<ProductGroup[]>(quote?.productGroups || []);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
   const [convertOpen, setConvertOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [expiredResolutionOpen, setExpiredResolutionOpen] = useState(false);
@@ -40,22 +52,55 @@ export default function QuoteDetail() {
 
   const daysLeft = getDaysUntilExpiration(quote.expirationDate);
   const isExpired = quote.status === "Expired";
-  const totalAmount = items.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
-  const totalCost = items.reduce((s, i) => s + i.unitCost * i.quantity, 0);
-  const overallGM = totalAmount > 0 ? Math.round(((totalAmount - totalCost) / totalAmount) * 1000) / 10 : 0;
+  const allItems = groups.flatMap((g) => g.items);
+  const totalAmount = allItems.reduce((s, i) => s + i.unitPrice * i.quoteQty, 0);
+  const totalCost = allItems.reduce((s, i) => s + i.unitCost * i.quoteQty, 0);
+  const overallGM = calcGM(totalCost, totalAmount);
 
-  const updateItemPrice = (itemId: string, newPrice: number) => {
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.id !== itemId) return item;
-        const gm = newPrice > 0 ? Math.round(((newPrice - item.unitCost) / newPrice) * 1000) / 10 : 0;
-        return { ...item, unitPrice: newPrice, gmPercent: gm };
+  const toggleGroup = (groupId: string) => {
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev);
+      next.has(groupId) ? next.delete(groupId) : next.add(groupId);
+      return next;
+    });
+  };
+
+  const updateItemField = (groupId: string, itemId: string, field: string, value: number | string) => {
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id !== groupId) return g;
+        return {
+          ...g,
+          items: g.items.map((item) => {
+            if (item.id !== itemId) return item;
+            const updated = { ...item, [field]: value };
+            if (field === "unitPrice") {
+              updated.gmPercent = calcGM(item.unitCost, value as number);
+            }
+            return updated;
+          }),
+        };
       })
     );
   };
 
-  const updateItemQty = (itemId: string, newQty: number) => {
-    setItems((prev) => prev.map((item) => (item.id === itemId ? { ...item, quantity: newQty } : item)));
+  const deleteItem = (groupId: string, itemId: string) => {
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id !== groupId) return g;
+        return { ...g, items: g.items.filter((i) => i.id !== itemId) };
+      }).filter((g) => g.items.length > 0)
+    );
+  };
+
+  const resetQtyToZero = () => {
+    setGroups((prev) =>
+      prev.map((g) => ({
+        ...g,
+        items: g.items.map((item) => ({ ...item, purchaseQty: 0 })),
+      }))
+    );
+    toast.info("All purchase quantities reset to 0");
   };
 
   const handleConvert = () => {
@@ -94,7 +139,6 @@ export default function QuoteDetail() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center gap-2">
           {isExpired && (
             <Button size="sm" variant="destructive" className="h-8 text-xs gap-1" onClick={() => setExpiredResolutionOpen(true)}>
@@ -112,7 +156,7 @@ export default function QuoteDetail() {
           </Button>
           {!isExpired && quote.status !== "Won" && quote.status !== "Lost" && (
             <Button size="sm" className="h-8 text-xs gap-1" onClick={() => {
-              setSelectedItems(new Set(items.map((i) => i.id)));
+              setSelectedItems(new Set(allItems.map((i) => i.id)));
               setConvertOpen(true);
             }}>
               <ArrowRightCircle className="h-3 w-3" /> Convert to Order
@@ -121,81 +165,186 @@ export default function QuoteDetail() {
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-3">
-        <Card className="p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Total Amount</div>
-          <div className="text-xl font-semibold font-mono mt-1">{formatCurrency(totalAmount)}</div>
-        </Card>
-        <Card className="p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Total Cost</div>
-          <div className="text-xl font-semibold font-mono mt-1">{formatCurrency(totalCost)}</div>
-        </Card>
-        <Card className="p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Overall GM%</div>
-          <div className={`text-xl font-semibold font-mono mt-1 ${getGMColor(overallGM)}`}>{overallGM}%</div>
-        </Card>
-        <Card className="p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Line Items</div>
-          <div className="text-xl font-semibold font-mono mt-1">{items.length}</div>
-        </Card>
-      </div>
+      {/* Line Items Table */}
+      <div className="border border-border rounded-lg overflow-hidden">
+        {/* Table Header */}
+        <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border">
+          <div />
+          <button className="text-xs text-primary hover:underline font-medium" onClick={resetQtyToZero}>
+            Reset Qty to 0
+          </button>
+        </div>
 
-      {/* Line Items */}
-      <Card>
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="text-sm font-semibold">Line Items</CardTitle>
-        </CardHeader>
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-8 px-3">SKU</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-8 px-3">Product</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-8 px-3 text-right w-20">Qty</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-8 px-3 text-right">Unit Cost</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-8 px-3 text-right w-28">Unit Price</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-8 px-3 text-right">Line Total</TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wider font-semibold h-8 px-3 text-right w-20">GM%</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="px-3 py-1.5 text-xs font-mono text-muted-foreground">{item.sku}</TableCell>
-                <TableCell className="px-3 py-1.5 text-xs">{item.productName}</TableCell>
-                <TableCell className="px-3 py-1.5 text-right">
-                  <Input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) => updateItemQty(item.id, parseInt(e.target.value) || 0)}
-                    className="h-7 w-16 text-xs text-right ml-auto"
-                  />
-                </TableCell>
-                <TableCell className="px-3 py-1.5 text-xs text-right font-mono text-muted-foreground">{formatCurrency(item.unitCost)}</TableCell>
-                <TableCell className="px-3 py-1.5 text-right">
-                  <Input
-                    type="number"
-                    step="0.01"
-                    value={item.unitPrice}
-                    onChange={(e) => updateItemPrice(item.id, parseFloat(e.target.value) || 0)}
-                    className="h-7 w-24 text-xs text-right ml-auto font-mono"
-                  />
-                </TableCell>
-                <TableCell className="px-3 py-1.5 text-xs text-right font-mono">{formatCurrency(item.unitPrice * item.quantity)}</TableCell>
-                <TableCell className="px-3 py-1.5 text-right">
-                  <span className={`text-xs font-semibold font-mono px-1.5 py-0.5 rounded ${getGMBgColor(item.gmPercent)}`}>
-                    {item.gmPercent}%
-                  </span>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+        {/* Column Headers */}
+        <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-2 bg-muted/20 border-b border-border text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+          <div className="px-2">Product Description</div>
+          <div className="px-2">Item #</div>
+          <div className="px-2 text-right">Cost</div>
+          <div className="px-2 text-center">Quote Qty</div>
+          <div className="px-2 text-center">Purchase Qty</div>
+          <div className="px-2 text-right">Price</div>
+          <div className="px-2 text-center">UOM</div>
+          <div className="px-2 text-right">GM%</div>
+          <div className="px-2 text-right">Ext. Price</div>
+          <div />
+        </div>
+
+        {/* Product Groups */}
+        {groups.map((group) => {
+          const isCollapsed = collapsedGroups.has(group.id);
+          const gt = groupTotal(group.items);
+
+          return (
+            <div key={group.id} className="border-b border-border last:border-0">
+              {/* Group Header */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-muted/10 border-b border-border">
+                <button
+                  className="flex items-center gap-1 text-primary hover:text-primary/80"
+                  onClick={() => toggleGroup(group.id)}
+                >
+                  {isCollapsed ? (
+                    <Plus className="h-3.5 w-3.5" />
+                  ) : (
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  )}
+                </button>
+                <span className="text-xs font-semibold text-primary">
+                  {group.name} ({group.items.length})
+                </span>
+                <span className="text-[10px] text-muted-foreground mx-1">:</span>
+                <button className="flex items-center gap-1 text-[10px] text-primary hover:underline">
+                  <Plus className="h-3 w-3" /> Add Item
+                </button>
+                <button className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground ml-2">
+                  <FileText className="h-3 w-3" /> Add Section Note
+                </button>
+
+                <div className="flex-1" />
+
+                <span className={`text-xs font-semibold font-mono px-2 py-0.5 rounded border ${getGMBgColor(gt.gm)}`}>
+                  {gt.gm.toFixed(2)} %
+                </span>
+                <span className="text-[10px] text-muted-foreground ml-2">Total :</span>
+                <span className="text-xs font-semibold font-mono ml-1">{formatCurrency(gt.amount)}</span>
+              </div>
+
+              {/* Group Items */}
+              {!isCollapsed && group.items.map((item) => (
+                <div
+                  key={item.id}
+                  className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-1.5 border-b border-border/50 last:border-0 hover:bg-muted/30 items-center"
+                >
+                  {/* Product Description */}
+                  <div className="flex items-center gap-1.5 px-2 min-w-0">
+                    <GripVertical className="h-3 w-3 text-muted-foreground/50 flex-shrink-0 cursor-grab" />
+                    <span className="text-xs truncate" title={item.productName}>
+                      {item.productName}
+                    </span>
+                  </div>
+
+                  {/* Item # */}
+                  <div className="px-2 text-xs font-mono text-muted-foreground truncate" title={item.sku}>
+                    {item.sku}
+                  </div>
+
+                  {/* Cost */}
+                  <div className="px-2 text-xs text-right font-mono text-muted-foreground">
+                    $ {item.unitCost.toFixed(2)}
+                  </div>
+
+                  {/* Quote Qty */}
+                  <div className="px-1">
+                    <Input
+                      type="number"
+                      value={item.quoteQty}
+                      onChange={(e) => updateItemField(group.id, item.id, "quoteQty", parseInt(e.target.value) || 0)}
+                      className="h-7 w-full text-xs text-center"
+                    />
+                  </div>
+
+                  {/* Purchase Qty */}
+                  <div className="px-1">
+                    <Input
+                      type="number"
+                      value={item.purchaseQty}
+                      onChange={(e) => updateItemField(group.id, item.id, "purchaseQty", parseInt(e.target.value) || 0)}
+                      className="h-7 w-full text-xs text-center"
+                    />
+                  </div>
+
+                  {/* Price */}
+                  <div className="px-1">
+                    <div className="flex items-center h-7 rounded border border-success/30 bg-success/10 overflow-hidden">
+                      <span className="px-1.5 text-xs font-semibold text-success bg-success/20 h-full flex items-center">$</span>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={item.unitPrice}
+                        onChange={(e) => updateItemField(group.id, item.id, "unitPrice", parseFloat(e.target.value) || 0)}
+                        className="h-full border-0 bg-transparent text-xs text-right font-mono px-1.5 focus-visible:ring-0 text-success font-semibold"
+                      />
+                    </div>
+                  </div>
+
+                  {/* UOM */}
+                  <div className="px-1">
+                    <Select
+                      value={item.uom}
+                      onValueChange={(val) => updateItemField(group.id, item.id, "uom", val)}
+                    >
+                      <SelectTrigger className="h-7 text-[10px] px-1.5 w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {uomOptions.map((u) => (
+                          <SelectItem key={u} value={u} className="text-xs">{u}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* GM% */}
+                  <div className="px-2 text-right">
+                    <span className={`text-xs font-semibold font-mono px-1.5 py-0.5 rounded ${getGMBgColor(item.gmPercent)}`}>
+                      {item.gmPercent.toFixed(2)} %
+                    </span>
+                  </div>
+
+                  {/* Ext. Price */}
+                  <div className="px-2 text-xs text-right font-mono font-medium">
+                    {formatCurrency(item.unitPrice * item.quoteQty)}
+                  </div>
+
+                  {/* Delete */}
+                  <div className="flex justify-center">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                      onClick={() => deleteItem(group.id, item.id)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+
+        {/* Footer Totals */}
+        <div className="flex items-center justify-end gap-4 px-4 py-3 bg-muted/20 border-t border-border">
+          <span className={`text-sm font-semibold font-mono px-2 py-0.5 rounded ${getGMBgColor(overallGM)}`}>
+            {overallGM.toFixed(2)} %
+          </span>
+          <span className="text-xs text-muted-foreground">Grand Total :</span>
+          <span className="text-base font-bold font-mono">{formatCurrency(totalAmount)}</span>
+        </div>
+      </div>
 
       {/* Quote details */}
       <div className="grid grid-cols-2 gap-3">
-        <Card className="p-4">
+        <div className="border border-border rounded-lg p-4">
           <h3 className="text-xs font-semibold mb-3">Quote Details</h3>
           <div className="space-y-2 text-xs">
             <div className="flex justify-between"><span className="text-muted-foreground">Created</span><span>{quote.createdDate}</span></div>
@@ -205,16 +354,17 @@ export default function QuoteDetail() {
             {quote.transactionRef && <div className="flex justify-between"><span className="text-muted-foreground">Tx Ref</span><span className="font-mono">{quote.transactionRef}</span></div>}
             <div className="flex justify-between"><span className="text-muted-foreground">Assigned To</span><span>{quote.assignedTo}</span></div>
           </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-semibold">Pricing History</h3>
-            <History className="h-3.5 w-3.5 text-muted-foreground" />
+        </div>
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="text-xs font-semibold mb-3">Summary</h3>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between"><span className="text-muted-foreground">Total Amount</span><span className="font-mono font-semibold">{formatCurrency(totalAmount)}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Total Cost</span><span className="font-mono">{formatCurrency(totalCost)}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Overall GM%</span><span className={`font-mono font-semibold ${getGMColor(overallGM)}`}>{overallGM.toFixed(1)}%</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Product Groups</span><span>{groups.length}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Line Items</span><span>{allItems.length}</span></div>
           </div>
-          <div className="text-xs text-muted-foreground text-center py-6">
-            No pricing changes recorded yet.
-          </div>
-        </Card>
+        </div>
       </div>
 
       {/* Convert to Order Dialog */}
@@ -225,7 +375,7 @@ export default function QuoteDetail() {
             <DialogDescription className="text-xs">Select items to include in the order.</DialogDescription>
           </DialogHeader>
           <div className="space-y-2 max-h-64 overflow-auto">
-            {items.map((item) => (
+            {allItems.map((item) => (
               <label key={item.id} className="flex items-center gap-3 p-2 rounded hover:bg-muted cursor-pointer text-xs">
                 <Checkbox
                   checked={selectedItems.has(item.id)}
@@ -236,8 +386,8 @@ export default function QuoteDetail() {
                   }}
                 />
                 <span className="flex-1">{item.productName}</span>
-                <span className="text-muted-foreground">x{item.quantity}</span>
-                <span className="font-mono">{formatCurrency(item.unitPrice * item.quantity)}</span>
+                <span className="text-muted-foreground">x{item.quoteQty}</span>
+                <span className="font-mono">{formatCurrency(item.unitPrice * item.quoteQty)}</span>
               </label>
             ))}
           </div>
