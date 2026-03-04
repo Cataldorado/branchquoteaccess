@@ -186,7 +186,15 @@ export default function QuoteDetail() {
           <div className="px-2">Item #</div>
           <div className="px-2 text-right">Cost</div>
           <div className="px-2 text-center">Quote Qty</div>
-          <div className="px-2 text-center">Purchase Qty</div>
+          <div className="px-2 text-center">
+            <span>Purchase Qty</span>
+            <button
+              className="block mx-auto mt-0.5 text-2xs text-brand hover:underline font-medium normal-case tracking-normal"
+              onClick={populated ? resetQtyToZero : populateRemainingQty}
+            >
+              {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
+            </button>
+          </div>
           <div className="px-2 text-right">Price</div>
           <div className="px-2 text-center">UOM</div>
           <div className="px-2 text-right">GM%</div>
