@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Save, Share2, ArrowRightCircle, RefreshCw, Clock, Building2, AlertTriangle,
-  ChevronRight, ChevronDown, Plus, Trash2, GripVertical, FileText,
+  ChevronRight, ChevronDown, Plus, Trash2, GripVertical, FileText, StickyNote, ArrowLeftRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +56,7 @@ export default function QuoteDetail() {
   const totalAmount = allItems.reduce((s, i) => s + i.unitPrice * i.quoteQty, 0);
   const totalCost = allItems.reduce((s, i) => s + i.unitCost * i.quoteQty, 0);
   const overallGM = calcGM(totalCost, totalAmount);
+  const orderableCount = allItems.filter((i) => i.purchaseQty > 0).length;
 
   const toggleGroup = (groupId: string) => {
     setCollapsedGroups((prev) => {
@@ -101,6 +102,19 @@ export default function QuoteDetail() {
       }))
     );
     toast.info("All purchase quantities reset to 0");
+  };
+
+  const populateRemainingQty = () => {
+    setGroups((prev) =>
+      prev.map((g) => ({
+        ...g,
+        items: g.items.map((item) => ({
+          ...item,
+          purchaseQty: item.quoteQty,
+        })),
+      }))
+    );
+    toast.info("Purchase quantities populated with remaining qty");
   };
 
   const handleConvert = () => {
@@ -156,12 +170,37 @@ export default function QuoteDetail() {
           </Button>
           {!isExpired && quote.status !== "Won" && quote.status !== "Lost" && (
             <Button size="sm" className="h-8 text-xs gap-1" onClick={() => {
-              setSelectedItems(new Set(allItems.map((i) => i.id)));
+              setSelectedItems(new Set(allItems.filter((i) => i.purchaseQty > 0).map((i) => i.id)));
               setConvertOpen(true);
-            }}>
-              <ArrowRightCircle className="h-3 w-3" /> Convert to Order
+            }} disabled={orderableCount === 0}>
+              <ArrowRightCircle className="h-3 w-3" /> Order Items ({orderableCount})
             </Button>
           )}
+        </div>
+      </div>
+
+      {/* Quote Details & Summary */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="text-xs font-semibold mb-3">Quote Details</h3>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between"><span className="text-muted-foreground">Created</span><span>{quote.createdDate}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Expires</span><span>{quote.expirationDate}</span></div>
+            {quote.poNumber && <div className="flex justify-between"><span className="text-muted-foreground">PO #</span><span className="font-mono">{quote.poNumber}</span></div>}
+            {quote.jobNumber && <div className="flex justify-between"><span className="text-muted-foreground">Job #</span><span className="font-mono">{quote.jobNumber}</span></div>}
+            {quote.transactionRef && <div className="flex justify-between"><span className="text-muted-foreground">Tx Ref</span><span className="font-mono">{quote.transactionRef}</span></div>}
+            <div className="flex justify-between"><span className="text-muted-foreground">Assigned To</span><span>{quote.assignedTo}</span></div>
+          </div>
+        </div>
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="text-xs font-semibold mb-3">Summary</h3>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between"><span className="text-muted-foreground">Total Amount</span><span className="font-mono font-semibold">{formatCurrency(totalAmount)}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Total Cost</span><span className="font-mono">{formatCurrency(totalCost)}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Overall GM%</span><span className={`font-mono font-semibold ${getGMColor(overallGM)}`}>{overallGM.toFixed(1)}%</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Product Groups</span><span>{groups.length}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Line Items</span><span>{allItems.length}</span></div>
+          </div>
         </div>
       </div>
 
@@ -181,7 +220,12 @@ export default function QuoteDetail() {
           <div className="px-2">Item #</div>
           <div className="px-2 text-right">Cost</div>
           <div className="px-2 text-center">Quote Qty</div>
-          <div className="px-2 text-center">Purchase Qty</div>
+          <div className="px-2 text-center">
+            <span>Purchase Qty</span>
+            <button className="block mx-auto mt-0.5 text-[9px] text-primary hover:underline font-medium normal-case tracking-normal" onClick={populateRemainingQty}>
+              Populate Remaining
+            </button>
+          </div>
           <div className="px-2 text-right">Price</div>
           <div className="px-2 text-center">UOM</div>
           <div className="px-2 text-right">GM%</div>
@@ -237,9 +281,15 @@ export default function QuoteDetail() {
                   {/* Product Description */}
                   <div className="flex items-center gap-1.5 px-2 min-w-0">
                     <GripVertical className="h-3 w-3 text-muted-foreground/50 flex-shrink-0 cursor-grab" />
+                    <button className="flex-shrink-0 text-muted-foreground/50 hover:text-primary" title="Item note">
+                      <StickyNote className="h-3 w-3" />
+                    </button>
                     <span className="text-xs truncate" title={item.productName}>
                       {item.productName}
                     </span>
+                    <button className="flex-shrink-0 text-muted-foreground/50 hover:text-primary ml-auto" title="Replace item">
+                      <ArrowLeftRight className="h-3 w-3" />
+                    </button>
                   </div>
 
                   {/* Item # */}
@@ -339,31 +389,6 @@ export default function QuoteDetail() {
           </span>
           <span className="text-xs text-muted-foreground">Grand Total :</span>
           <span className="text-base font-bold font-mono">{formatCurrency(totalAmount)}</span>
-        </div>
-      </div>
-
-      {/* Quote details */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="border border-border rounded-lg p-4">
-          <h3 className="text-xs font-semibold mb-3">Quote Details</h3>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between"><span className="text-muted-foreground">Created</span><span>{quote.createdDate}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Expires</span><span>{quote.expirationDate}</span></div>
-            {quote.poNumber && <div className="flex justify-between"><span className="text-muted-foreground">PO #</span><span className="font-mono">{quote.poNumber}</span></div>}
-            {quote.jobNumber && <div className="flex justify-between"><span className="text-muted-foreground">Job #</span><span className="font-mono">{quote.jobNumber}</span></div>}
-            {quote.transactionRef && <div className="flex justify-between"><span className="text-muted-foreground">Tx Ref</span><span className="font-mono">{quote.transactionRef}</span></div>}
-            <div className="flex justify-between"><span className="text-muted-foreground">Assigned To</span><span>{quote.assignedTo}</span></div>
-          </div>
-        </div>
-        <div className="border border-border rounded-lg p-4">
-          <h3 className="text-xs font-semibold mb-3">Summary</h3>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between"><span className="text-muted-foreground">Total Amount</span><span className="font-mono font-semibold">{formatCurrency(totalAmount)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Total Cost</span><span className="font-mono">{formatCurrency(totalCost)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Overall GM%</span><span className={`font-mono font-semibold ${getGMColor(overallGM)}`}>{overallGM.toFixed(1)}%</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Product Groups</span><span>{groups.length}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Line Items</span><span>{allItems.length}</span></div>
-          </div>
         </div>
       </div>
 
