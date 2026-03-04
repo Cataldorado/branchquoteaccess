@@ -37,55 +37,16 @@ export default function QuoteDetail() {
   const navigate = useNavigate();
   const quote = quotes.find((q) => q.id === id);
 
-  // Ensure at least 2 product groups for display
   const initialGroups = useMemo(() => {
     if (!quote) return [];
     const groups = [...quote.productGroups];
     if (groups.length < 2) {
-      // Add a second product group with some items
       const extraItems: QuoteItem[] = [
-        {
-          id: "QI-EXTRA-1",
-          productId: "P008",
-          productName: '2" PVC Pipe Schedule 40 (10ft)',
-          sku: "PVC-40-200-10",
-          quoteQty: 25,
-          purchaseQty: 0,
-          unitCost: 4.80,
-          unitPrice: 8.50,
-          gmPercent: calcGM(4.80, 8.50),
-          uom: "EA" as UOM,
-        },
-        {
-          id: "QI-EXTRA-2",
-          productId: "P010",
-          productName: 'Pressure Reducing Valve 3/4"',
-          sku: "PRV-075",
-          quoteQty: 10,
-          purchaseQty: 0,
-          unitCost: 45.00,
-          unitPrice: 72.50,
-          gmPercent: calcGM(45.00, 72.50),
-          uom: "EA" as UOM,
-        },
-        {
-          id: "QI-EXTRA-3",
-          productId: "P012",
-          productName: "Expansion Tank 2 Gal",
-          sku: "ET-002",
-          quoteQty: 8,
-          purchaseQty: 0,
-          unitCost: 28.00,
-          unitPrice: 44.50,
-          gmPercent: calcGM(28.00, 44.50),
-          uom: "EA" as UOM,
-        },
+        { id: "QI-EXTRA-1", productId: "P008", productName: '2" PVC Pipe Schedule 40 (10ft)', sku: "PVC-40-200-10", quoteQty: 25, purchaseQty: 0, unitCost: 4.80, unitPrice: 8.50, gmPercent: calcGM(4.80, 8.50), uom: "EA" as UOM },
+        { id: "QI-EXTRA-2", productId: "P010", productName: 'Pressure Reducing Valve 3/4"', sku: "PRV-075", quoteQty: 10, purchaseQty: 0, unitCost: 45.00, unitPrice: 72.50, gmPercent: calcGM(45.00, 72.50), uom: "EA" as UOM },
+        { id: "QI-EXTRA-3", productId: "P012", productName: "Expansion Tank 2 Gal", sku: "ET-002", quoteQty: 8, purchaseQty: 0, unitCost: 28.00, unitPrice: 44.50, gmPercent: calcGM(28.00, 44.50), uom: "EA" as UOM },
       ];
-      groups.push({
-        id: "PG-EXTRA",
-        name: "Valves & Accessories",
-        items: extraItems,
-      });
+      groups.push({ id: "PG-EXTRA", name: "Valves & Accessories", items: extraItems });
     }
     return groups;
   }, [quote]);
@@ -100,7 +61,7 @@ export default function QuoteDetail() {
   if (!quote) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Quote not found</p>
+        <p className="text-muted-foreground text-sm">Quote not found</p>
       </div>
     );
   }
@@ -191,7 +152,7 @@ export default function QuoteDetail() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5 max-w-[1400px]">
       <QuoteDetailHeader
         quote={quote}
         overallGM={overallGM}
@@ -207,24 +168,25 @@ export default function QuoteDetail() {
       />
 
       {/* Line Items Table */}
-      <div className="border border-border rounded-lg overflow-hidden">
+      <div className="border border-border rounded-lg overflow-hidden bg-card shadow-subtle">
         {/* Table Header */}
-        <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border">
-          <div />
-          <button className="text-xs text-primary hover:underline font-medium" onClick={toggleAllGroups}>
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border">
+          <span className="text-xs font-medium text-muted-foreground">Line Items</span>
+          <button
+            className="text-xs text-brand hover:underline font-medium transition-colors"
+            onClick={toggleAllGroups}
+          >
             {allExpanded ? "Collapse All" : "Expand All"}
           </button>
         </div>
 
         {/* Column Headers */}
-        <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-2 bg-muted/20 border-b border-border text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+        <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground">
           <div className="px-2">Product Description</div>
           <div className="px-2">Item #</div>
           <div className="px-2 text-right">Cost</div>
           <div className="px-2 text-center">Quote Qty</div>
-          <div className="px-2 text-center">
-            <span>Purchase Qty</span>
-          </div>
+          <div className="px-2 text-center">Purchase Qty</div>
           <div className="px-2 text-right">Price</div>
           <div className="px-2 text-center">UOM</div>
           <div className="px-2 text-right">GM%</div>
@@ -240,9 +202,9 @@ export default function QuoteDetail() {
           return (
             <div key={group.id} className="border-b border-border last:border-0">
               {/* Group Header */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-muted/10 border-b border-border">
+              <div className="flex items-center gap-2.5 px-4 py-2.5 bg-muted/20 border-b border-border">
                 <button
-                  className="flex items-center gap-1 text-primary hover:text-primary/80"
+                  className="flex items-center gap-1 text-foreground hover:text-foreground/70 transition-colors"
                   onClick={() => toggleGroup(group.id)}
                 >
                   {isCollapsed ? (
@@ -251,33 +213,34 @@ export default function QuoteDetail() {
                     <ChevronDown className="h-3.5 w-3.5" />
                   )}
                 </button>
-                <span className="text-xs font-semibold text-primary">
-                  {group.name} ({group.items.length})
+                <span className="text-sm font-semibold text-foreground">
+                  {group.name}
                 </span>
-                <span className="text-[10px] text-muted-foreground mx-1">:</span>
-                <button className="flex items-center gap-1 text-[10px] text-primary hover:underline">
+                <span className="text-2xs text-muted-foreground">({group.items.length})</span>
+                <span className="text-muted-foreground/30 mx-0.5">·</span>
+                <button className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors">
                   <Plus className="h-3 w-3" /> Add Item
                 </button>
-                <button className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground ml-2">
-                  <FileText className="h-3 w-3" /> Add Section Note
+                <button className="flex items-center gap-1 text-2xs text-muted-foreground hover:text-foreground transition-colors ml-1">
+                  <FileText className="h-3 w-3" /> Section Note
                 </button>
 
                 <div className="flex-1" />
 
-                <span className={`text-xs font-semibold font-mono px-2 py-0.5 rounded border ${getGMBgColor(gt.gm)}`}>
-                  {gt.gm.toFixed(2)} %
+                <span className={`text-xs font-semibold font-mono px-2.5 py-1 rounded-md border ${getGMBgColor(gt.gm)}`}>
+                  {gt.gm.toFixed(2)}%
                 </span>
-                <span className="text-[10px] text-muted-foreground ml-2">Total :</span>
-                <span className="text-xs font-semibold font-mono ml-1">{formatCurrency(gt.amount)}</span>
+                <span className="text-2xs text-muted-foreground ml-3">Total</span>
+                <span className="text-sm font-semibold font-mono ml-1.5">{formatCurrency(gt.amount)}</span>
               </div>
 
               {/* Per-group Populate Remaining Qty row */}
               {!isCollapsed && (
-                <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-1 border-b border-border/50 bg-muted/5">
+                <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-1.5 border-b border-border/50 bg-muted/10">
                   <div /><div /><div /><div />
                   <div className="px-1 text-center">
                     <button
-                      className="text-[9px] text-primary hover:underline font-medium"
+                      className="text-2xs text-brand hover:underline font-medium transition-colors"
                       onClick={() => {
                         const allPopulated = group.items.every((i) => i.purchaseQty >= i.quoteQty);
                         setGroups((prev) =>
@@ -306,26 +269,26 @@ export default function QuoteDetail() {
               {!isCollapsed && group.items.map((item) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-2 py-1.5 border-b border-border/50 last:border-0 hover:bg-muted/30 items-center"
+                  className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center"
                 >
-                  <div className="flex items-center gap-1.5 px-2 min-w-0">
-                    <button className="flex-shrink-0 text-muted-foreground/50 hover:text-primary" title="Item note">
-                      <StickyNote className="h-3 w-3" />
+                  <div className="flex items-center gap-2 px-2 min-w-0">
+                    <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors" title="Item note">
+                      <StickyNote className="h-3.5 w-3.5" />
                     </button>
-                    <span className="text-xs truncate" title={item.productName}>
+                    <span className="text-sm truncate" title={item.productName}>
                       {item.productName}
                     </span>
-                    <button className="flex-shrink-0 text-muted-foreground/50 hover:text-primary ml-auto" title="Replace item">
-                      <ArrowLeftRight className="h-3 w-3" />
+                    <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace item">
+                      <ArrowLeftRight className="h-3.5 w-3.5" />
                     </button>
                   </div>
 
-                  <div className="px-2 text-xs font-mono text-muted-foreground truncate" title={item.sku}>
+                  <div className="px-2 text-sm font-mono text-muted-foreground truncate" title={item.sku}>
                     {item.sku}
                   </div>
 
-                  <div className="px-2 text-xs text-right font-mono text-muted-foreground">
-                    $ {item.unitCost.toFixed(2)}
+                  <div className="px-2 text-sm text-right font-mono text-muted-foreground">
+                    ${item.unitCost.toFixed(2)}
                   </div>
 
                   <div className="px-1">
@@ -333,7 +296,7 @@ export default function QuoteDetail() {
                       type="number"
                       value={item.quoteQty}
                       onChange={(e) => updateItemField(group.id, item.id, "quoteQty", parseInt(e.target.value) || 0)}
-                      className="h-7 w-full text-xs text-center"
+                      className="h-8 w-full text-sm text-center"
                     />
                   </div>
 
@@ -342,19 +305,19 @@ export default function QuoteDetail() {
                       type="number"
                       value={item.purchaseQty}
                       onChange={(e) => updateItemField(group.id, item.id, "purchaseQty", parseInt(e.target.value) || 0)}
-                      className="h-7 w-full text-xs text-center"
+                      className="h-8 w-full text-sm text-center"
                     />
                   </div>
 
                   <div className="px-1">
-                    <div className="flex items-center h-7 rounded border border-success/30 bg-success/10 overflow-hidden">
-                      <span className="px-1.5 text-xs font-semibold text-success bg-success/20 h-full flex items-center">$</span>
+                    <div className="flex items-center h-8 rounded-md border border-success/20 bg-success/5 overflow-hidden">
+                      <span className="px-2 text-xs font-medium text-success bg-success/10 h-full flex items-center border-r border-success/20">$</span>
                       <Input
                         type="number"
                         step="0.01"
                         value={item.unitPrice}
                         onChange={(e) => updateItemField(group.id, item.id, "unitPrice", parseFloat(e.target.value) || 0)}
-                        className="h-full border-0 bg-transparent text-xs text-right font-mono px-1.5 focus-visible:ring-0 text-success font-semibold"
+                        className="h-full border-0 bg-transparent text-sm text-right font-mono px-2 focus-visible:ring-0 text-success font-medium"
                       />
                     </div>
                   </div>
@@ -364,24 +327,24 @@ export default function QuoteDetail() {
                       value={item.uom}
                       onValueChange={(val) => updateItemField(group.id, item.id, "uom", val)}
                     >
-                      <SelectTrigger className="h-7 text-[10px] px-1.5 w-full">
+                      <SelectTrigger className="h-8 text-xs px-2 w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {uomOptions.map((u) => (
-                          <SelectItem key={u} value={u} className="text-xs">{u}</SelectItem>
+                          <SelectItem key={u} value={u} className="text-sm">{u}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="px-2 text-right">
-                    <span className={`text-xs font-semibold font-mono px-1.5 py-0.5 rounded ${getGMBgColor(item.gmPercent)}`}>
-                      {item.gmPercent.toFixed(2)} %
+                    <span className={`text-xs font-semibold font-mono px-2 py-1 rounded-md ${getGMBgColor(item.gmPercent)}`}>
+                      {item.gmPercent.toFixed(1)}%
                     </span>
                   </div>
 
-                  <div className="px-2 text-xs text-right font-mono font-medium">
+                  <div className="px-2 text-sm text-right font-mono font-medium">
                     {formatCurrency(item.unitPrice * item.quoteQty)}
                   </div>
 
@@ -389,7 +352,7 @@ export default function QuoteDetail() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                      className="h-7 w-7 text-muted-foreground/30 hover:text-destructive transition-colors"
                       onClick={() => deleteItem(group.id, item.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -402,25 +365,27 @@ export default function QuoteDetail() {
         })}
 
         {/* Footer Totals */}
-        <div className="flex items-center justify-end gap-4 px-4 py-3 bg-muted/20 border-t border-border">
-          <span className={`text-sm font-semibold font-mono px-2 py-0.5 rounded ${getGMBgColor(overallGM)}`}>
-            {overallGM.toFixed(2)} %
+        <div className="flex items-center justify-end gap-5 px-5 py-4 bg-muted/30 border-t border-border">
+          <span className={`text-sm font-semibold font-mono px-2.5 py-1 rounded-md ${getGMBgColor(overallGM)}`}>
+            {overallGM.toFixed(2)}%
           </span>
-          <span className="text-xs text-muted-foreground">Grand Total :</span>
-          <span className="text-base font-bold font-mono">{formatCurrency(totalAmount)}</span>
+          <div className="text-right">
+            <span className="text-2xs uppercase tracking-wider text-muted-foreground font-medium block mb-0.5">Grand Total</span>
+            <span className="text-lg font-semibold font-mono">{formatCurrency(totalAmount)}</span>
+          </div>
         </div>
       </div>
 
       {/* Convert to Order Dialog */}
       <Dialog open={convertOpen} onOpenChange={setConvertOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-sm">Convert to Order</DialogTitle>
-            <DialogDescription className="text-xs">Select items to include in the order.</DialogDescription>
+            <DialogTitle className="text-base font-semibold">Convert to Order</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">Select items to include in the order.</DialogDescription>
           </DialogHeader>
-          <div className="space-y-2 max-h-64 overflow-auto">
+          <div className="space-y-1 max-h-72 overflow-auto">
             {allItems.map((item) => (
-              <label key={item.id} className="flex items-center gap-3 p-2 rounded hover:bg-muted cursor-pointer text-xs">
+              <label key={item.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer text-sm transition-colors">
                 <Checkbox
                   checked={selectedItems.has(item.id)}
                   onCheckedChange={(checked) => {
@@ -430,14 +395,14 @@ export default function QuoteDetail() {
                   }}
                 />
                 <span className="flex-1">{item.productName}</span>
-                <span className="text-muted-foreground">x{item.quoteQty}</span>
-                <span className="font-mono">{formatCurrency(item.unitPrice * item.quoteQty)}</span>
+                <span className="text-muted-foreground text-sm">×{item.quoteQty}</span>
+                <span className="font-mono text-sm font-medium">{formatCurrency(item.unitPrice * item.quoteQty)}</span>
               </label>
             ))}
           </div>
           <DialogFooter>
             <Button variant="outline" size="sm" onClick={() => setConvertOpen(false)}>Cancel</Button>
-            <Button size="sm" onClick={handleConvert} disabled={selectedItems.size === 0}>
+            <Button size="sm" onClick={handleConvert} disabled={selectedItems.size === 0} className="bg-foreground text-background hover:bg-foreground/80">
               Confirm Order ({selectedItems.size} items)
             </Button>
           </DialogFooter>
@@ -446,10 +411,10 @@ export default function QuoteDetail() {
 
       {/* Expired Resolution Dialog */}
       <Dialog open={expiredResolutionOpen} onOpenChange={setExpiredResolutionOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-sm">Resolve Expired Quote</DialogTitle>
-            <DialogDescription className="text-xs">Choose how to handle this expired quote.</DialogDescription>
+            <DialogTitle className="text-base font-semibold">Resolve Expired Quote</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">Choose how to handle this expired quote.</DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
             {[
@@ -459,7 +424,7 @@ export default function QuoteDetail() {
             ].map((opt) => (
               <button
                 key={opt.label}
-                className="w-full flex items-center gap-3 p-3 rounded-md border border-border hover:bg-muted transition-colors text-left"
+                className="w-full flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors text-left"
                 onClick={() => {
                   toast.success(`${opt.label} initiated for ${quote.id}`);
                   setExpiredResolutionOpen(false);
@@ -467,8 +432,8 @@ export default function QuoteDetail() {
               >
                 <opt.icon className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <div className="text-xs font-medium">{opt.label}</div>
-                  <div className="text-[10px] text-muted-foreground">{opt.desc}</div>
+                  <div className="text-sm font-medium">{opt.label}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{opt.desc}</div>
                 </div>
               </button>
             ))}

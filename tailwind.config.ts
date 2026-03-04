@@ -14,8 +14,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["IBM Plex Sans", "system-ui", "sans-serif"],
-        mono: ["IBM Plex Mono", "monospace"],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        mono: ["JetBrains Mono", "SF Mono", "Fira Code", "monospace"],
+      },
+      fontSize: {
+        "2xs": ["0.625rem", { lineHeight: "0.875rem" }],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,6 +54,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        brand: {
+          DEFAULT: "hsl(var(--brand))",
+          foreground: "hsl(var(--brand-foreground))",
+        },
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
@@ -80,6 +87,11 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        "subtle": "0 1px 2px 0 rgb(0 0 0 / 0.03)",
+        "elevated": "0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)",
+        "card": "0 2px 8px -2px rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.04)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -91,8 +103,8 @@ export default {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        "accordion-down": "accordion-down 0.15s ease-out",
+        "accordion-up": "accordion-up 0.15s ease-out",
       },
     },
   },

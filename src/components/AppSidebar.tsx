@@ -33,7 +33,7 @@ export function AppSidebar() {
 
   const renderGroup = (label: string, items: typeof mainItems) => (
     <SidebarGroup>
-      <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-wider font-semibold">
+      <SidebarGroupLabel className="text-sidebar-foreground/40 text-2xs uppercase tracking-[0.08em] font-medium px-3 mb-1">
         {label}
       </SidebarGroupLabel>
       <SidebarGroupContent>
@@ -44,10 +44,10 @@ export function AppSidebar() {
                 <NavLink
                   to={item.url}
                   end
-                  className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-                  activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                  className="text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-md text-[13px]"
+                  activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                 >
-                  <item.icon className="h-4 w-4" />
+                  <item.icon className="h-4 w-4 opacity-70" />
                   {!collapsed && <span>{item.title}</span>}
                 </NavLink>
               </SidebarMenuButton>
@@ -60,26 +60,30 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
-      <div className="p-4 border-b border-sidebar-border">
+      <div className="px-4 py-5 border-b border-sidebar-border">
         {!collapsed ? (
-          <div className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-sidebar-primary" />
-            <span className="font-semibold text-sidebar-foreground text-sm">QuoteFlow</span>
+          <div className="flex items-center gap-2.5">
+            <div className="h-7 w-7 rounded-lg bg-brand flex items-center justify-center">
+              <FileText className="h-3.5 w-3.5 text-brand-foreground" />
+            </div>
+            <span className="font-semibold text-sidebar-accent-foreground text-sm tracking-tight">QuoteFlow</span>
           </div>
         ) : (
-          <FileText className="h-5 w-5 text-sidebar-primary mx-auto" />
+          <div className="h-7 w-7 rounded-lg bg-brand flex items-center justify-center mx-auto">
+            <FileText className="h-3.5 w-3.5 text-brand-foreground" />
+          </div>
         )}
       </div>
-      <SidebarContent>
+      <SidebarContent className="pt-4">
         {renderGroup("Quotes", mainItems)}
         {renderGroup("Management", managementItems)}
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <NavLink to="/settings" className="text-sidebar-foreground/50 hover:text-sidebar-foreground">
-                <Settings className="h-4 w-4" />
+              <NavLink to="/settings" className="text-sidebar-foreground/40 hover:text-sidebar-foreground transition-colors duration-150 text-[13px]">
+                <Settings className="h-4 w-4 opacity-60" />
                 {!collapsed && <span>Settings</span>}
               </NavLink>
             </SidebarMenuButton>

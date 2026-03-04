@@ -70,67 +70,65 @@ export default function QuoteDetailHeader({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Top action bar */}
       <div className="flex items-center justify-between">
         <button
-          className="flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
           onClick={onBack}
         >
           <ArrowLeft className="h-4 w-4" /> Back to Quote List
         </button>
         <div className="flex items-center gap-3">
           {isExpired && (
-            <Button size="sm" variant="destructive" className="h-8 text-xs gap-1" onClick={onResolve}>
-              <AlertTriangle className="h-3 w-3" /> Resolve
+            <Button size="sm" variant="destructive" className="h-8 text-xs gap-1.5" onClick={onResolve}>
+              <AlertTriangle className="h-3.5 w-3.5" /> Resolve
             </Button>
           )}
         </div>
       </div>
 
       {/* Status banner */}
-      <div className="flex items-center justify-between px-4 py-2.5 rounded-md border bg-accent/50 border-accent">
-        <div>
-          <span className="text-xs font-semibold">Quote Status: </span>
-          <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getStatusColor(quote.status)}`}>
+      <div className="flex items-center justify-between px-5 py-3 rounded-lg border border-border bg-card shadow-subtle">
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-medium text-muted-foreground">Status</span>
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusColor(quote.status)}`}>
             {quote.status}
           </span>
-          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ml-2 ${getOriginColor(quote.origin)}`}>
+          <span className={`text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(quote.origin)}`}>
             {quote.origin}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={copyUrl}>
-            <Link className="h-3 w-3" /> Copy URL
-          </Button>
-        </div>
+        <Button size="sm" variant="outline" className="h-8 text-xs gap-1.5" onClick={copyUrl}>
+          <Link className="h-3.5 w-3.5" /> Copy URL
+        </Button>
       </div>
 
       {/* Main header card */}
-      <div className="border border-border rounded-lg overflow-hidden">
+      <div className="border border-border rounded-lg overflow-hidden bg-card shadow-subtle">
         {/* Collapsed summary row */}
-        <div className="flex items-center gap-4 px-4 py-3 bg-background">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
+        <div className="flex items-center gap-4 px-5 py-4">
+          <div className="flex items-center gap-1 flex-1 min-w-0">
             <Input
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="text-lg font-semibold border-0 bg-transparent h-8 px-1 focus-visible:ring-1 max-w-sm w-auto"
-            /><Pencil className="h-3.5 w-3.5 text-muted-foreground/50 -ml-1" />
+              className="text-lg font-semibold tracking-tight border-0 bg-transparent h-8 px-1 focus-visible:ring-1 focus-visible:ring-ring/20 max-w-sm w-auto"
+            /><Pencil className="h-3.5 w-3.5 text-muted-foreground/30" />
           </div>
 
-          <div className="flex items-center gap-6 flex-shrink-0">
+          <div className="flex items-center gap-8 flex-shrink-0">
             <div className="text-right">
-              <span className="text-xs text-muted-foreground mr-2">Quote GM%:</span>
-              <span className={`text-sm font-bold font-mono ${getGMColor(overallGM)}`}>
+              <div className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-0.5">Quote GM%</div>
+              <span className={`text-base font-semibold font-mono ${getGMColor(overallGM)}`}>
                 {overallGM.toFixed(2)}%
               </span>
             </div>
             <div className="text-right">
-              <span className="text-xs text-muted-foreground mr-2">Subtotal:</span>
-              <span className="text-sm font-bold font-mono">{formatCurrency(totalAmount)}</span>
+              <div className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-0.5">Subtotal</div>
+              <span className="text-base font-semibold font-mono">{formatCurrency(totalAmount)}</span>
             </div>
             <button
-              className="h-7 w-7 rounded border border-primary bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90"
+              className="h-8 w-8 rounded-md bg-foreground text-background flex items-center justify-center hover:bg-foreground/80 transition-colors"
               onClick={() => setExpanded(!expanded)}
             >
               {expanded ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -139,15 +137,15 @@ export default function QuoteDetailHeader({
         </div>
 
         {/* GM% legend */}
-        <div className="flex items-center justify-end gap-4 px-4 py-1.5 border-t border-border bg-muted/20 text-[10px]">
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 rounded-sm bg-gm-good" /> Within established GM%
+        <div className="flex items-center justify-end gap-5 px-5 py-2 border-t border-border bg-muted/30 text-2xs text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-sm bg-gm-good" /> Within established GM%
           </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 rounded-sm bg-gm-ok" /> Below established GM%
+          <span className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-sm bg-gm-ok" /> Below established GM%
           </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 rounded-sm bg-gm-bad" /> Below acceptable GM%
+          <span className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-sm bg-gm-bad" /> Below acceptable GM%
           </span>
         </div>
 
@@ -155,67 +153,67 @@ export default function QuoteDetailHeader({
         {expanded && (
           <div className="border-t border-border">
             {/* Row 1: IDs & dates */}
-            <div className="grid grid-cols-5 gap-4 px-4 py-3 border-b border-border bg-muted/10">
+            <div className="grid grid-cols-5 gap-5 px-5 py-4 border-b border-border">
               <div>
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quote ID:</label>
-                <p className="text-xs font-mono mt-0.5">{quote.id}</p>
+                <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Quote ID</label>
+                <p className="text-sm font-mono mt-1.5">{quote.id}</p>
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">PO #:</label>
+                <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">PO #</label>
                 <Input
                   value={poNumber}
                   onChange={(e) => setPoNumber(e.target.value)}
-                  className="h-7 text-xs mt-0.5 font-mono"
+                  className="h-8 text-sm mt-1.5 font-mono"
                   placeholder="Enter PO #"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Created Date:</label>
+                <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Created Date</label>
                 <Input
                   type="date"
                   value={createdDate}
                   onChange={(e) => setCreatedDate(e.target.value)}
-                  className="h-7 text-xs mt-0.5"
+                  className="h-8 text-sm mt-1.5"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Expiration Date:</label>
+                <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Expiration Date</label>
                 <Input
                   type="date"
                   value={expirationDate}
                   onChange={(e) => setExpirationDate(e.target.value)}
-                  className="h-7 text-xs mt-0.5"
+                  className="h-8 text-sm mt-1.5"
                 />
               </div>
               <div />
             </div>
 
             {/* Row 2: Additional refs */}
-            <div className="grid grid-cols-5 gap-4 px-4 py-3 border-b border-border bg-muted/10">
+            <div className="grid grid-cols-5 gap-5 px-5 py-4 border-b border-border">
               <div>
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quoted by:</label>
+                <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Quoted by</label>
                 <Input
                   value={quotedBy}
                   onChange={(e) => setQuotedBy(e.target.value)}
-                  className="h-7 text-xs mt-0.5"
+                  className="h-8 text-sm mt-1.5"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Ref #:</label>
+                <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Ref #</label>
                 <Input
                   value={refNumber}
                   onChange={(e) => setRefNumber(e.target.value)}
-                  className="h-7 text-xs mt-0.5 font-mono"
+                  className="h-8 text-sm mt-1.5 font-mono"
                   placeholder="Enter Ref #"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Exp. Del. Date:</label>
+                <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Exp. Delivery Date</label>
                 <Input
                   type="date"
                   value={expDeliveryDate}
                   onChange={(e) => setExpDeliveryDate(e.target.value)}
-                  className="h-7 text-xs mt-0.5"
+                  className="h-8 text-sm mt-1.5"
                 />
               </div>
               <div />
@@ -225,95 +223,95 @@ export default function QuoteDetailHeader({
             {/* Ship-To & Quote Details */}
             <div className="grid grid-cols-2 gap-0">
               {/* Ship-To */}
-              <div className="px-4 py-3 border-r border-border">
-                <h4 className="text-xs font-semibold mb-2">Ship-To:</h4>
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-24 flex-shrink-0">Name:</span>
+              <div className="px-5 py-4 border-r border-border">
+                <h4 className="text-xs font-semibold mb-3 text-foreground">Ship-To</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Name</span>
                     <Input
                       value={shipTo.name}
                       onChange={(e) => setShipTo({ ...shipTo, name: e.target.value })}
-                      className="h-6 text-xs border-0 bg-transparent px-0 focus-visible:ring-0 font-medium"
+                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 font-medium"
                     />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-24 flex-shrink-0">Address Line 1:</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Address Line 1</span>
                     <Input
                       value={shipTo.address1}
                       onChange={(e) => setShipTo({ ...shipTo, address1: e.target.value })}
-                      className="h-6 text-xs border-0 bg-transparent px-0 focus-visible:ring-0"
+                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0"
                     />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-24 flex-shrink-0">Address Line 2:</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Address Line 2</span>
                     <Input
                       value={shipTo.address2}
                       onChange={(e) => setShipTo({ ...shipTo, address2: e.target.value })}
-                      className="h-6 text-xs border-0 bg-transparent px-0 focus-visible:ring-0"
+                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0"
                       placeholder="—"
                     />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-24 flex-shrink-0">City:</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">City</span>
                     <Input
                       value={shipTo.city}
                       onChange={(e) => setShipTo({ ...shipTo, city: e.target.value })}
-                      className="h-6 text-xs border-0 bg-transparent px-0 focus-visible:ring-0 w-20"
+                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 w-24"
                     />
-                    <span className="text-muted-foreground">State:</span>
+                    <span className="text-muted-foreground text-xs">State</span>
                     <Input
                       value={shipTo.state}
                       onChange={(e) => setShipTo({ ...shipTo, state: e.target.value })}
-                      className="h-6 text-xs border-0 bg-transparent px-0 focus-visible:ring-0 w-24"
+                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 w-28"
                     />
-                    <span className="text-muted-foreground">Zip:</span>
+                    <span className="text-muted-foreground text-xs">Zip</span>
                     <Input
                       value={shipTo.zip}
                       onChange={(e) => setShipTo({ ...shipTo, zip: e.target.value })}
-                      className="h-6 text-xs border-0 bg-transparent px-0 focus-visible:ring-0 w-16"
+                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 w-20"
                     />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-24 flex-shrink-0">Phone:</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Phone</span>
                     <Input
                       value={shipTo.phone}
                       onChange={(e) => setShipTo({ ...shipTo, phone: e.target.value })}
-                      className="h-6 text-xs border-0 bg-transparent px-0 focus-visible:ring-0"
+                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Quote Details */}
-              <div className="px-4 py-3">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-xs font-semibold">Quote Details:</h4>
-                  <button className="text-xs text-primary hover:underline flex items-center gap-1">
+              <div className="px-5 py-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-xs font-semibold text-foreground">Quote Details</h4>
+                  <button className="text-xs text-brand hover:underline flex items-center gap-1.5 transition-colors">
                     <Pencil className="h-3 w-3" /> Change Branch / Ship-To
                   </button>
                 </div>
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-28 flex-shrink-0">Company Name:</span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Company Name</span>
                     <span className="font-medium">{customerName.toUpperCase()}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-28 flex-shrink-0">Account #:</span>
-                    <span className="font-mono">{quote.customerId}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Account #</span>
+                    <span className="font-mono text-sm">{quote.customerId}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-28 flex-shrink-0">Branch:</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Branch</span>
                     <span>{quote.branchName.toUpperCase()}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-28 flex-shrink-0">Ship Via:</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-28 flex-shrink-0 text-xs">Ship Via</span>
                     <Select value={shipVia} onValueChange={setShipVia}>
-                      <SelectTrigger className="h-7 text-xs w-48">
+                      <SelectTrigger className="h-8 text-sm w-52">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {shipViaOptions.map((v) => (
-                          <SelectItem key={v} value={v} className="text-xs">{v}</SelectItem>
+                          <SelectItem key={v} value={v} className="text-sm">{v}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -328,8 +326,8 @@ export default function QuoteDetailHeader({
       {/* Order Items button - below header */}
       {!isExpired && quote.status !== "Received (Awarded)" && quote.status !== "Received (Not Awarded)" && (
         <div className="flex justify-end">
-          <Button size="sm" className="h-8 text-xs gap-1" onClick={onConvert} disabled={orderableCount === 0}>
-            <ArrowRightCircle className="h-3.5 w-3.5" /> Order Items ({orderableCount})
+          <Button size="sm" className="h-9 text-sm gap-2 bg-foreground text-background hover:bg-foreground/80" onClick={onConvert} disabled={orderableCount === 0}>
+            <ArrowRightCircle className="h-4 w-4" /> Order Items ({orderableCount})
           </Button>
         </div>
       )}
