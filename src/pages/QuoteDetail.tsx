@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  ArrowLeft, Save, Share2, ArrowRightCircle, RefreshCw, Clock, Building2, AlertTriangle,
   ChevronRight, ChevronDown, Plus, Trash2, GripVertical, FileText, StickyNote, ArrowLeftRight,
+  RefreshCw, AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import QuoteDetailHeader from "@/components/QuoteDetailHeader";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -126,83 +126,19 @@ export default function QuoteDetail() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold font-mono">{quote.id}</h1>
-            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${getOriginColor(quote.origin)}`}>{quote.origin}</span>
-            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${getStatusColor(quote.status)}`}>{quote.status}</span>
-          </div>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground mt-0.5">
-            <span>{quote.customerName}</span>
-            <span className="flex items-center gap-1"><Building2 className="h-3 w-3" />{quote.branchName}</span>
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              {isExpired ? (
-                <span className="text-destructive font-medium">Expired {Math.abs(daysLeft)}d ago</span>
-              ) : daysLeft <= 7 ? (
-                <span className="text-warning font-medium">{daysLeft}d left</span>
-              ) : (
-                <span>{daysLeft}d left</span>
-              )}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {isExpired && (
-            <Button size="sm" variant="destructive" className="h-8 text-xs gap-1" onClick={() => setExpiredResolutionOpen(true)}>
-              <AlertTriangle className="h-3 w-3" /> Resolve
-            </Button>
-          )}
-          <Button size="sm" variant="outline" className="h-8 text-xs gap-1">
-            <Save className="h-3 w-3" /> Save
-          </Button>
-          <Button size="sm" variant="outline" className="h-8 text-xs gap-1">
-            <Share2 className="h-3 w-3" /> Share
-          </Button>
-          <Button size="sm" variant="outline" className="h-8 text-xs gap-1">
-            <RefreshCw className="h-3 w-3" /> Re-quote
-          </Button>
-          {!isExpired && quote.status !== "Won" && quote.status !== "Lost" && (
-            <Button size="sm" className="h-8 text-xs gap-1" onClick={() => {
-              setSelectedItems(new Set(allItems.filter((i) => i.purchaseQty > 0).map((i) => i.id)));
-              setConvertOpen(true);
-            }} disabled={orderableCount === 0}>
-              <ArrowRightCircle className="h-3 w-3" /> Order Items ({orderableCount})
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Quote Details & Summary */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="border border-border rounded-lg p-4">
-          <h3 className="text-xs font-semibold mb-3">Quote Details</h3>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between"><span className="text-muted-foreground">Created</span><span>{quote.createdDate}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Expires</span><span>{quote.expirationDate}</span></div>
-            {quote.poNumber && <div className="flex justify-between"><span className="text-muted-foreground">PO #</span><span className="font-mono">{quote.poNumber}</span></div>}
-            {quote.jobNumber && <div className="flex justify-between"><span className="text-muted-foreground">Job #</span><span className="font-mono">{quote.jobNumber}</span></div>}
-            {quote.transactionRef && <div className="flex justify-between"><span className="text-muted-foreground">Tx Ref</span><span className="font-mono">{quote.transactionRef}</span></div>}
-            <div className="flex justify-between"><span className="text-muted-foreground">Assigned To</span><span>{quote.assignedTo}</span></div>
-          </div>
-        </div>
-        <div className="border border-border rounded-lg p-4">
-          <h3 className="text-xs font-semibold mb-3">Summary</h3>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between"><span className="text-muted-foreground">Total Amount</span><span className="font-mono font-semibold">{formatCurrency(totalAmount)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Total Cost</span><span className="font-mono">{formatCurrency(totalCost)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Overall GM%</span><span className={`font-mono font-semibold ${getGMColor(overallGM)}`}>{overallGM.toFixed(1)}%</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Product Groups</span><span>{groups.length}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Line Items</span><span>{allItems.length}</span></div>
-          </div>
-        </div>
-      </div>
+      <QuoteDetailHeader
+        quote={quote}
+        overallGM={overallGM}
+        totalAmount={totalAmount}
+        orderableCount={orderableCount}
+        isExpired={isExpired}
+        onBack={() => navigate(-1)}
+        onConvert={() => {
+          setSelectedItems(new Set(allItems.filter((i) => i.purchaseQty > 0).map((i) => i.id)));
+          setConvertOpen(true);
+        }}
+        onResolve={() => setExpiredResolutionOpen(true)}
+      />
 
       {/* Line Items Table */}
       <div className="border border-border rounded-lg overflow-hidden">
