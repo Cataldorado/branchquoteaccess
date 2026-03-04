@@ -78,12 +78,12 @@ export interface Product {
 // ---- Data ----
 
 export const branches: Branch[] = [
-  { id: "BR001", name: "Downtown Main", region: "Northeast" },
-  { id: "BR002", name: "Westside Industrial", region: "West" },
-  { id: "BR003", name: "Southport Hub", region: "Southeast" },
-  { id: "BR004", name: "Northgate Center", region: "Northeast" },
-  { id: "BR005", name: "Lakeside Depot", region: "Midwest" },
-  { id: "BR006", name: "Riverside Branch", region: "West" },
+  { id: "BR001", name: "HLS Westminster", region: "West" },
+  { id: "BR002", name: "HLS Boulder", region: "West" },
+  { id: "BR003", name: "HLS Sanford", region: "Southeast" },
+  { id: "BR004", name: "HLS Miami", region: "Southeast" },
+  { id: "BR005", name: "HLS McKinney", region: "South" },
+  { id: "BR006", name: "HLS Brooklyn Park", region: "Midwest" },
 ];
 
 export const customers: Customer[] = [
