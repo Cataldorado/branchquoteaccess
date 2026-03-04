@@ -229,9 +229,6 @@ export default function QuoteDetail() {
                 <button className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors">
                   <Plus className="h-3 w-3" /> Add Item
                 </button>
-                <button className="flex items-center gap-1 text-2xs text-muted-foreground hover:text-foreground transition-colors ml-1">
-                  <FileText className="h-3 w-3" /> Section Note
-                </button>
 
                 <div className="flex-1" />
 
