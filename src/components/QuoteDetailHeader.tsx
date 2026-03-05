@@ -113,33 +113,31 @@ export default function QuoteDetailHeader({
   const showOrderButton = !isExpired && quote.status !== "Received (Awarded)" && quote.status !== "Received (Not Awarded)";
 
   return (
-    <div className="space-y-0">
-      {/* Sentinel for detecting when sticky kicks in */}
-      <div ref={sentinelRef} className="h-0" />
+    <>
+      {/* Back button - scrolls away naturally */}
+      <div className="flex items-center justify-between pt-2 pb-2">
+        <button
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
+          onClick={onBack}
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to Quote List
+        </button>
+        <div className="flex items-center gap-3">
+          {isExpired && (
+            <Button size="sm" variant="destructive" className="h-8 text-xs gap-1.5" onClick={onResolve}>
+              <AlertTriangle className="h-3.5 w-3.5" /> Resolve
+            </Button>
+          )}
+        </div>
+      </div>
 
-      {/* Sticky wrapper */}
+      {/* Sticky header */}
       <div
         ref={headerRef}
-        className={`sticky -top-5 z-20 transition-shadow duration-200 ${isStuck ? "shadow-elevated" : ""}`}
-        style={{ marginLeft: "-1.5rem", marginRight: "-1.5rem", paddingLeft: "1.5rem", paddingRight: "1.5rem", paddingTop: "1.25rem" }}
+        className={`sticky top-0 z-20 transition-shadow duration-200 ${isStuck ? "shadow-elevated" : ""}`}
+        style={{ marginLeft: "-1.5rem", marginRight: "-1.5rem", paddingLeft: "1.5rem", paddingRight: "1.5rem", paddingTop: "0.5rem" }}
       >
         <div className="bg-background pb-3 space-y-3">
-          {/* Top action bar */}
-          <div className="flex items-center justify-between pt-2">
-            <button
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={onBack}
-            >
-              <ArrowLeft className="h-4 w-4" /> Back to Quote List
-            </button>
-            <div className="flex items-center gap-3">
-              {isExpired && (
-                <Button size="sm" variant="destructive" className="h-8 text-xs gap-1.5" onClick={onResolve}>
-                  <AlertTriangle className="h-3.5 w-3.5" /> Resolve
-                </Button>
-              )}
-            </div>
-          </div>
 
           {/* Status banner */}
           <div className="flex items-center justify-between px-5 py-3 rounded-lg border border-border bg-card shadow-subtle">
@@ -378,6 +376,6 @@ export default function QuoteDetailHeader({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
