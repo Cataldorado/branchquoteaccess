@@ -169,12 +169,7 @@ export default function QuoteDetailHeader({
               </div>
               <div>
                 <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Created Date</label>
-                <Input
-                  type="date"
-                  value={createdDate}
-                  onChange={(e) => setCreatedDate(e.target.value)}
-                  className="h-8 text-sm mt-1.5"
-                />
+                <p className="text-sm mt-1.5 h-8 flex items-center">{createdDate}</p>
               </div>
               <div>
                 <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Expiration Date</label>
@@ -192,11 +187,7 @@ export default function QuoteDetailHeader({
             <div className="grid grid-cols-5 gap-5 px-5 py-4 border-b border-border">
               <div>
                 <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Quoted by</label>
-                <Input
-                  value={quotedBy}
-                  onChange={(e) => setQuotedBy(e.target.value)}
-                  className="h-8 text-sm mt-1.5"
-                />
+                <p className="text-sm mt-1.5 h-8 flex items-center">{quotedBy}</p>
               </div>
               <div>
                 <label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Ref #</label>
@@ -231,7 +222,7 @@ export default function QuoteDetailHeader({
                     <Input
                       value={shipTo.name}
                       onChange={(e) => setShipTo({ ...shipTo, name: e.target.value })}
-                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 font-medium"
+                      className="h-7 text-sm border-0 border-b border-dashed border-border bg-transparent px-0 rounded-none focus-visible:ring-0 font-medium hover:border-muted-foreground/40 transition-colors"
                     />
                   </div>
                   <div className="flex items-center gap-3">
@@ -239,7 +230,7 @@ export default function QuoteDetailHeader({
                     <Input
                       value={shipTo.address1}
                       onChange={(e) => setShipTo({ ...shipTo, address1: e.target.value })}
-                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0"
+                      className="h-7 text-sm border-0 border-b border-dashed border-border bg-transparent px-0 rounded-none focus-visible:ring-0 hover:border-muted-foreground/40 transition-colors"
                     />
                   </div>
                   <div className="flex items-center gap-3">
@@ -247,7 +238,7 @@ export default function QuoteDetailHeader({
                     <Input
                       value={shipTo.address2}
                       onChange={(e) => setShipTo({ ...shipTo, address2: e.target.value })}
-                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0"
+                      className="h-7 text-sm border-0 border-b border-dashed border-border bg-transparent px-0 rounded-none focus-visible:ring-0 hover:border-muted-foreground/40 transition-colors"
                       placeholder="—"
                     />
                   </div>
@@ -256,19 +247,19 @@ export default function QuoteDetailHeader({
                     <Input
                       value={shipTo.city}
                       onChange={(e) => setShipTo({ ...shipTo, city: e.target.value })}
-                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 w-24"
+                      className="h-7 text-sm border-0 border-b border-dashed border-border bg-transparent px-0 rounded-none focus-visible:ring-0 w-24 hover:border-muted-foreground/40 transition-colors"
                     />
                     <span className="text-muted-foreground text-xs">State</span>
                     <Input
                       value={shipTo.state}
                       onChange={(e) => setShipTo({ ...shipTo, state: e.target.value })}
-                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 w-28"
+                      className="h-7 text-sm border-0 border-b border-dashed border-border bg-transparent px-0 rounded-none focus-visible:ring-0 w-28 hover:border-muted-foreground/40 transition-colors"
                     />
                     <span className="text-muted-foreground text-xs">Zip</span>
                     <Input
                       value={shipTo.zip}
                       onChange={(e) => setShipTo({ ...shipTo, zip: e.target.value })}
-                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0 w-20"
+                      className="h-7 text-sm border-0 border-b border-dashed border-border bg-transparent px-0 rounded-none focus-visible:ring-0 w-20 hover:border-muted-foreground/40 transition-colors"
                     />
                   </div>
                   <div className="flex items-center gap-3">
@@ -276,7 +267,7 @@ export default function QuoteDetailHeader({
                     <Input
                       value={shipTo.phone}
                       onChange={(e) => setShipTo({ ...shipTo, phone: e.target.value })}
-                      className="h-7 text-sm border-0 bg-transparent px-0 focus-visible:ring-0"
+                      className="h-7 text-sm border-0 border-b border-dashed border-border bg-transparent px-0 rounded-none focus-visible:ring-0 hover:border-muted-foreground/40 transition-colors"
                     />
                   </div>
                 </div>
