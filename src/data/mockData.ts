@@ -366,16 +366,16 @@ export function getGMBgColor(gm: number): string {
 
 export function getStatusColor(status: QuoteStatus): string {
   const map: Record<QuoteStatus, string> = {
-    "Customer Review": "bg-warning/10 text-warning",
-    "Sales Review": "bg-primary/10 text-primary",
-    "Received (Awarded)": "bg-success/10 text-success",
-    "Received (Not Awarded)": "bg-muted text-muted-foreground",
-    "Partial": "bg-warning/10 text-warning",
-    "Expired": "bg-destructive/10 text-destructive",
-    "New": "bg-primary/10 text-primary",
-    "Partially Released": "bg-warning/10 text-warning",
+    "Customer Review": "bg-amber-100 text-amber-800 border border-amber-200",
+    "Sales Review": "bg-violet-100 text-violet-800 border border-violet-200",
+    "Received (Awarded)": "bg-emerald-100 text-emerald-800 border border-emerald-200",
+    "Received (Not Awarded)": "bg-slate-100 text-slate-600 border border-slate-200",
+    "Partial": "bg-orange-100 text-orange-800 border border-orange-200",
+    "Expired": "bg-red-100 text-red-700 border border-red-200",
+    "New": "bg-sky-100 text-sky-800 border border-sky-200",
+    "Partially Released": "bg-amber-100 text-amber-800 border border-amber-200",
   };
-  return map[status] || "bg-muted text-muted-foreground";
+  return map[status] || "bg-slate-100 text-slate-600 border border-slate-200";
 }
 
 export function getOriginColor(origin: QuoteOrigin): string {

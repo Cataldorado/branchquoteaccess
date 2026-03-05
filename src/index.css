@@ -47,14 +47,17 @@
     --brand: 221 83% 53%;
     --brand-foreground: 0 0% 100%;
 
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 220 20% 70%;
+    --sidebar-background: 220 25% 12%;
+    --sidebar-foreground: 220 15% 65%;
     --sidebar-primary: 221 83% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 40% 14%;
-    --sidebar-accent-foreground: 220 20% 90%;
-    --sidebar-border: 222 30% 16%;
+    --sidebar-accent: 221 50% 22%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 20% 18%;
     --sidebar-ring: 221 83% 53%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
   }
 
   .dark {
