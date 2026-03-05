@@ -151,7 +151,7 @@ export default function QuoteDetailHeader({
       <div
         ref={headerRef}
         className={`sticky top-0 z-20 transition-shadow duration-200 ${isStuck ? "shadow-elevated" : ""}`}
-        style={{ marginLeft: "-1.5rem", marginRight: "-1.5rem", paddingLeft: "1.5rem", paddingRight: "1.5rem", paddingTop: "0.5rem" }}
+        style={{ marginLeft: "-1.5rem", marginRight: "-1.5rem", paddingLeft: "1.5rem", paddingRight: "1.5rem" }}
       >
         <div className="bg-background pb-3">
 
