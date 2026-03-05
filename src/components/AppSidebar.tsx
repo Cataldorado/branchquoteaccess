@@ -1,6 +1,7 @@
-import { Search, FileText, Users, Building2, BarChart3, Plus, Settings } from "lucide-react";
+import { Search, Leaf, Users, Building2, BarChart3, Plus, Settings } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -15,14 +16,14 @@ import {
 } from "@/components/ui/sidebar";
 
 const mainItems = [
-  { title: "Quote Search", url: "/", icon: Search },
-  { title: "New Quote", url: "/quotes/new", icon: Plus },
-  { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
+  { title: "Quote Search", url: "/", icon: Search, active: true },
+  { title: "New Quote", url: "/quotes/new", icon: Plus, active: false },
+  { title: "Dashboard", url: "/dashboard", icon: BarChart3, active: false },
 ];
 
 const managementItems = [
-  { title: "Customers", url: "/customers", icon: Users },
-  { title: "Branches", url: "/branches", icon: Building2 },
+  { title: "Customers", url: "/customers", icon: Users, active: false },
+  { title: "Branches", url: "/branches", icon: Building2, active: false },
 ];
 
 export function AppSidebar() {
@@ -40,17 +41,31 @@ export function AppSidebar() {
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                <NavLink
-                  to={item.url}
-                  end
-                  className="text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-md text-[13px]"
-                  activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                >
-                  <item.icon className="h-4 w-4 opacity-70" />
-                  {!collapsed && <span>{item.title}</span>}
-                </NavLink>
-              </SidebarMenuButton>
+              {item.active ? (
+                <SidebarMenuButton asChild isActive={isActive(item.url)}>
+                  <NavLink
+                    to={item.url}
+                    end
+                    className="text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-md text-[13px]"
+                    activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                  >
+                    <item.icon className="h-4 w-4 opacity-70" />
+                    {!collapsed && <span>{item.title}</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              ) : (
+                <SidebarMenuButton className="text-sidebar-foreground/30 cursor-not-allowed hover:bg-transparent hover:text-sidebar-foreground/30">
+                  <item.icon className="h-4 w-4 opacity-40" />
+                  {!collapsed && (
+                    <div className="flex items-center gap-2 flex-1">
+                      <span>{item.title}</span>
+                      <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-sidebar-foreground/15 text-sidebar-foreground/30 font-normal">
+                        Soon
+                      </Badge>
+                    </div>
+                  )}
+                </SidebarMenuButton>
+              )}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
@@ -64,13 +79,13 @@ export function AppSidebar() {
         {!collapsed ? (
           <div className="flex items-center gap-2.5">
             <div className="h-7 w-7 rounded-lg bg-brand flex items-center justify-center">
-              <FileText className="h-3.5 w-3.5 text-brand-foreground" />
+              <Leaf className="h-3.5 w-3.5 text-brand-foreground" />
             </div>
-            <span className="font-semibold text-sidebar-accent-foreground text-sm tracking-tight">QuoteFlow</span>
+            <span className="font-semibold text-sidebar-accent-foreground text-sm tracking-tight">Heritage HQ</span>
           </div>
         ) : (
           <div className="h-7 w-7 rounded-lg bg-brand flex items-center justify-center mx-auto">
-            <FileText className="h-3.5 w-3.5 text-brand-foreground" />
+            <Leaf className="h-3.5 w-3.5 text-brand-foreground" />
           </div>
         )}
       </div>
@@ -81,11 +96,16 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <NavLink to="/settings" className="text-sidebar-foreground/40 hover:text-sidebar-foreground transition-colors duration-150 text-[13px]">
-                <Settings className="h-4 w-4 opacity-60" />
-                {!collapsed && <span>Settings</span>}
-              </NavLink>
+            <SidebarMenuButton className="text-sidebar-foreground/30 cursor-not-allowed hover:bg-transparent hover:text-sidebar-foreground/30">
+              <Settings className="h-4 w-4 opacity-40" />
+              {!collapsed && (
+                <div className="flex items-center gap-2 flex-1">
+                  <span>Settings</span>
+                  <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-sidebar-foreground/15 text-sidebar-foreground/30 font-normal">
+                    Soon
+                  </Badge>
+                </div>
+              )}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
