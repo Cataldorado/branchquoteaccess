@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import QuoteDetailHeader from "@/components/QuoteDetailHeader";
+import CheckoutModal from "@/components/CheckoutModal";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -53,8 +54,7 @@ export default function QuoteDetail() {
 
   const [groups, setGroups] = useState<ProductGroup[]>(initialGroups);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
-  const [convertOpen, setConvertOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [expiredResolutionOpen, setExpiredResolutionOpen] = useState(false);
   const [populated, setPopulated] = useState(false);
 
@@ -144,12 +144,7 @@ export default function QuoteDetail() {
     toast.info("Purchase quantities populated with remaining qty");
   };
 
-  const handleConvert = () => {
-    toast.success(`Order created from ${quote.id}`, {
-      description: `${selectedItems.size} items converted. Order reference: ORD-${Math.floor(Math.random() * 9000) + 1000}`,
-    });
-    setConvertOpen(false);
-  };
+  // handleConvert removed – checkout modal handles submission
 
   return (
     <div className="space-y-5 max-w-[1400px]">
@@ -160,10 +155,7 @@ export default function QuoteDetail() {
         orderableCount={orderableCount}
         isExpired={isExpired}
         onBack={() => navigate(-1)}
-        onConvert={() => {
-          setSelectedItems(new Set(allItems.filter((i) => i.purchaseQty > 0).map((i) => i.id)));
-          setConvertOpen(true);
-        }}
+        onConvert={() => setCheckoutOpen(true)}
         onResolve={() => setExpiredResolutionOpen(true)}
       />
 
@@ -389,38 +381,15 @@ export default function QuoteDetail() {
         </div>
       </div>
 
-      {/* Convert to Order Dialog */}
-      <Dialog open={convertOpen} onOpenChange={setConvertOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-base font-semibold">Convert to Order</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">Select items to include in the order.</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-1 max-h-72 overflow-auto">
-            {allItems.map((item) => (
-              <label key={item.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer text-sm transition-colors">
-                <Checkbox
-                  checked={selectedItems.has(item.id)}
-                  onCheckedChange={(checked) => {
-                    const next = new Set(selectedItems);
-                    checked ? next.add(item.id) : next.delete(item.id);
-                    setSelectedItems(next);
-                  }}
-                />
-                <span className="flex-1">{item.productName}</span>
-                <span className="text-muted-foreground text-sm">×{item.quoteQty}</span>
-                <span className="font-mono text-sm font-medium">{formatCurrency(item.unitPrice * item.quoteQty)}</span>
-              </label>
-            ))}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setConvertOpen(false)}>Cancel</Button>
-            <Button size="sm" onClick={handleConvert} disabled={selectedItems.size === 0} className="bg-foreground text-background hover:bg-foreground/80">
-              Confirm Order ({selectedItems.size} items)
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Checkout Modal */}
+      <CheckoutModal
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+        quote={quote}
+        groups={groups}
+        totalAmount={totalAmount}
+        overallGM={overallGM}
+      />
 
       {/* Expired Resolution Dialog */}
       <Dialog open={expiredResolutionOpen} onOpenChange={setExpiredResolutionOpen}>
