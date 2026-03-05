@@ -112,8 +112,8 @@ export default function QuoteDetailHeader({
       {/* Sticky wrapper */}
       <div
         ref={headerRef}
-        className={`sticky top-0 z-20 transition-shadow duration-200 ${isStuck ? "shadow-elevated" : ""}`}
-        style={{ marginLeft: "-1.5rem", marginRight: "-1.5rem", paddingLeft: "1.5rem", paddingRight: "1.5rem" }}
+        className={`sticky -top-5 z-20 transition-shadow duration-200 ${isStuck ? "shadow-elevated" : ""}`}
+        style={{ marginLeft: "-1.5rem", marginRight: "-1.5rem", paddingLeft: "1.5rem", paddingRight: "1.5rem", paddingTop: "1.25rem" }}
       >
         <div className="bg-background pb-3 space-y-3">
           {/* Top action bar */}
