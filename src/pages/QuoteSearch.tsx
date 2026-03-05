@@ -58,12 +58,29 @@ export default function QuoteSearch() {
     toast.success(`Copied ${id} to clipboard`);
   };
 
+  const renderExpiration = (daysLeft: number) => {
+    if (daysLeft < 0) {
+      return (
+        <span className="inline-flex items-center text-2xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
+          {Math.abs(daysLeft)}d overdue
+        </span>
+      );
+    }
+    if (daysLeft === 0) {
+      return <span className="text-sm font-medium text-amber-600">Today</span>;
+    }
+    if (daysLeft <= 7) {
+      return <span className="text-sm font-medium text-amber-600">{daysLeft}d left</span>;
+    }
+    return <span className="text-sm text-muted-foreground">{daysLeft}d left</span>;
+  };
+
   return (
     <div className="space-y-6 max-w-[1400px]">
       {/* Page header */}
       <div className="flex items-baseline justify-between">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">Quotes</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Quotes</h1>
           <p className="text-sm text-muted-foreground mt-1">
             {filtered.length} of {quotes.length} quotes
           </p>
@@ -71,7 +88,7 @@ export default function QuoteSearch() {
       </div>
 
       {/* Search + Filters */}
-      <div className="bg-card rounded-lg border border-border shadow-subtle p-4 space-y-4">
+      <div className="bg-muted/50 rounded-xl border border-border p-4 space-y-4">
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
@@ -79,7 +96,7 @@ export default function QuoteSearch() {
               placeholder="Search by Quote ID, Customer, PO#, Job#..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 pl-9 text-sm bg-background"
+              className="h-9 pl-9 text-sm bg-card"
             />
           </div>
           {hasFilters && (
@@ -120,38 +137,39 @@ export default function QuoteSearch() {
       </div>
 
       {/* Results Table */}
-      <div className="bg-card rounded-lg border border-border shadow-subtle overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-elevated overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent border-b border-border">
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Quote Name</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Quote ID</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Customer</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Branch</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Origin</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Status</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4">Expiration</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-medium text-muted-foreground h-10 px-4 text-right">Amount</TableHead>
+            <TableRow className="hover:bg-transparent border-b border-border bg-muted/30">
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Quote Name</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Quote ID</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Customer</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Branch</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Origin</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Status</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Expiration</TableHead>
+              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4 text-right">Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((q) => {
+            {filtered.map((q, i) => {
               const daysLeft = getDaysUntilExpiration(q.expirationDate);
               const isAgility = q.origin === "Agility";
+              const isEven = i % 2 === 0;
               return (
                 <TableRow
                   key={q.id}
-                  className={`${isAgility ? "" : "cursor-pointer"} group transition-colors duration-100 hover:bg-muted/50`}
+                  className={`${isAgility ? "" : "cursor-pointer"} group transition-colors duration-100 hover:bg-brand/[0.04] ${isEven ? "" : "bg-muted/25"}`}
                   onClick={() => !isAgility && navigate(`/quotes/${q.id}`)}
                 >
-                  <TableCell className="px-4 py-3 text-sm font-medium">
+                  <TableCell className="px-4 py-3.5 text-sm font-medium">
                     {isAgility ? (
                       <span className="text-foreground">{q.quoteName}</span>
                     ) : (
-                      <span className="text-brand cursor-pointer hover:underline">{q.quoteName}</span>
+                      <span className="text-brand font-semibold cursor-pointer hover:underline decoration-brand/40 underline-offset-2">{q.quoteName}</span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm font-mono">
+                  <TableCell className="px-4 py-3.5 text-sm font-mono">
                     {isAgility ? (
                       <span className="flex items-center gap-2 text-muted-foreground">
                         {q.id}
@@ -167,24 +185,22 @@ export default function QuoteSearch() {
                       <span className="text-brand">{q.id}</span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-muted-foreground">{q.customerName}</TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-muted-foreground">{q.branchName}</TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-3.5 text-sm text-muted-foreground">{q.customerName}</TableCell>
+                  <TableCell className="px-4 py-3.5 text-sm text-muted-foreground">{q.branchName}</TableCell>
+                  <TableCell className="px-4 py-3.5">
                     <span className={`inline-flex items-center text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(q.origin)}`}>
                       {q.origin}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <span className={`inline-flex items-center text-2xs font-medium px-2 py-0.5 rounded-full ${getStatusColor(q.status)}`}>
+                  <TableCell className="px-4 py-3.5">
+                    <span className={`inline-flex items-center text-2xs font-medium px-2.5 py-0.5 rounded-full ${getStatusColor(q.status)}`}>
                       {q.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
-                    <span className={daysLeft < 0 ? "text-destructive" : daysLeft <= 7 ? "text-warning font-medium" : "text-muted-foreground"}>
-                      {daysLeft < 0 ? `${Math.abs(daysLeft)}d ago` : daysLeft === 0 ? "Today" : `${daysLeft}d left`}
-                    </span>
+                  <TableCell className="px-4 py-3.5">
+                    {renderExpiration(daysLeft)}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-right font-mono font-medium">{formatCurrency(q.totalAmount)}</TableCell>
+                  <TableCell className="px-4 py-3.5 text-sm text-right font-mono font-medium">{formatCurrency(q.totalAmount)}</TableCell>
                 </TableRow>
               );
             })}
