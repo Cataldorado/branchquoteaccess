@@ -28,6 +28,7 @@ export default function QuoteSearch() {
       const matchesSearch =
         !s ||
         q.id.toLowerCase().includes(s) ||
+        q.quoteName.toLowerCase().includes(s) ||
         q.customerName.toLowerCase().includes(s) ||
         q.branchName.toLowerCase().includes(s) ||
         q.poNumber?.toLowerCase().includes(s) ||
@@ -145,9 +146,9 @@ export default function QuoteSearch() {
                 >
                   <TableCell className="px-4 py-3 text-sm font-medium">
                     {isAgility ? (
-                      <span className="text-foreground">{q.customerName}</span>
+                      <span className="text-foreground">{q.quoteName}</span>
                     ) : (
-                      <span className="text-brand cursor-pointer hover:underline">{q.customerName}</span>
+                      <span className="text-brand cursor-pointer hover:underline">{q.quoteName}</span>
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm font-mono">

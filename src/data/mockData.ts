@@ -51,6 +51,7 @@ export interface PricingHistory {
 
 export interface Quote {
   id: string;
+  quoteName: string;
   customerId: string;
   customerName: string;
   branchId: string;
@@ -185,6 +186,59 @@ const agilityStatuses: AgilityStatus[] = ["New", "Partially Released"];
 const origins: QuoteOrigin[] = ["H+", "Agility"];
 const users = ["jsmith", "mgarcia", "tlee", "awright", "kpatel"];
 
+const quoteNames = [
+  "Walgreens Phase 1 - Rough",
+  "Oakridge Business Park - Mainline",
+  "Sunset Ridge HOA - Backflow Install",
+  "CVS Pharmacy #4412 - Retrofit",
+  "Meridian Office Complex - Drip Zones",
+  "Lakeview Sports Fields - Sprinkler Install",
+  "Hilltop Medical Center - Landscape Irrigation",
+  "Riverstone Apartments - Phase 2 Finish",
+  "Costco Pad Site - Rough-In",
+  "Summit Church Campus - Full System",
+  "Target Store #1892 - Renovation",
+  "Pinebrook Elementary - Athletic Fields",
+  "Metro Industrial Park - Underground",
+  "Heritage Plaza Retail - Drip Conversion",
+  "Willowcreek Golf Course - Pump Station",
+  "Canyon Vista Resort - Pool Deck Zones",
+  "Bridgewater Commons - Phase 3 Expansion",
+  "Downtown City Hall - Xeriscape Retrofit",
+  "Falcon Ridge K-8 - Soccer Fields",
+  "Northgate Shopping Center - Cap & Replace",
+  "St. Mary's Hospital - Courtyard System",
+  "Broadmoor Estates HOA - Controller Upgrade",
+  "Amazon Distribution Ctr - Perimeter Landscape",
+  "Cherry Hills Country Club - Fairway Heads",
+  "Clearwater Apartments - Meter & Mainline",
+  "Home Depot #0623 - Parking Island Drip",
+  "Silverton Office Park - Valve Replacement",
+  "Greenfield Rec Center - Splash Pad Plumbing",
+  "Maple Grove Church - Memorial Garden",
+  "Prairie View School District - Track & Field",
+  "Ironhorse Industrial - Fire Line Tie-In",
+  "Starbucks Drive-Thru Pad - Landscape Rough",
+  "Boulder Creek Townhomes - Phase 1",
+  "Centura Health Campus - Rooftop Irrigation",
+  "Walmart Supercenter - Lot Island Retrofit",
+  "Creekside Senior Living - Courtyard Drip",
+  "Red Rocks Amphitheater - Slope Stabilization",
+  "University Park Mall - Fountain Plumbing",
+  "Aspen Grove HOA - Winterization Service",
+  "Thornton Civic Center - Smart Controller Install",
+  "Chick-fil-A Pad Site - Landscape Rough",
+  "Vista Ridge High School - Baseball Fields",
+  "Kohl's Anchor Store - Demo & Replace",
+  "Sandstone Pointe Apts - Backflow Testing",
+  "Briarwood Corporate Campus - Zone Expansion",
+  "Highlands Ranch Town Ctr - Mainline Repair",
+  "Children's Hospital - Healing Garden",
+  "Parker Adventist - Campus Wide Audit",
+  "King Soopers #0091 - Perimeter Drip",
+  "Lone Tree Arts Center - Entry Landscape",
+];
+
 function randomDate(daysBack: number, daysForward: number): string {
   const d = new Date();
   d.setDate(d.getDate() - daysBack + Math.floor(Math.random() * (daysBack + daysForward)));
@@ -262,6 +316,7 @@ function generateQuotes(): Quote[] {
 
     return {
       id: `QT-${String(idx + 1001).padStart(4, "0")}`,
+      quoteName: quoteNames[idx % quoteNames.length],
       customerId: cust.id,
       customerName: cust.name,
       branchId: branch.id,
