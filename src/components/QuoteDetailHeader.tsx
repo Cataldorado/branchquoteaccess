@@ -44,10 +44,47 @@ export default function QuoteDetailHeader({
   onResolve,
 }: QuoteDetailHeaderProps) {
   const [expanded, setExpanded] = useState(false);
-  const [manualCollapse, setManualCollapse] = useState(false);
+  const [wasExpandedBeforeScroll, setWasExpandedBeforeScroll] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [isStuck, setIsStuck] = useState(false);
+
+  // Auto-collapse on scroll down, auto-expand on scroll back up
+  useEffect(() => {
+    const scrollParent = headerRef.current?.closest("main");
+    if (!scrollParent) return;
+
+    const COLLAPSE_THRESHOLD = 80;
+
+    const handleScroll = () => {
+      const st = scrollParent.scrollTop;
+      const stuck = st > 10;
+      setIsStuck(stuck);
+
+      // Scrolled past threshold: auto-collapse if expanded
+      if (st > COLLAPSE_THRESHOLD && expanded) {
+        setWasExpandedBeforeScroll(true);
+        setExpanded(false);
+      }
+
+      // Scrolled back to top: auto-expand if it was expanded before
+      if (st <= COLLAPSE_THRESHOLD && !expanded && wasExpandedBeforeScroll) {
+        setWasExpandedBeforeScroll(false);
+        setExpanded(true);
+      }
+    };
+
+    scrollParent.addEventListener("scroll", handleScroll, { passive: true });
+    return () => scrollParent.removeEventListener("scroll", handleScroll);
+  }, [expanded, wasExpandedBeforeScroll]);
+
+  const toggleExpanded = useCallback(() => {
+    setExpanded((prev) => {
+      // If user manually collapses, clear the "was expanded" memory
+      if (prev) setWasExpandedBeforeScroll(false);
+      return !prev;
+    });
+  }, []);
 
   const [customerName, setCustomerName] = useState(quote.customerName);
   const [poNumber, setPoNumber] = useState(quote.poNumber || "");
@@ -67,35 +104,6 @@ export default function QuoteDetailHeader({
     zip: "55357",
     phone: "7634987574",
   });
-
-  // Auto-collapse when scrolling down while expanded
-  useEffect(() => {
-    const scrollParent = headerRef.current?.closest("main");
-    if (!scrollParent) return;
-
-    let lastScrollTop = 0;
-    const handleScroll = () => {
-      const st = scrollParent.scrollTop;
-      // If scrolling down past threshold and expanded, auto-collapse
-      if (st > lastScrollTop && st > 80 && expanded && !manualCollapse) {
-        setExpanded(false);
-      }
-      setIsStuck(st > 10);
-      lastScrollTop = st;
-    };
-
-    scrollParent.addEventListener("scroll", handleScroll, { passive: true });
-    return () => scrollParent.removeEventListener("scroll", handleScroll);
-  }, [expanded, manualCollapse]);
-
-  const toggleExpanded = useCallback(() => {
-    setExpanded((prev) => {
-      setManualCollapse(prev); // if collapsing, mark as manual
-      return !prev;
-    });
-    // Reset manual flag after a moment so auto-collapse works again
-    setTimeout(() => setManualCollapse(false), 500);
-  }, []);
 
   const copyUrl = () => {
     navigator.clipboard.writeText(window.location.href);
