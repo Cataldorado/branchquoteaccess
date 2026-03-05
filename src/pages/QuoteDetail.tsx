@@ -205,31 +205,39 @@ export default function QuoteDetail() {
           </button>
         </div>
 
-        {/* Column Headers */}
-        <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground">
-          <div className="px-2">Product Description</div>
-          <div className="px-2">Item #</div>
-          <div className="px-2 text-right">Cost</div>
-          <div className="px-2 text-center">Quote</div>
-          <div className="px-2 flex flex-col items-center gap-1">
-            <Button
-              size="sm"
-              className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
-                populated
-                  ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-                  : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
-              }`}
-              onClick={populated ? resetQtyToZero : populateRemainingQty}
-            >
-              {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
-            </Button>
-            <span>Purchase Qty</span>
+        {/* Column Headers with Populate button */}
+        <div className="relative">
+          {/* Populate button row - positioned to align with Purchase Qty column */}
+          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3">
+            <div /><div /><div /><div />
+            <div className="flex justify-center py-2">
+              <Button
+                size="sm"
+                className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
+                  populated
+                    ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                    : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
+                }`}
+                onClick={populated ? resetQtyToZero : populateRemainingQty}
+              >
+                {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
+              </Button>
+            </div>
+            <div /><div /><div /><div /><div />
           </div>
-          <div className="px-2 text-right">Price</div>
-          <div className="px-2 text-center">UOM</div>
-          <div className="px-2 text-right">GM%</div>
-          <div className="px-2 text-right">Ext. Price</div>
-          <div />
+          {/* Actual column headers */}
+          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground">
+            <div className="px-2">Product Description</div>
+            <div className="px-2">Item #</div>
+            <div className="px-2 text-right">Cost</div>
+            <div className="px-2 text-center">Quote</div>
+            <div className="px-2 text-center">Purchase Qty</div>
+            <div className="px-2 text-right">Price</div>
+            <div className="px-2 text-center">UOM</div>
+            <div className="px-2 text-right">GM%</div>
+            <div className="px-2 text-right">Ext. Price</div>
+            <div />
+          </div>
         </div>
 
         {/* Product Groups */}
