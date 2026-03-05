@@ -131,29 +131,29 @@ export default function QuoteDetailHeader({
         </div>
       </div>
 
-      {/* Sticky header */}
+      {/* Status banner - scrolls away naturally */}
+      <div className="flex items-center justify-between px-5 py-3 rounded-lg border border-border bg-card shadow-subtle mb-3">
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-medium text-muted-foreground">Status</span>
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusColor(quote.status)}`}>
+            {quote.status}
+          </span>
+          <span className={`text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(quote.origin)}`}>
+            {quote.origin}
+          </span>
+        </div>
+        <Button size="sm" variant="outline" className="h-8 text-xs gap-1.5" onClick={copyUrl}>
+          <Link className="h-3.5 w-3.5" /> Copy URL
+        </Button>
+      </div>
+
+      {/* Sticky header - only the main card */}
       <div
         ref={headerRef}
         className={`sticky top-0 z-20 transition-shadow duration-200 ${isStuck ? "shadow-elevated" : ""}`}
         style={{ marginLeft: "-1.5rem", marginRight: "-1.5rem", paddingLeft: "1.5rem", paddingRight: "1.5rem", paddingTop: "0.5rem" }}
       >
-        <div className="bg-background pb-3 space-y-3">
-
-          {/* Status banner */}
-          <div className="flex items-center justify-between px-5 py-3 rounded-lg border border-border bg-card shadow-subtle">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-medium text-muted-foreground">Status</span>
-              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusColor(quote.status)}`}>
-                {quote.status}
-              </span>
-              <span className={`text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(quote.origin)}`}>
-                {quote.origin}
-              </span>
-            </div>
-            <Button size="sm" variant="outline" className="h-8 text-xs gap-1.5" onClick={copyUrl}>
-              <Link className="h-3.5 w-3.5" /> Copy URL
-            </Button>
-          </div>
+        <div className="bg-background pb-3">
 
           {/* Main header card */}
           <div className="border border-border rounded-lg overflow-hidden bg-card shadow-subtle">
