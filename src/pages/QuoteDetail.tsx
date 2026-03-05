@@ -197,25 +197,12 @@ export default function QuoteDetail() {
         {/* Table Header with Populate button */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border">
           <span className="text-xs font-medium text-muted-foreground">Line Items</span>
-          <div className="flex items-center gap-4">
-            <Button
-              size="sm"
-              className={`h-8 text-xs font-semibold px-5 rounded-full whitespace-nowrap ${
-                populated
-                  ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-                  : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
-              }`}
-              onClick={populated ? resetQtyToZero : populateRemainingQty}
-            >
-              {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
-            </Button>
-            <button
-              className="text-xs text-brand hover:underline font-medium transition-colors"
-              onClick={toggleAllGroups}
-            >
-              {allExpanded ? "Collapse All" : "Expand All"}
-            </button>
-          </div>
+          <button
+            className="text-xs text-brand hover:underline font-medium transition-colors"
+            onClick={toggleAllGroups}
+          >
+            {allExpanded ? "Collapse All" : "Expand All"}
+          </button>
         </div>
 
         {/* Column Headers */}
@@ -224,7 +211,20 @@ export default function QuoteDetail() {
           <div className="px-2">Item #</div>
           <div className="px-2 text-right">Cost</div>
           <div className="px-2 text-center">Quote</div>
-          <div className="px-2 text-center">Purchase Qty</div>
+          <div className="px-2 flex flex-col items-center gap-1">
+            <Button
+              size="sm"
+              className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
+                populated
+                  ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                  : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
+              }`}
+              onClick={populated ? resetQtyToZero : populateRemainingQty}
+            >
+              {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
+            </Button>
+            <span>Purchase Qty</span>
+          </div>
           <div className="px-2 text-right">Price</div>
           <div className="px-2 text-center">UOM</div>
           <div className="px-2 text-right">GM%</div>
