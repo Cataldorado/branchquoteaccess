@@ -186,14 +186,20 @@ export default function QuoteDetail() {
           <div className="px-2">Item #</div>
           <div className="px-2 text-right">Cost</div>
           <div className="px-2 text-center">Quote Qty</div>
-          <div className="px-2 text-center">
-            <span>Purchase Qty</span>
-            <button
-              className="block mx-auto mt-0.5 text-2xs text-brand hover:underline font-medium normal-case tracking-normal"
+          <div className="px-2 flex flex-col items-center">
+            <Button
+              size="sm"
+              variant={populated ? "outline" : "default"}
+              className={`h-7 text-[10px] font-semibold px-3 mb-1.5 rounded-full whitespace-nowrap ${
+                populated
+                  ? "border-border text-muted-foreground hover:text-foreground"
+                  : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
+              }`}
               onClick={populated ? resetQtyToZero : populateRemainingQty}
             >
               {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
-            </button>
+            </Button>
+            <span>Purchase Qty</span>
           </div>
           <div className="px-2 text-right">Price</div>
           <div className="px-2 text-center">UOM</div>
@@ -243,9 +249,11 @@ export default function QuoteDetail() {
               {!isCollapsed && (
                 <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-1.5 border-b border-border/50 bg-muted/10">
                   <div /><div /><div /><div />
-                  <div className="px-1 text-center">
-                    <button
-                      className="text-2xs text-brand hover:underline font-medium transition-colors"
+                  <div className="px-1 flex justify-center">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 text-[10px] font-medium px-2.5 text-brand hover:text-brand hover:bg-brand/10 rounded-full"
                       onClick={() => {
                         const allPopulated = group.items.every((i) => i.purchaseQty >= i.quoteQty);
                         setGroups((prev) =>
@@ -263,8 +271,8 @@ export default function QuoteDetail() {
                         toast.info(allPopulated ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
                       }}
                     >
-                      {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining Qty"}
-                    </button>
+                      {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining"}
+                    </Button>
                   </div>
                   <div /><div /><div /><div /><div />
                 </div>
