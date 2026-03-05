@@ -279,33 +279,37 @@ export default function QuoteDetail() {
 
               {/* Per-group Populate Remaining Qty row */}
               {!isCollapsed && (
-                <div className="flex justify-center py-2 border-b border-border/50 bg-muted/10">
-                  <Button
-                    size="sm"
-                    className={`h-8 text-xs font-semibold px-5 rounded-full whitespace-nowrap ${
-                      group.items.every((i) => i.purchaseQty >= i.quoteQty)
-                        ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-                        : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
-                    }`}
-                    onClick={() => {
-                      const allPopulated = group.items.every((i) => i.purchaseQty >= i.quoteQty);
-                      setGroups((prev) =>
-                        prev.map((g) => {
-                          if (g.id !== group.id) return g;
-                          return {
-                            ...g,
-                            items: g.items.map((item) => ({
-                              ...item,
-                              purchaseQty: allPopulated ? 0 : item.quoteQty,
-                            })),
-                          };
-                        })
-                      );
-                      toast.info(allPopulated ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
-                    }}
-                  >
-                    {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining Qty"}
-                  </Button>
+                <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/50 bg-muted/10">
+                  <div /><div /><div /><div />
+                  <div className="flex justify-center">
+                    <Button
+                      size="sm"
+                      className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
+                        group.items.every((i) => i.purchaseQty >= i.quoteQty)
+                          ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                          : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
+                      }`}
+                      onClick={() => {
+                        const allPopulated = group.items.every((i) => i.purchaseQty >= i.quoteQty);
+                        setGroups((prev) =>
+                          prev.map((g) => {
+                            if (g.id !== group.id) return g;
+                            return {
+                              ...g,
+                              items: g.items.map((item) => ({
+                                ...item,
+                                purchaseQty: allPopulated ? 0 : item.quoteQty,
+                              })),
+                            };
+                          })
+                        );
+                        toast.info(allPopulated ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
+                      }}
+                    >
+                      {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining Qty"}
+                    </Button>
+                  </div>
+                  <div /><div /><div /><div /><div />
                 </div>
               )}
 
