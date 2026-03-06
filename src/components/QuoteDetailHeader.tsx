@@ -160,15 +160,15 @@ export default function QuoteDetailHeader({
           {/* Main header card */}
           <div className="border border-border rounded-lg overflow-hidden bg-card shadow-subtle">
             {/* Collapsed summary row - always visible */}
-            <div className="flex items-center gap-4 px-5 py-3">
-              <div className="flex items-center gap-1 flex-1 min-w-0">
+            <div className="flex items-center gap-5 px-5 py-3">
+              <div className="flex items-center gap-1 flex-1 min-w-0 mr-1">
                 <TooltipProvider delayDuration={300}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Input
                         value={quoteName}
                         onChange={(e) => setQuoteName(e.target.value)}
-                        className="text-lg font-semibold tracking-tight border-0 bg-transparent h-8 px-1 focus-visible:ring-1 focus-visible:ring-ring/20 max-w-lg w-auto truncate"
+                        className="text-lg font-semibold tracking-tight border-0 bg-transparent h-8 px-1 focus-visible:ring-1 focus-visible:ring-ring/20 w-full truncate"
                       />
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-md">
