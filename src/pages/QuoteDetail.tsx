@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import QuoteDetailHeader from "@/components/QuoteDetailHeader";
+import InventoryStatusDot from "@/components/InventoryStatusDot";
 import CheckoutModal from "@/components/CheckoutModal";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -320,6 +321,13 @@ export default function QuoteDetail() {
                   className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center"
                 >
                   <div className="flex items-center gap-2 px-2 min-w-0">
+                    <InventoryStatusDot
+                      productId={item.productId}
+                      productName={item.productName}
+                      sku={item.sku}
+                      quoteQty={item.quoteQty}
+                      branchId={quote.branchId}
+                    />
                     <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors" title="Item note">
                       <StickyNote className="h-3.5 w-3.5" />
                     </button>

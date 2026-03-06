@@ -399,3 +399,46 @@ export function getDaysUntilExpiration(expirationDate: string): number {
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 }
+
+// ---- Inventory Data ----
+
+export interface BranchInventory {
+  branchId: string;
+  branchName: string;
+  available: number;
+}
+
+export type InventoryStatus = "in-stock" | "partial" | "out-of-stock" | "unavailable";
+
+export function getInventoryStatus(quoteQty: number, branchInventory: number): InventoryStatus {
+  if (branchInventory >= quoteQty) return "in-stock";
+  if (branchInventory > 0) return "partial";
+  return "out-of-stock";
+}
+
+// Deterministic hash from product ID for consistent inventory across renders
+function hashProductId(productId: string): number {
+  let hash = 0;
+  for (let i = 0; i < productId.length; i++) {
+    hash = ((hash << 5) - hash) + productId.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+export function getInventoryForProduct(productId: string): BranchInventory[] {
+  const seed = hashProductId(productId);
+  return branches.map((branch, idx) => {
+    // Deterministic pseudo-random per branch+product
+    const val = ((seed * (idx + 1) * 7 + idx * 13) % 100);
+    let available: number;
+    if (val < 20) available = 0;           // 20% chance zero
+    else if (val < 50) available = (val % 15) + 1;  // low stock
+    else available = (val % 40) + 15;       // decent stock
+    return {
+      branchId: branch.id,
+      branchName: branch.name,
+      available,
+    };
+  });
+}
