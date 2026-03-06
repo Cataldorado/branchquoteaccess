@@ -382,7 +382,7 @@ export default function QuoteDetail() {
                     )}
                     {item.note && editingNoteId !== item.id && (
                       <button
-                        className="text-2xs text-amber-600 dark:text-amber-400 ml-6 text-left truncate hover:underline cursor-pointer"
+                        className="text-2xs text-brand ml-6 text-left truncate hover:underline cursor-pointer"
                         title={`NOTE: ${item.note} (click to edit)`}
                         onClick={() => {
                           setEditingNoteId(item.id);
