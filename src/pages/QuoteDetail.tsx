@@ -345,8 +345,11 @@ export default function QuoteDetail() {
                           <StickyNote className="h-3.5 w-3.5" />
                         </button>
                       )}
-                      <span className="text-sm truncate" title={item.productName}>
-                        {item.productName}
+                      <span className="group/name relative text-sm truncate cursor-default">
+                        <span className="truncate block">{item.productName}</span>
+                        <span className="invisible group-hover/name:visible absolute left-0 top-0 z-50 whitespace-nowrap bg-popover text-popover-foreground text-sm px-2 py-1 rounded-md shadow-md border border-border -translate-y-1">
+                          {item.productName}
+                        </span>
                       </span>
                       <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace item">
                         <ArrowLeftRight className="h-3.5 w-3.5" />
@@ -395,8 +398,11 @@ export default function QuoteDetail() {
                     )}
                   </div>
 
-                  <div className="px-2 text-sm font-mono text-muted-foreground truncate" title={item.sku}>
-                    {item.sku}
+                  <div className="group/sku relative px-2 text-sm font-mono text-muted-foreground truncate cursor-default">
+                    <span className="truncate block">{item.sku}</span>
+                    <span className="invisible group-hover/sku:visible absolute left-0 top-0 z-50 whitespace-nowrap bg-popover text-popover-foreground text-sm font-mono px-2 py-1 rounded-md shadow-md border border-border -translate-y-1">
+                      {item.sku}
+                    </span>
                   </div>
 
                   <div className="px-2 text-sm text-right font-mono text-muted-foreground">
