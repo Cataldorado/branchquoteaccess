@@ -32,6 +32,7 @@ export interface QuoteItem {
   gmPercent: number;
   uom: UOM;
   qtyReleased?: number;
+  note?: string;
 }
 
 export interface ProductGroup {

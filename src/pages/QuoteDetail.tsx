@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ChevronRight, ChevronDown, Plus, Trash2, FileText, StickyNote, ArrowLeftRight,
@@ -91,6 +91,9 @@ export default function QuoteDetail() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [expiredResolutionOpen, setExpiredResolutionOpen] = useState(false);
   const [populated, setPopulated] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [noteText, setNoteText] = useState("");
+  const noteInputRef = useRef<HTMLInputElement>(null);
 
   if (!quote) {
     return (
@@ -320,23 +323,76 @@ export default function QuoteDetail() {
                   key={item.id}
                   className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center"
                 >
-                  <div className="flex items-center gap-2 px-2 min-w-0">
-                    <InventoryStatusDot
-                      productId={item.productId}
-                      productName={item.productName}
-                      sku={item.sku}
-                      quoteQty={item.quoteQty}
-                      branchId={quote.branchId}
-                    />
-                    <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors" title="Item note">
-                      <StickyNote className="h-3.5 w-3.5" />
-                    </button>
-                    <span className="text-sm truncate" title={item.productName}>
-                      {item.productName}
-                    </span>
-                    <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace item">
-                      <ArrowLeftRight className="h-3.5 w-3.5" />
-                    </button>
+                  <div className="flex flex-col gap-0.5 px-2 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <InventoryStatusDot
+                        productId={item.productId}
+                        productName={item.productName}
+                        sku={item.sku}
+                        quoteQty={item.quoteQty}
+                        branchId={quote.branchId}
+                      />
+                      {!item.note && editingNoteId !== item.id && (
+                        <button
+                          className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors"
+                          title="Add note"
+                          onClick={() => {
+                            setEditingNoteId(item.id);
+                            setNoteText("");
+                            setTimeout(() => noteInputRef.current?.focus(), 0);
+                          }}
+                        >
+                          <StickyNote className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                      <span className="text-sm truncate" title={item.productName}>
+                        {item.productName}
+                      </span>
+                      <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace item">
+                        <ArrowLeftRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                    {editingNoteId === item.id && (
+                      <div className="flex items-center gap-1.5 ml-6">
+                        <span className="text-2xs text-muted-foreground font-medium">Add Note:</span>
+                        <input
+                          ref={noteInputRef}
+                          type="text"
+                          value={noteText}
+                          onChange={(e) => setNoteText(e.target.value)}
+                          onBlur={() => {
+                            if (noteText.trim()) {
+                              updateItemField(group.id, item.id, "note", noteText.trim());
+                            }
+                            setEditingNoteId(null);
+                            setNoteText("");
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              (e.target as HTMLInputElement).blur();
+                            } else if (e.key === "Escape") {
+                              setEditingNoteId(null);
+                              setNoteText("");
+                            }
+                          }}
+                          className="flex-1 h-6 text-xs border border-border rounded px-2 bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+                          placeholder="Enter note..."
+                        />
+                      </div>
+                    )}
+                    {item.note && editingNoteId !== item.id && (
+                      <button
+                        className="text-2xs text-amber-600 dark:text-amber-400 ml-6 text-left truncate hover:underline cursor-pointer"
+                        title={`NOTE: ${item.note} (click to edit)`}
+                        onClick={() => {
+                          setEditingNoteId(item.id);
+                          setNoteText(item.note || "");
+                          setTimeout(() => noteInputRef.current?.focus(), 0);
+                        }}
+                      >
+                        NOTE: {item.note}
+                      </button>
+                    )}
                   </div>
 
                   <div className="px-2 text-sm font-mono text-muted-foreground truncate" title={item.sku}>
