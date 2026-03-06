@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   getGMColor, getGMBgColor, getStatusColor, getOriginColor, formatCurrency,
   type Quote,
@@ -161,11 +162,21 @@ export default function QuoteDetailHeader({
             {/* Collapsed summary row - always visible */}
             <div className="flex items-center gap-4 px-5 py-3">
               <div className="flex items-center gap-1 flex-1 min-w-0">
-                <Input
-                  value={quoteName}
-                  onChange={(e) => setQuoteName(e.target.value)}
-                  className="text-lg font-semibold tracking-tight border-0 bg-transparent h-8 px-1 focus-visible:ring-1 focus-visible:ring-ring/20 max-w-sm w-auto"
-                /><Pencil className="h-3.5 w-3.5 text-muted-foreground/30" />
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Input
+                        value={quoteName}
+                        onChange={(e) => setQuoteName(e.target.value)}
+                        className="text-lg font-semibold tracking-tight border-0 bg-transparent h-8 px-1 focus-visible:ring-1 focus-visible:ring-ring/20 max-w-lg w-auto truncate"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-md">
+                      <p>{quoteName}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <Pencil className="h-3.5 w-3.5 text-muted-foreground/30 flex-shrink-0" />
               </div>
 
               <div className="flex items-center gap-6 flex-shrink-0">
