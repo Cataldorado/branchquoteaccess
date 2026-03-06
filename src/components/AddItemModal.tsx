@@ -68,6 +68,7 @@ export default function AddItemModal({
       productName: qi.product.name,
       sku: qi.product.sku,
       quoteQty: qi.qty,
+      purchasedQty: 0,
       purchaseQty: 0,
       unitCost: qi.product.unitCost,
       unitPrice: qi.product.listPrice,

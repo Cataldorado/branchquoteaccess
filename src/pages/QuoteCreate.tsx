@@ -43,6 +43,7 @@ export default function QuoteCreate() {
       productName: p.name,
       sku: p.sku,
       quoteQty: 1,
+      purchasedQty: 0,
       purchaseQty: 0,
       unitCost: p.unitCost,
       unitPrice: p.listPrice,
