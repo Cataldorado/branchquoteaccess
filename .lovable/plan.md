@@ -1,61 +1,39 @@
 
 
-## Commercial Quoting System — Interactive Prototype (MVP + V1)
+## Plan: Quote Item Inventory Status Indicators
 
-### Layout & Navigation
-- **Sidebar navigation** (enterprise dashboard style) with sections: Quotes, Customers, Branches, Reports
-- **Top header bar** with branch selector, user avatar, and global search
-- Dense, data-focused design with tables, status badges, and compact spacing
+### Overview
+Add a colored inventory status dot to each quote line item that indicates stock availability at the quoting branch. Clicking the dot opens a modal showing inventory across all eligible branches.
 
-### Pages & Features
+### 1. Mock Inventory Data (`src/data/mockData.ts`)
+- Add a `BranchInventory` type: `{ branchId: string; branchName: string; available: number }`
+- Add a `generateBranchInventory(productId: string, quoteQty: number)` function that returns mock inventory levels for each of the 6 existing branches, with randomized quantities (some zero, some partial, some full)
+- Export a `getInventoryForProduct(productId: string)` function returning `BranchInventory[]`
+- Export a helper `getInventoryStatus(quoteQty: number, branchInventory: number)` returning `"in-stock" | "partial" | "out-of-stock" | "unavailable"`
 
-#### 1. Quote Search (Homepage)
-- Search bar front-and-center with filters: date range, branch, customer, status, expired, keyword, PO#, Job#, Transaction Ref
-- Results table showing: Quote ID, Customer, Branch, Origin (H+/Agility/Both badge), Status badge, Expiration, GM%, Actions
-- Quick-action buttons: Open, Copy, Convert to Order
+### 2. Inventory Status Dot Component (`src/components/InventoryStatusDot.tsx`)
+- Small colored circle: green (in-stock), yellow (partial), red (out-of-stock), gray (unavailable)
+- Accepts `productId`, `quoteQty`, `branchId` props
+- Computes status from the mock data using the quoting branch's inventory
+- Renders a clickable dot with a tooltip showing the status label
+- On click, opens the `InventoryAvailabilityModal`
 
-#### 2. Quote Detail / Management
-- Quote header: customer info, branch, origin badge, status, expiration countdown
-- Line items table with inline editing: product, qty, price, GM% (always visible, color-coded red/yellow/green)
-- Real-time GM% rollup at quote level
-- Actions: Save, Share, Convert to Order, Re-quote
-- Pricing edit history sidebar
+### 3. Inventory Availability Modal (`src/components/InventoryAvailabilityModal.tsx`)
+- Dialog showing a table of branches with available inventory for the selected product
+- Columns: Branch name, Available Inventory, Status dot per branch
+- Sorted by highest availability first
+- Highlights the quoting branch row
+- Shows "No eligible branches available" message when applicable
+- Shows product name and SKU in the header
 
-#### 3. Quote Creation
-- Step flow: Select Customer → Add Items → Review Pricing → Save/Submit
-- Product search with autocomplete (mock catalog)
-- GM% visibility as items are added
+### 4. Integration into Quote Detail (`src/pages/QuoteDetail.tsx`)
+- Add the `InventoryStatusDot` to each item row, placed in the Product Description cell (left of the product name, alongside the existing StickyNote icon)
+- Pass the quote's `branchId` and item's `productId` and `quoteQty`
+- No changes to the grid column structure needed -- the dot fits inside the existing first column
 
-#### 4. Quote-to-Sale Execution
-- From quote detail, one-click "Convert to Order" flow
-- Select items to purchase, confirm, complete — 3 clicks max
-- Success confirmation with order reference
-
-#### 5. Cross-Branch Quote Handling (V1)
-- Transfer quote to another branch workflow
-- Copy quote workflow
-- Visual indicator when quote branch ≠ operating branch
-- Qty Released tracking
-
-#### 6. Expired Quote Resolution (V1)
-- Expired quotes highlighted in search results
-- Guided resolution: Refresh Pricing, Re-quote, Notify Territory Manager
-- Resolution status tracking
-
-#### 7. Dashboard / Reports
-- Cards: quotes created today, pending conversion, expiring soon, avg GM%
-- Quote conversion funnel chart
-- Branch activity table
-- GM% trend chart
-
-### Mock Data
-- ~50 sample quotes across multiple branches, customers, and statuses
-- Mix of H+, Agility, and dual-origin quotes
-- Some expired, some near-expiration
-
-### Design Details
-- Monochrome base with blue accent for actions, red/yellow/green for GM% indicators
-- Status badges: Draft, Sent, Negotiating, Won, Lost, Expired
-- Compact tables with hover states and row actions
-- Keyboard shortcuts hint bar at bottom
+### Technical Details
+- Grid layout remains unchanged (no new columns); the dot is prepended inside the product description cell
+- Inventory data is deterministic per product using a seeded approach (product ID hash) so it stays consistent across renders
+- Modal uses existing Dialog component from the UI library
+- Status colors use Tailwind classes: `bg-emerald-500`, `bg-amber-400`, `bg-red-500`, `bg-gray-300`
 
