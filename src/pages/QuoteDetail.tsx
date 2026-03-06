@@ -48,43 +48,43 @@ export default function QuoteDetail() {
     const groups = [...quote.productGroups];
     if (groups.length < 2) {
       const extraItems: QuoteItem[] = [
-        { id: "QI-EXTRA-1", productId: "P008", productName: '2" PVC Pipe Schedule 40 (10ft)', sku: "PVC-40-200-10", quoteQty: 25, purchaseQty: 0, unitCost: 4.80, unitPrice: 8.50, gmPercent: calcGM(4.80, 8.50), uom: "EA" as UOM },
-        { id: "QI-EXTRA-2", productId: "P010", productName: 'Pressure Reducing Valve 3/4"', sku: "PRV-075", quoteQty: 10, purchaseQty: 0, unitCost: 45.00, unitPrice: 72.50, gmPercent: calcGM(45.00, 72.50), uom: "EA" as UOM },
-        { id: "QI-EXTRA-3", productId: "P012", productName: "Expansion Tank 2 Gal", sku: "ET-002", quoteQty: 8, purchaseQty: 0, unitCost: 28.00, unitPrice: 44.50, gmPercent: calcGM(28.00, 44.50), uom: "EA" as UOM },
+        { id: "QI-EXTRA-1", productId: "P008", productName: '2" PVC Pipe Schedule 40 (10ft)', sku: "PVC-40-200-10", quoteQty: 25, purchasedQty: 5, purchaseQty: 0, unitCost: 4.80, unitPrice: 8.50, gmPercent: calcGM(4.80, 8.50), uom: "EA" as UOM },
+        { id: "QI-EXTRA-2", productId: "P010", productName: 'Pressure Reducing Valve 3/4"', sku: "PRV-075", quoteQty: 10, purchasedQty: 3, purchaseQty: 0, unitCost: 45.00, unitPrice: 72.50, gmPercent: calcGM(45.00, 72.50), uom: "EA" as UOM },
+        { id: "QI-EXTRA-3", productId: "P012", productName: "Expansion Tank 2 Gal", sku: "ET-002", quoteQty: 8, purchasedQty: 0, purchaseQty: 0, unitCost: 28.00, unitPrice: 44.50, gmPercent: calcGM(28.00, 44.50), uom: "EA" as UOM },
       ];
       groups.push({ id: "PG-EXTRA", name: "Valves & Accessories", items: extraItems });
     }
     // Add additional product groups with more items for scrollable content
     groups.push({
       id: "PG-PIPE", name: "Pipe & Fittings", items: [
-        { id: "QI-P01", productId: "P101", productName: '1" PVC Sch 40 Coupling', sku: "PVC-CPL-100", quoteQty: 50, purchaseQty: 0, unitCost: 1.20, unitPrice: 2.45, gmPercent: calcGM(1.20, 2.45), uom: "EA" as UOM },
-        { id: "QI-P02", productId: "P102", productName: '3/4" PVC 90° Elbow', sku: "PVC-ELB-075", quoteQty: 40, purchaseQty: 0, unitCost: 0.85, unitPrice: 1.75, gmPercent: calcGM(0.85, 1.75), uom: "EA" as UOM },
-        { id: "QI-P03", productId: "P103", productName: '1-1/2" PVC Tee', sku: "PVC-TEE-150", quoteQty: 30, purchaseQty: 0, unitCost: 2.10, unitPrice: 4.25, gmPercent: calcGM(2.10, 4.25), uom: "EA" as UOM },
-        { id: "QI-P04", productId: "P104", productName: '2" PVC Ball Valve Threaded', sku: "PVC-BV-200T", quoteQty: 12, purchaseQty: 0, unitCost: 8.50, unitPrice: 15.75, gmPercent: calcGM(8.50, 15.75), uom: "EA" as UOM },
-        { id: "QI-P05", productId: "P105", productName: '1" Poly Pipe 100ft Coil', sku: "POLY-100-1C", quoteQty: 5, purchaseQty: 0, unitCost: 32.00, unitPrice: 54.50, gmPercent: calcGM(32.00, 54.50), uom: "RL" as UOM },
-        { id: "QI-P06", productId: "P106", productName: '3/4" Brass Adapter MxF', sku: "BRS-ADP-075", quoteQty: 20, purchaseQty: 0, unitCost: 3.40, unitPrice: 6.80, gmPercent: calcGM(3.40, 6.80), uom: "EA" as UOM },
-        { id: "QI-P07", productId: "P107", productName: '1" PVC Union Slip x Slip', sku: "PVC-UNI-100", quoteQty: 15, purchaseQty: 0, unitCost: 4.25, unitPrice: 8.10, gmPercent: calcGM(4.25, 8.10), uom: "EA" as UOM },
+        { id: "QI-P01", productId: "P101", productName: '1" PVC Sch 40 Coupling', sku: "PVC-CPL-100", quoteQty: 50, purchasedQty: 10, purchaseQty: 0, unitCost: 1.20, unitPrice: 2.45, gmPercent: calcGM(1.20, 2.45), uom: "EA" as UOM },
+        { id: "QI-P02", productId: "P102", productName: '3/4" PVC 90° Elbow', sku: "PVC-ELB-075", quoteQty: 40, purchasedQty: 0, purchaseQty: 0, unitCost: 0.85, unitPrice: 1.75, gmPercent: calcGM(0.85, 1.75), uom: "EA" as UOM },
+        { id: "QI-P03", productId: "P103", productName: '1-1/2" PVC Tee', sku: "PVC-TEE-150", quoteQty: 30, purchasedQty: 15, purchaseQty: 0, unitCost: 2.10, unitPrice: 4.25, gmPercent: calcGM(2.10, 4.25), uom: "EA" as UOM },
+        { id: "QI-P04", productId: "P104", productName: '2" PVC Ball Valve Threaded', sku: "PVC-BV-200T", quoteQty: 12, purchasedQty: 0, purchaseQty: 0, unitCost: 8.50, unitPrice: 15.75, gmPercent: calcGM(8.50, 15.75), uom: "EA" as UOM },
+        { id: "QI-P05", productId: "P105", productName: '1" Poly Pipe 100ft Coil', sku: "POLY-100-1C", quoteQty: 5, purchasedQty: 2, purchaseQty: 0, unitCost: 32.00, unitPrice: 54.50, gmPercent: calcGM(32.00, 54.50), uom: "RL" as UOM },
+        { id: "QI-P06", productId: "P106", productName: '3/4" Brass Adapter MxF', sku: "BRS-ADP-075", quoteQty: 20, purchasedQty: 0, purchaseQty: 0, unitCost: 3.40, unitPrice: 6.80, gmPercent: calcGM(3.40, 6.80), uom: "EA" as UOM },
+        { id: "QI-P07", productId: "P107", productName: '1" PVC Union Slip x Slip', sku: "PVC-UNI-100", quoteQty: 15, purchasedQty: 5, purchaseQty: 0, unitCost: 4.25, unitPrice: 8.10, gmPercent: calcGM(4.25, 8.10), uom: "EA" as UOM },
       ]
     });
     groups.push({
       id: "PG-HEADS", name: "Spray Heads & Nozzles", items: [
-        { id: "QI-H01", productId: "P201", productName: 'Rain Bird 1804 4" Pop-Up Spray', sku: "RB-1804-4", quoteQty: 60, purchaseQty: 0, unitCost: 3.15, unitPrice: 5.90, gmPercent: calcGM(3.15, 5.90), uom: "EA" as UOM },
-        { id: "QI-H02", productId: "P202", productName: 'Hunter PGP Ultra Rotor', sku: "HNT-PGP-U", quoteQty: 24, purchaseQty: 0, unitCost: 18.50, unitPrice: 32.00, gmPercent: calcGM(18.50, 32.00), uom: "EA" as UOM },
-        { id: "QI-H03", productId: "P203", productName: 'Rain Bird HE-VAN-15 Nozzle', sku: "RB-HEVAN15", quoteQty: 60, purchaseQty: 0, unitCost: 2.80, unitPrice: 5.25, gmPercent: calcGM(2.80, 5.25), uom: "EA" as UOM },
-        { id: "QI-H04", productId: "P204", productName: 'Hunter MP Rotator 1000', sku: "HNT-MP1000", quoteQty: 35, purchaseQty: 0, unitCost: 5.60, unitPrice: 10.50, gmPercent: calcGM(5.60, 10.50), uom: "EA" as UOM },
-        { id: "QI-H05", productId: "P205", productName: 'Toro 570Z 6" Pop-Up Body', sku: "TOR-570Z-6", quoteQty: 20, purchaseQty: 0, unitCost: 4.10, unitPrice: 7.80, gmPercent: calcGM(4.10, 7.80), uom: "EA" as UOM },
-        { id: "QI-H06", productId: "P206", productName: 'Rain Bird 5004 Plus Rotor', sku: "RB-5004P", quoteQty: 18, purchaseQty: 0, unitCost: 14.20, unitPrice: 26.50, gmPercent: calcGM(14.20, 26.50), uom: "EA" as UOM },
-        { id: "QI-H07", productId: "P207", productName: 'Hunter I-20 Stainless Rotor', sku: "HNT-I20SS", quoteQty: 8, purchaseQty: 0, unitCost: 28.00, unitPrice: 48.75, gmPercent: calcGM(28.00, 48.75), uom: "EA" as UOM },
+        { id: "QI-H01", productId: "P201", productName: 'Rain Bird 1804 4" Pop-Up Spray', sku: "RB-1804-4", quoteQty: 60, purchasedQty: 20, purchaseQty: 0, unitCost: 3.15, unitPrice: 5.90, gmPercent: calcGM(3.15, 5.90), uom: "EA" as UOM },
+        { id: "QI-H02", productId: "P202", productName: 'Hunter PGP Ultra Rotor', sku: "HNT-PGP-U", quoteQty: 24, purchasedQty: 0, purchaseQty: 0, unitCost: 18.50, unitPrice: 32.00, gmPercent: calcGM(18.50, 32.00), uom: "EA" as UOM },
+        { id: "QI-H03", productId: "P203", productName: 'Rain Bird HE-VAN-15 Nozzle', sku: "RB-HEVAN15", quoteQty: 60, purchasedQty: 30, purchaseQty: 0, unitCost: 2.80, unitPrice: 5.25, gmPercent: calcGM(2.80, 5.25), uom: "EA" as UOM },
+        { id: "QI-H04", productId: "P204", productName: 'Hunter MP Rotator 1000', sku: "HNT-MP1000", quoteQty: 35, purchasedQty: 0, purchaseQty: 0, unitCost: 5.60, unitPrice: 10.50, gmPercent: calcGM(5.60, 10.50), uom: "EA" as UOM },
+        { id: "QI-H05", productId: "P205", productName: 'Toro 570Z 6" Pop-Up Body', sku: "TOR-570Z-6", quoteQty: 20, purchasedQty: 10, purchaseQty: 0, unitCost: 4.10, unitPrice: 7.80, gmPercent: calcGM(4.10, 7.80), uom: "EA" as UOM },
+        { id: "QI-H06", productId: "P206", productName: 'Rain Bird 5004 Plus Rotor', sku: "RB-5004P", quoteQty: 18, purchasedQty: 0, purchaseQty: 0, unitCost: 14.20, unitPrice: 26.50, gmPercent: calcGM(14.20, 26.50), uom: "EA" as UOM },
+        { id: "QI-H07", productId: "P207", productName: 'Hunter I-20 Stainless Rotor', sku: "HNT-I20SS", quoteQty: 8, purchasedQty: 4, purchaseQty: 0, unitCost: 28.00, unitPrice: 48.75, gmPercent: calcGM(28.00, 48.75), uom: "EA" as UOM },
       ]
     });
     groups.push({
       id: "PG-CTRL", name: "Controllers & Wire", items: [
-        { id: "QI-C01", productId: "P301", productName: 'Rain Bird ESP-TM2 8-Station', sku: "RB-TM2-8", quoteQty: 2, purchaseQty: 0, unitCost: 95.00, unitPrice: 165.00, gmPercent: calcGM(95.00, 165.00), uom: "EA" as UOM },
-        { id: "QI-C02", productId: "P302", productName: 'Hunter HC 12-Station WiFi', sku: "HNT-HC12W", quoteQty: 1, purchaseQty: 0, unitCost: 185.00, unitPrice: 310.00, gmPercent: calcGM(185.00, 310.00), uom: "EA" as UOM },
-        { id: "QI-C03", productId: "P303", productName: '18/5 Irrigation Wire 500ft', sku: "WIRE-18-5-500", quoteQty: 3, purchaseQty: 0, unitCost: 62.00, unitPrice: 105.00, gmPercent: calcGM(62.00, 105.00), uom: "RL" as UOM },
-        { id: "QI-C04", productId: "P304", productName: 'Wire Connectors Waterproof (25pk)', sku: "WCON-WP-25", quoteQty: 6, purchaseQty: 0, unitCost: 12.50, unitPrice: 22.00, gmPercent: calcGM(12.50, 22.00), uom: "BX" as UOM },
-        { id: "QI-C05", productId: "P305", productName: 'Rain Bird TBOS-II Battery Controller', sku: "RB-TBOS2", quoteQty: 3, purchaseQty: 0, unitCost: 78.00, unitPrice: 135.00, gmPercent: calcGM(78.00, 135.00), uom: "EA" as UOM },
-        { id: "QI-C06", productId: "P306", productName: 'Decoder Module 2-Wire', sku: "DEC-2W-MOD", quoteQty: 10, purchaseQty: 0, unitCost: 42.00, unitPrice: 72.50, gmPercent: calcGM(42.00, 72.50), uom: "EA" as UOM },
+        { id: "QI-C01", productId: "P301", productName: 'Rain Bird ESP-TM2 8-Station', sku: "RB-TM2-8", quoteQty: 2, purchasedQty: 1, purchaseQty: 0, unitCost: 95.00, unitPrice: 165.00, gmPercent: calcGM(95.00, 165.00), uom: "EA" as UOM },
+        { id: "QI-C02", productId: "P302", productName: 'Hunter HC 12-Station WiFi', sku: "HNT-HC12W", quoteQty: 1, purchasedQty: 0, purchaseQty: 0, unitCost: 185.00, unitPrice: 310.00, gmPercent: calcGM(185.00, 310.00), uom: "EA" as UOM },
+        { id: "QI-C03", productId: "P303", productName: '18/5 Irrigation Wire 500ft', sku: "WIRE-18-5-500", quoteQty: 3, purchasedQty: 1, purchaseQty: 0, unitCost: 62.00, unitPrice: 105.00, gmPercent: calcGM(62.00, 105.00), uom: "RL" as UOM },
+        { id: "QI-C04", productId: "P304", productName: 'Wire Connectors Waterproof (25pk)', sku: "WCON-WP-25", quoteQty: 6, purchasedQty: 0, purchaseQty: 0, unitCost: 12.50, unitPrice: 22.00, gmPercent: calcGM(12.50, 22.00), uom: "BX" as UOM },
+        { id: "QI-C05", productId: "P305", productName: 'Rain Bird TBOS-II Battery Controller', sku: "RB-TBOS2", quoteQty: 3, purchasedQty: 0, purchaseQty: 0, unitCost: 78.00, unitPrice: 135.00, gmPercent: calcGM(78.00, 135.00), uom: "EA" as UOM },
+        { id: "QI-C06", productId: "P306", productName: 'Decoder Module 2-Wire', sku: "DEC-2W-MOD", quoteQty: 10, purchasedQty: 3, purchaseQty: 0, unitCost: 42.00, unitPrice: 72.50, gmPercent: calcGM(42.00, 72.50), uom: "EA" as UOM },
       ]
     });
     return groups;
@@ -145,6 +145,10 @@ export default function QuoteDetail() {
             if (field === "unitPrice") {
               updated.gmPercent = calcGM(item.unitCost, value as number);
             }
+            if (field === "purchaseQty") {
+              const maxQty = item.quoteQty - item.purchasedQty;
+              updated.purchaseQty = Math.min(Math.max(0, value as number), maxQty);
+            }
             return updated;
           }),
         };
@@ -178,7 +182,7 @@ export default function QuoteDetail() {
         ...g,
         items: g.items.map((item) => ({
           ...item,
-          purchaseQty: item.quoteQty,
+          purchaseQty: item.quoteQty - item.purchasedQty,
         })),
       }))
     );
@@ -217,8 +221,8 @@ export default function QuoteDetail() {
         {/* Column Headers with Populate button */}
         <div className="relative">
           {/* Populate button row - positioned to align with Purchase Qty column */}
-          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3">
-            <div /><div /><div /><div />
+          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3">
+            <div /><div /><div /><div /><div />
             <div className="flex justify-center py-2">
               <Button
                 size="sm"
@@ -235,11 +239,12 @@ export default function QuoteDetail() {
             <div /><div /><div /><div /><div />
           </div>
           {/* Actual column headers */}
-          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground">
+          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground">
             <div className="px-2">Product Description</div>
             <div className="px-2">Item #</div>
             <div className="px-2 text-right">Cost</div>
-            <div className="px-2 text-center">Quote</div>
+            <div className="px-2 text-center">Quote Qty</div>
+            <div className="px-2 text-center">Purchased Qty</div>
             <div className="px-2 text-center">Purchase Qty</div>
             <div className="px-2 text-right">Price</div>
             <div className="px-2 text-center">UOM</div>
@@ -291,18 +296,18 @@ export default function QuoteDetail() {
 
               {/* Per-group Populate Remaining Qty row */}
               {!isCollapsed && (
-                <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/50 bg-muted/10">
-                  <div /><div /><div /><div />
+                <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/50 bg-muted/10">
+                  <div /><div /><div /><div /><div />
                   <div className="flex justify-center">
                     <Button
                       size="sm"
                       className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
-                        group.items.every((i) => i.purchaseQty >= i.quoteQty)
+                        group.items.every((i) => i.purchaseQty >= (i.quoteQty - i.purchasedQty))
                           ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
                           : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
                       }`}
                       onClick={() => {
-                        const allPopulated = group.items.every((i) => i.purchaseQty >= i.quoteQty);
+                        const allPopulated = group.items.every((i) => i.purchaseQty >= (i.quoteQty - i.purchasedQty));
                         setGroups((prev) =>
                           prev.map((g) => {
                             if (g.id !== group.id) return g;
@@ -310,7 +315,7 @@ export default function QuoteDetail() {
                               ...g,
                               items: g.items.map((item) => ({
                                 ...item,
-                                purchaseQty: allPopulated ? 0 : item.quoteQty,
+                                purchaseQty: allPopulated ? 0 : (item.quoteQty - item.purchasedQty),
                               })),
                             };
                           })
@@ -318,10 +323,10 @@ export default function QuoteDetail() {
                         toast.info(allPopulated ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
                       }}
                     >
-                      {group.items.every((i) => i.purchaseQty >= i.quoteQty) ? "Reset Qty to 0" : "Populate Remaining Qty"}
+                      {group.items.every((i) => i.purchaseQty >= (i.quoteQty - i.purchasedQty)) ? "Reset Qty to 0" : "Populate Remaining Qty"}
                     </Button>
                   </div>
-                  <div /><div /><div /><div /><div />
+                  <div /><div /><div /><div /><div /><div />
                 </div>
               )}
 
@@ -329,7 +334,7 @@ export default function QuoteDetail() {
               {!isCollapsed && group.items.map((item) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center"
+                  className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center"
                 >
                   <div className="flex flex-col gap-0.5 px-2 min-w-0">
                     <div className="flex items-center gap-2 min-w-0">
@@ -434,6 +439,10 @@ export default function QuoteDetail() {
                       onChange={(e) => updateItemField(group.id, item.id, "quoteQty", parseInt(e.target.value) || 0)}
                       className="h-8 w-full text-sm text-center"
                     />
+                  </div>
+
+                  <div className="px-2 text-sm text-center font-mono text-muted-foreground">
+                    {item.purchasedQty}
                   </div>
 
                   <div className="px-1">
