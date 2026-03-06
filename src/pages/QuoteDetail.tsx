@@ -446,15 +446,15 @@ export default function QuoteDetail() {
                   </div>
 
                   <div className="px-1">
-                    <div className={`flex items-center h-8 rounded-md border overflow-hidden ${isManager ? "border-success/20 bg-success/5" : "border-border bg-muted/30"}`}>
-                      <span className={`px-2 text-xs font-medium h-full flex items-center border-r ${isManager ? "text-success bg-success/10 border-success/20" : "text-muted-foreground bg-muted/50 border-border"}`}>$</span>
+                    <div className={`flex items-center h-8 rounded-md border overflow-hidden ${isManager ? "border-border" : "border-border bg-muted/30"}`}>
+                      <span className={`px-2 text-xs font-medium h-full flex items-center border-r border-border ${isManager ? "text-muted-foreground bg-muted/30" : "text-muted-foreground bg-muted/50"}`}>$</span>
                       <Input
                         type="number"
                         step="0.01"
                         value={item.unitPrice}
                         onChange={(e) => updateItemField(group.id, item.id, "unitPrice", parseFloat(e.target.value) || 0)}
                         disabled={!isManager}
-                        className={`h-full border-0 bg-transparent text-sm text-right font-mono px-2 focus-visible:ring-0 font-medium ${isManager ? "text-success" : "text-muted-foreground cursor-not-allowed"}`}
+                        className={`h-full border-0 bg-transparent text-sm text-right font-mono px-2 focus-visible:ring-0 font-medium ${!isManager ? "text-muted-foreground cursor-not-allowed" : ""}`}
                       />
                     </div>
                   </div>
