@@ -210,7 +210,18 @@ export default function QuoteDetail() {
         {/* Table Header with Populate button */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border">
           <span className="text-xs font-medium text-muted-foreground">Line Items</span>
-          <div className="flex items-center gap-3">
+          <button
+            className="text-xs text-brand hover:underline font-medium transition-colors"
+            onClick={toggleAllGroups}
+          >
+            {allExpanded ? "Collapse All" : "Expand All"}
+          </button>
+        </div>
+
+        {/* Global Populate button row - aligned with Purchase Qty column */}
+        <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/50 bg-muted/10">
+          <div /><div /><div /><div /><div />
+          <div className="flex justify-center">
             <Button
               size="sm"
               className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
@@ -222,13 +233,8 @@ export default function QuoteDetail() {
             >
               {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
             </Button>
-            <button
-              className="text-xs text-brand hover:underline font-medium transition-colors"
-              onClick={toggleAllGroups}
-            >
-              {allExpanded ? "Collapse All" : "Expand All"}
-            </button>
           </div>
+          <div /><div /><div /><div /><div />
         </div>
 
         {/* Column Headers */}
