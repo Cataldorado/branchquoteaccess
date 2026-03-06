@@ -34,7 +34,7 @@ export function AppSidebar() {
 
   const renderGroup = (label: string, items: typeof mainItems) => (
     <SidebarGroup>
-      <SidebarGroupLabel className="text-sidebar-foreground/40 text-2xs uppercase tracking-[0.08em] font-medium px-3 mb-1">
+      <SidebarGroupLabel className="text-sidebar-foreground/60 text-2xs uppercase tracking-[0.08em] font-medium px-3 mb-1">
         {label}
       </SidebarGroupLabel>
       <SidebarGroupContent>
@@ -46,10 +46,10 @@ export function AppSidebar() {
                   <NavLink
                     to={item.url}
                     end
-                    className="text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-150 rounded-lg text-[13px]"
+                    className="text-sidebar-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-150 rounded-lg text-[13px]"
                     activeClassName="bg-sidebar-primary/15 text-sidebar-primary font-semibold shadow-[inset_0_0_0_1px_hsl(var(--sidebar-primary)/0.2)]"
                   >
-                    <item.icon className="h-4 w-4 opacity-70" />
+                    <item.icon className="h-4 w-4" />
                     {!collapsed && <span>{item.title}</span>}
                   </NavLink>
                 </SidebarMenuButton>
