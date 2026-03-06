@@ -150,7 +150,7 @@ function makeItems(indices: number[], qtyRange: [number, number], priceVariance:
       productName: p.name,
       sku: p.sku,
       quoteQty: qty,
-      purchasedQty: Math.random() > 0.6 ? Math.floor(qty * Math.random() * 0.8) : 0,
+      purchasedQty: Math.random() > 0.3 ? Math.floor(qty * (0.2 + Math.random() * 0.6)) : 0,
       purchaseQty: Math.random() > 0.4 ? qty : 0,
       unitCost: p.unitCost,
       unitPrice: price,
