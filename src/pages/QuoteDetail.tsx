@@ -210,34 +210,29 @@ export default function QuoteDetail() {
         {/* Table Header with Populate button */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border">
           <span className="text-xs font-medium text-muted-foreground">Line Items</span>
-          <button
-            className="text-xs text-brand hover:underline font-medium transition-colors"
-            onClick={toggleAllGroups}
-          >
-            {allExpanded ? "Collapse All" : "Expand All"}
-          </button>
+          <div className="flex items-center gap-3">
+            <Button
+              size="sm"
+              className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
+                populated
+                  ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                  : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
+              }`}
+              onClick={populated ? resetQtyToZero : populateRemainingQty}
+            >
+              {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
+            </Button>
+            <button
+              className="text-xs text-brand hover:underline font-medium transition-colors"
+              onClick={toggleAllGroups}
+            >
+              {allExpanded ? "Collapse All" : "Expand All"}
+            </button>
+          </div>
         </div>
 
-        {/* Column Headers with Populate button */}
+        {/* Column Headers */}
         <div className="relative">
-          {/* Populate button row - positioned to align with Purchase Qty column */}
-          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3">
-            <div /><div /><div /><div /><div />
-            <div className="flex justify-center py-2">
-              <Button
-                size="sm"
-                className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
-                  populated
-                    ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-                    : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
-                }`}
-                onClick={populated ? resetQtyToZero : populateRemainingQty}
-              >
-                {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
-              </Button>
-            </div>
-            <div /><div /><div /><div /><div />
-          </div>
           {/* Actual column headers */}
           <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground">
             <div className="px-2">Product Description</div>
