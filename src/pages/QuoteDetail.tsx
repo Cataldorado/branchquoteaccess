@@ -16,6 +16,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   quotes, getStatusColor, getOriginColor, getGMColor, getGMBgColor, getDaysUntilExpiration, formatCurrency,
   type QuoteItem, type ProductGroup, type UOM,
@@ -345,12 +346,16 @@ export default function QuoteDetail() {
                           <StickyNote className="h-3.5 w-3.5" />
                         </button>
                       )}
-                      <span className="group/name relative text-sm truncate cursor-default">
-                        <span className="truncate block">{item.productName}</span>
-                        <span className="invisible group-hover/name:visible absolute left-0 top-0 z-50 whitespace-nowrap bg-popover text-popover-foreground text-sm px-2 py-1 rounded-md shadow-md border border-border -translate-y-1">
-                          {item.productName}
-                        </span>
-                      </span>
+                      <TooltipProvider delayDuration={300}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="text-sm truncate cursor-default block">{item.productName}</span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-sm">
+                            <p>{item.productName}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                       <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace item">
                         <ArrowLeftRight className="h-3.5 w-3.5" />
                       </button>
@@ -398,11 +403,17 @@ export default function QuoteDetail() {
                     )}
                   </div>
 
-                  <div className="group/sku relative px-2 text-sm font-mono text-muted-foreground truncate cursor-default">
-                    <span className="truncate block">{item.sku}</span>
-                    <span className="invisible group-hover/sku:visible absolute left-0 top-0 z-50 whitespace-nowrap bg-popover text-popover-foreground text-sm font-mono px-2 py-1 rounded-md shadow-md border border-border -translate-y-1">
-                      {item.sku}
-                    </span>
+                  <div className="px-2 text-sm font-mono text-muted-foreground truncate cursor-default">
+                    <TooltipProvider delayDuration={300}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="truncate block">{item.sku}</span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          <p className="font-mono">{item.sku}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
 
                   <div className="px-2 text-sm text-right font-mono text-muted-foreground">
