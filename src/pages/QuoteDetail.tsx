@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import QuoteDetailHeader from "@/components/QuoteDetailHeader";
 import InventoryStatusDot from "@/components/InventoryStatusDot";
 import CheckoutModal from "@/components/CheckoutModal";
+import AddItemModal from "@/components/AddItemModal";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -92,6 +93,7 @@ export default function QuoteDetail() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [expiredResolutionOpen, setExpiredResolutionOpen] = useState(false);
   const [populated, setPopulated] = useState(false);
+  const [addItemGroupId, setAddItemGroupId] = useState<string | null>(null);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
   const noteInputRef = useRef<HTMLInputElement>(null);
@@ -269,7 +271,10 @@ export default function QuoteDetail() {
                 </span>
                 <span className="text-2xs text-muted-foreground">({group.items.length})</span>
                 <span className="text-muted-foreground/30 mx-0.5">·</span>
-                <button className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors">
+                <button
+                  className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors"
+                  onClick={() => setAddItemGroupId(group.id)}
+                >
                   <Plus className="h-3 w-3" /> Add Item
                 </button>
 
@@ -505,7 +510,28 @@ export default function QuoteDetail() {
         </div>
       </div>
 
-      {/* Checkout Modal */}
+      {/* Add Item Modal */}
+      {addItemGroupId && (
+        <AddItemModal
+          open={!!addItemGroupId}
+          onOpenChange={(open) => { if (!open) setAddItemGroupId(null); }}
+          groupName={groups.find((g) => g.id === addItemGroupId)?.name || ""}
+          existingProductIds={allItems.map((i) => i.productId)}
+          onConfirm={(newItems) => {
+            setGroups((prev) =>
+              prev.map((g) =>
+                g.id === addItemGroupId
+                  ? { ...g, items: [...g.items, ...newItems] }
+                  : g
+              )
+            );
+            toast.success(`Added ${newItems.length} item${newItems.length > 1 ? "s" : ""} to ${groups.find((g) => g.id === addItemGroupId)?.name}`);
+            setAddItemGroupId(null);
+          }}
+        />
+      )}
+
+
       <CheckoutModal
         open={checkoutOpen}
         onOpenChange={setCheckoutOpen}
