@@ -87,6 +87,7 @@ export default function QuoteDetailHeader({
   }, []);
 
   const [customerName, setCustomerName] = useState(quote.customerName);
+  const [quoteName, setQuoteName] = useState(quote.quoteName);
   const [poNumber, setPoNumber] = useState(quote.poNumber || "");
   const [refNumber, setRefNumber] = useState(quote.transactionRef || "");
   const [expDeliveryDate, setExpDeliveryDate] = useState(quote.expirationDate);
@@ -161,8 +162,8 @@ export default function QuoteDetailHeader({
             <div className="flex items-center gap-4 px-5 py-3">
               <div className="flex items-center gap-1 flex-1 min-w-0">
                 <Input
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  value={quoteName}
+                  onChange={(e) => setQuoteName(e.target.value)}
                   className="text-lg font-semibold tracking-tight border-0 bg-transparent h-8 px-1 focus-visible:ring-1 focus-visible:ring-ring/20 max-w-sm w-auto"
                 /><Pencil className="h-3.5 w-3.5 text-muted-foreground/30" />
               </div>
