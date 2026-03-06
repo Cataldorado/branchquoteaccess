@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from "react";
+import { useRole } from "@/contexts/RoleContext";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ChevronRight, ChevronDown, Plus, Trash2, FileText, StickyNote, ArrowLeftRight,
@@ -39,6 +40,7 @@ const uomOptions: UOM[] = ["EA", "FT", "LF", "BX", "CS", "RL"];
 export default function QuoteDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isManager } = useRole();
   const quote = quotes.find((q) => q.id === id);
 
   const initialGroups = useMemo(() => {
@@ -444,14 +446,15 @@ export default function QuoteDetail() {
                   </div>
 
                   <div className="px-1">
-                    <div className="flex items-center h-8 rounded-md border border-success/20 bg-success/5 overflow-hidden">
-                      <span className="px-2 text-xs font-medium text-success bg-success/10 h-full flex items-center border-r border-success/20">$</span>
+                    <div className={`flex items-center h-8 rounded-md border overflow-hidden ${isManager ? "border-success/20 bg-success/5" : "border-border bg-muted/30"}`}>
+                      <span className={`px-2 text-xs font-medium h-full flex items-center border-r ${isManager ? "text-success bg-success/10 border-success/20" : "text-muted-foreground bg-muted/50 border-border"}`}>$</span>
                       <Input
                         type="number"
                         step="0.01"
                         value={item.unitPrice}
                         onChange={(e) => updateItemField(group.id, item.id, "unitPrice", parseFloat(e.target.value) || 0)}
-                        className="h-full border-0 bg-transparent text-sm text-right font-mono px-2 focus-visible:ring-0 text-success font-medium"
+                        disabled={!isManager}
+                        className={`h-full border-0 bg-transparent text-sm text-right font-mono px-2 focus-visible:ring-0 font-medium ${isManager ? "text-success" : "text-muted-foreground cursor-not-allowed"}`}
                       />
                     </div>
                   </div>

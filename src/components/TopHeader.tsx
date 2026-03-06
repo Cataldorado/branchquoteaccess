@@ -1,6 +1,6 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, Building2, Mail } from "lucide-react";
+import { LogOut, Building2, Mail, ShieldCheck, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,13 +9,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRole } from "@/contexts/RoleContext";
 
 export function TopHeader() {
+  const { role, setRole, isManager } = useRole();
+
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-6 gap-4 shrink-0">
       <SidebarTrigger className="text-muted-foreground/60 hover:text-foreground transition-colors" />
 
       <div className="flex-1" />
+
+      {/* Role toggle */}
+      <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
+        <button
+          onClick={() => setRole("branch-manager")}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+            isManager
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <ShieldCheck className="h-3.5 w-3.5" />
+          Manager
+        </button>
+        <button
+          onClick={() => setRole("branch-associate")}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+            !isManager
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <User className="h-3.5 w-3.5" />
+          Associate
+        </button>
+      </div>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
