@@ -331,6 +331,21 @@ export default function QuoteDetail() {
                   >
                     <Plus className="h-3 w-3" /> Add
                   </button>
+                  {(() => {
+                    const allFilled = group.items.every(item => item.purchaseQty === item.quoteQty - item.purchasedQty);
+                    return (
+                      <button
+                        className={`text-2xs font-medium px-2 py-0.5 rounded-md transition-colors ${
+                          allFilled
+                            ? "text-muted-foreground bg-muted hover:bg-muted/80"
+                            : "text-brand bg-brand/10 hover:bg-brand/20"
+                        }`}
+                        onClick={() => populateGroupQty(group.id)}
+                      >
+                        {allFilled ? "Reset Qty" : "Populate Qty"}
+                      </button>
+                    );
+                  })()}
                   <div className="flex-1" />
                   <span className={`text-xs font-semibold font-mono px-2 py-0.5 rounded-md border ${getGMBgColor(gt.gm)}`}>
                     {gt.gm.toFixed(1)}%
