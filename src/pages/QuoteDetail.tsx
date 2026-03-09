@@ -2,8 +2,8 @@ import { useState, useMemo, useRef } from "react";
 import { useRole } from "@/contexts/RoleContext";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  ChevronRight, ChevronDown, Plus, Trash2, FileText, StickyNote, ArrowLeftRight,
-  RefreshCw, AlertTriangle,
+  ChevronDown, Plus, Trash2, StickyNote, ArrowLeftRight,
+  RefreshCw, AlertTriangle, ArrowLeft, ArrowRightCircle, ShoppingCart, Eye, EyeOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,6 @@ import {
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   quotes, getStatusColor, getOriginColor, getGMColor, getGMBgColor, getDaysUntilExpiration, formatCurrency,
@@ -54,7 +53,6 @@ export default function QuoteDetail() {
       ];
       groups.push({ id: "PG-EXTRA", name: "Valves & Accessories", items: extraItems });
     }
-    // Add additional product groups with more items for scrollable content
     groups.push({
       id: "PG-PIPE", name: "Pipe & Fittings", items: [
         { id: "QI-P01", productId: "P101", productName: '1" PVC Sch 40 Coupling', sku: "PVC-CPL-100", quoteQty: 50, purchasedQty: 10, purchaseQty: 0, unitCost: 1.20, unitPrice: 2.45, gmPercent: calcGM(1.20, 2.45), uom: "EA" as UOM },
@@ -98,6 +96,7 @@ export default function QuoteDetail() {
   const [addItemGroupId, setAddItemGroupId] = useState<string | null>(null);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
+  const [showDetails, setShowDetails] = useState(false);
   const noteInputRef = useRef<HTMLInputElement>(null);
 
   if (!quote) {
@@ -115,6 +114,7 @@ export default function QuoteDetail() {
   const totalCost = allItems.reduce((s, i) => s + i.unitCost * i.quoteQty, 0);
   const overallGM = calcGM(totalCost, totalAmount);
   const orderableCount = allItems.filter((i) => i.purchaseQty > 0).length;
+  const orderableTotal = allItems.reduce((s, i) => s + i.unitPrice * i.purchaseQty, 0);
 
   const toggleGroup = (groupId: string) => {
     setCollapsedGroups((prev) => {
@@ -190,340 +190,383 @@ export default function QuoteDetail() {
     toast.info("Purchase quantities populated with remaining qty");
   };
 
-  // handleConvert removed – checkout modal handles submission
+  const showOrderButton = !isExpired && quote.status !== "Received (Awarded)" && quote.status !== "Received (Not Awarded)";
+
+  // Column grid template based on details toggle
+  const colTemplate = showDetails
+    ? "grid-cols-[minmax(220px,2fr)_90px_70px_65px_60px_65px_90px_65px_70px_80px_36px]"
+    : "grid-cols-[minmax(240px,2fr)_90px_65px_60px_65px_90px_80px_36px]";
 
   return (
-    <div className="space-y-5 max-w-[1400px]">
-      <QuoteDetailHeader
-        quote={quote}
-        overallGM={overallGM}
-        totalAmount={totalAmount}
-        orderableCount={orderableCount}
-        isExpired={isExpired}
-        onBack={() => navigate(-1)}
-        onConvert={() => setCheckoutOpen(true)}
-        onResolve={() => setExpiredResolutionOpen(true)}
-      />
-
-      {/* Line Items Table */}
-      <div className="border border-border rounded-lg overflow-hidden bg-card shadow-subtle">
-        {/* Table Header with Populate button */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-border">
-          <span className="text-xs font-medium text-muted-foreground">Line Items</span>
+    <div className="flex gap-5 max-w-[1800px] mx-auto h-[calc(100vh-theme(spacing.14)-theme(spacing.10))]">
+      {/* LEFT: Item list panel */}
+      <div className="flex-1 min-w-0 overflow-auto">
+        {/* Back + quote name */}
+        <div className="flex items-center gap-3 mb-4">
           <button
-            className="text-xs text-brand hover:underline font-medium transition-colors"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg font-semibold truncate">{quote.quoteName}</h1>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs text-muted-foreground font-mono">{quote.id}</span>
+              <span className={`text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(quote.origin)}`}>{quote.origin}</span>
+              <span className={`text-2xs font-semibold px-2 py-0.5 rounded-full ${getStatusColor(quote.status)}`}>{quote.status}</span>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 transition-all"
+          >
+            {showDetails ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+            {showDetails ? "Hide Details" : "Show Details"}
+          </button>
+        </div>
+
+        {/* Toolbar */}
+        <div className="flex items-center gap-2 mb-3">
+          <Button
+            size="sm"
+            className={`h-9 text-xs font-semibold px-4 rounded-lg ${
+              populated
+                ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
+            }`}
+            onClick={populated ? resetQtyToZero : populateRemainingQty}
+          >
+            {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
+          </Button>
+          <button
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             onClick={toggleAllGroups}
           >
             {allExpanded ? "Collapse All" : "Expand All"}
           </button>
-        </div>
-
-        {/* Global Populate button row - aligned with Purchase Qty column */}
-        <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/50 bg-muted/10">
-          <div /><div /><div /><div /><div />
-          <div className="flex justify-center">
-            <Button
-              size="sm"
-              className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
-                populated
-                  ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-                  : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
-              }`}
-              onClick={populated ? resetQtyToZero : populateRemainingQty}
-            >
-              {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
+          {isExpired && (
+            <Button size="sm" variant="destructive" className="h-9 text-xs gap-1.5 ml-auto" onClick={() => setExpiredResolutionOpen(true)}>
+              <AlertTriangle className="h-3.5 w-3.5" /> Resolve Expired
             </Button>
-          </div>
-          <div /><div /><div /><div /><div />
+          )}
         </div>
 
-        {/* Column Headers */}
-        <div className="relative">
-          {/* Actual column headers */}
-          <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground">
-            <div className="px-2">Product Description</div>
-            <div className="px-2">Item #</div>
-            <div className="px-2 text-right">Cost</div>
-            <div className="px-2 text-center">Quote Qty</div>
-            <div className="px-2 text-center">Purchased Qty</div>
-            <div className="px-2 text-center">Purchase Qty</div>
-            <div className="px-2 text-right">Price</div>
-            <div className="px-2 text-center">UOM</div>
-            <div className="px-2 text-right">GM%</div>
-            <div className="px-2 text-right">Ext. Price</div>
-            <div />
-          </div>
-        </div>
+        {/* Line items */}
+        <div className="border border-border rounded-xl overflow-hidden bg-card shadow-subtle">
+          {/* Column Headers */}
+          {showDetails ? (
+            <div className={`grid ${colTemplate} gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground`}>
+              <div className="px-2">Product</div>
+              <div className="px-2">SKU</div>
+              <div className="px-2 text-right">Cost</div>
+              <div className="px-2 text-center">Quote</div>
+              <div className="px-2 text-center">Purch'd</div>
+              <div className="px-2 text-center">Buy Qty</div>
+              <div className="px-2 text-right">Price</div>
+              <div className="px-2 text-center">UOM</div>
+              <div className="px-2 text-right">GM%</div>
+              <div className="px-2 text-right">Ext. Price</div>
+              <div />
+            </div>
+          ) : (
+            <div className={`grid ${colTemplate} gap-0 px-3 py-2.5 bg-muted/40 border-b border-border text-2xs uppercase tracking-wider font-medium text-muted-foreground`}>
+              <div className="px-2">Product</div>
+              <div className="px-2">SKU</div>
+              <div className="px-2 text-center">Quote</div>
+              <div className="px-2 text-center">Purch'd</div>
+              <div className="px-2 text-center">Buy Qty</div>
+              <div className="px-2 text-right">Price</div>
+              <div className="px-2 text-right">Ext. Price</div>
+              <div />
+            </div>
+          )}
 
-        {/* Product Groups */}
-        {groups.map((group) => {
-          const isCollapsed = collapsedGroups.has(group.id);
-          const gt = groupTotal(group.items);
+          {/* Product Groups */}
+          {groups.map((group) => {
+            const isCollapsed = collapsedGroups.has(group.id);
+            const gt = groupTotal(group.items);
 
-          return (
-            <div key={group.id} className="border-b border-border last:border-0">
-              {/* Group Header */}
-              <div className="flex items-center gap-2.5 px-4 py-2.5 bg-muted/20 border-b border-border">
-                <button
-                  className="flex items-center gap-1 text-foreground hover:text-foreground/70 transition-colors"
-                  onClick={() => toggleGroup(group.id)}
-                >
-                  {isCollapsed ? (
-                    <Plus className="h-3.5 w-3.5" />
-                  ) : (
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  )}
-                </button>
-                <span className="text-sm font-semibold text-foreground">
-                  {group.name}
-                </span>
-                <span className="text-2xs text-muted-foreground">({group.items.length})</span>
-                <span className="text-muted-foreground/30 mx-0.5">·</span>
-                <button
-                  className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors"
-                  onClick={() => setAddItemGroupId(group.id)}
-                >
-                  <Plus className="h-3 w-3" /> Add Item
-                </button>
-
-                <div className="flex-1" />
-
-                <span className={`text-xs font-semibold font-mono px-2.5 py-1 rounded-md border ${getGMBgColor(gt.gm)}`}>
-                  {gt.gm.toFixed(2)}%
-                </span>
-                <span className="text-2xs text-muted-foreground ml-3">Total</span>
-                <span className="text-sm font-semibold font-mono ml-1.5">{formatCurrency(gt.amount)}</span>
-              </div>
-
-              {/* Per-group Populate Remaining Qty row */}
-              {!isCollapsed && (
-                <div className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/50 bg-muted/10">
-                  <div /><div /><div /><div /><div />
-                  <div className="flex justify-center">
-                    <Button
-                      size="sm"
-                      className={`h-7 text-[10px] font-semibold px-4 rounded-full whitespace-nowrap ${
-                        group.items.every((i) => i.purchaseQty >= (i.quoteQty - i.purchasedQty))
-                          ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-                          : "bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm"
-                      }`}
-                      onClick={() => {
-                        const allPopulated = group.items.every((i) => i.purchaseQty >= (i.quoteQty - i.purchasedQty));
-                        setGroups((prev) =>
-                          prev.map((g) => {
-                            if (g.id !== group.id) return g;
-                            return {
-                              ...g,
-                              items: g.items.map((item) => ({
-                                ...item,
-                                purchaseQty: allPopulated ? 0 : (item.quoteQty - item.purchasedQty),
-                              })),
-                            };
-                          })
-                        );
-                        toast.info(allPopulated ? `Reset quantities for ${group.name}` : `Populated quantities for ${group.name}`);
-                      }}
-                    >
-                      {group.items.every((i) => i.purchaseQty >= (i.quoteQty - i.purchasedQty)) ? "Reset Qty to 0" : "Populate Remaining Qty"}
-                    </Button>
-                  </div>
-                  <div /><div /><div /><div /><div /><div />
+            return (
+              <div key={group.id} className="border-b border-border last:border-0">
+                {/* Group Header */}
+                <div className="flex items-center gap-2.5 px-4 py-2.5 bg-muted/20 border-b border-border">
+                  <button
+                    className="flex items-center gap-1 text-foreground hover:text-foreground/70 transition-colors"
+                    onClick={() => toggleGroup(group.id)}
+                  >
+                    {isCollapsed ? (
+                      <Plus className="h-3.5 w-3.5" />
+                    ) : (
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                  <span className="text-sm font-semibold text-foreground">{group.name}</span>
+                  <span className="text-2xs text-muted-foreground">({group.items.length})</span>
+                  <button
+                    className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors"
+                    onClick={() => setAddItemGroupId(group.id)}
+                  >
+                    <Plus className="h-3 w-3" /> Add
+                  </button>
+                  <div className="flex-1" />
+                  <span className={`text-xs font-semibold font-mono px-2 py-0.5 rounded-md border ${getGMBgColor(gt.gm)}`}>
+                    {gt.gm.toFixed(1)}%
+                  </span>
+                  <span className="text-sm font-semibold font-mono">{formatCurrency(gt.amount)}</span>
                 </div>
-              )}
 
-              {/* Group Items */}
-              {!isCollapsed && group.items.map((item) => (
-                <div
-                  key={item.id}
-                  className="grid grid-cols-[minmax(280px,2fr)_100px_80px_80px_80px_80px_100px_80px_80px_90px_40px] gap-0 px-3 py-2 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center"
-                >
-                  <div className="flex flex-col gap-0.5 px-2 min-w-0">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <InventoryStatusDot
-                        productId={item.productId}
-                        productName={item.productName}
-                        sku={item.sku}
-                        quoteQty={item.quoteQty}
-                        branchId={quote.branchId}
-                      />
-                      {!item.note && editingNoteId !== item.id && (
-                        <button
-                          className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors"
-                          title="Add note"
-                          onClick={() => {
-                            setEditingNoteId(item.id);
-                            setNoteText("");
-                            setTimeout(() => noteInputRef.current?.focus(), 0);
-                          }}
-                        >
-                          <StickyNote className="h-3.5 w-3.5" />
+                {/* Group Items */}
+                {!isCollapsed && group.items.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`grid ${colTemplate} gap-0 px-3 py-2.5 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center`}
+                  >
+                    {/* Product */}
+                    <div className="flex flex-col gap-0.5 px-2 min-w-0">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <InventoryStatusDot
+                          productId={item.productId}
+                          productName={item.productName}
+                          sku={item.sku}
+                          quoteQty={item.quoteQty}
+                          branchId={quote.branchId}
+                        />
+                        {!item.note && editingNoteId !== item.id && (
+                          <button
+                            className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors"
+                            title="Add note"
+                            onClick={() => {
+                              setEditingNoteId(item.id);
+                              setNoteText("");
+                              setTimeout(() => noteInputRef.current?.focus(), 0);
+                            }}
+                          >
+                            <StickyNote className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                        <span className="text-sm truncate">{item.productName}</span>
+                        <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace">
+                          <ArrowLeftRight className="h-3.5 w-3.5" />
                         </button>
-                      )}
-                      <TooltipProvider delayDuration={300}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="text-sm truncate cursor-default block">{item.productName}</span>
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-sm">
-                            <p>{item.productName}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace item">
-                        <ArrowLeftRight className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                    {editingNoteId === item.id && (
-                      <div className="flex items-center gap-1.5 ml-6">
-                        <span className="text-2xs text-muted-foreground font-medium">Add Note:</span>
-                        <input
-                          ref={noteInputRef}
-                          type="text"
-                          value={noteText}
-                          onChange={(e) => setNoteText(e.target.value)}
-                          onBlur={() => {
-                            if (noteText.trim()) {
-                              updateItemField(group.id, item.id, "note", noteText.trim());
-                            }
-                            setEditingNoteId(null);
-                            setNoteText("");
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              (e.target as HTMLInputElement).blur();
-                            } else if (e.key === "Escape") {
+                      </div>
+                      {editingNoteId === item.id && (
+                        <div className="flex items-center gap-1.5 ml-6">
+                          <input
+                            ref={noteInputRef}
+                            type="text"
+                            value={noteText}
+                            onChange={(e) => setNoteText(e.target.value)}
+                            onBlur={() => {
+                              if (noteText.trim()) updateItemField(group.id, item.id, "note", noteText.trim());
                               setEditingNoteId(null);
                               setNoteText("");
-                            }
-                          }}
-                          className="flex-1 h-6 text-xs border border-border rounded px-2 bg-background focus:outline-none focus:ring-1 focus:ring-ring"
-                          placeholder="Enter note..."
-                        />
-                      </div>
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                              else if (e.key === "Escape") { setEditingNoteId(null); setNoteText(""); }
+                            }}
+                            className="flex-1 h-6 text-xs border border-border rounded px-2 bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+                            placeholder="Enter note..."
+                          />
+                        </div>
+                      )}
+                      {item.note && editingNoteId !== item.id && (
+                        <button
+                          className="text-2xs text-brand ml-6 text-left truncate hover:underline"
+                          onClick={() => { setEditingNoteId(item.id); setNoteText(item.note || ""); setTimeout(() => noteInputRef.current?.focus(), 0); }}
+                        >
+                          NOTE: {item.note}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* SKU */}
+                    <div className="px-2 text-xs font-mono text-muted-foreground truncate">{item.sku}</div>
+
+                    {/* Cost (detail only) */}
+                    {showDetails && (
+                      <div className="px-2 text-sm text-right font-mono text-muted-foreground">${item.unitCost.toFixed(2)}</div>
                     )}
-                    {item.note && editingNoteId !== item.id && (
-                      <button
-                        className="text-2xs text-brand ml-6 text-left truncate hover:underline cursor-pointer"
-                        title={`NOTE: ${item.note} (click to edit)`}
-                        onClick={() => {
-                          setEditingNoteId(item.id);
-                          setNoteText(item.note || "");
-                          setTimeout(() => noteInputRef.current?.focus(), 0);
-                        }}
-                      >
-                        NOTE: {item.note}
-                      </button>
-                    )}
-                  </div>
 
-                  <div className="px-2 text-sm font-mono text-muted-foreground truncate cursor-default">
-                    <TooltipProvider delayDuration={300}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="truncate block">{item.sku}</span>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">
-                          <p className="font-mono">{item.sku}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-
-                  <div className="px-2 text-sm text-right font-mono text-muted-foreground">
-                    ${item.unitCost.toFixed(2)}
-                  </div>
-
-                  <div className="px-1">
-                    <Input
-                      type="number"
-                      value={item.quoteQty}
-                      onChange={(e) => updateItemField(group.id, item.id, "quoteQty", parseInt(e.target.value) || 0)}
-                      className="h-8 w-full text-sm text-center"
-                    />
-                  </div>
-
-                  <div className="px-2 text-sm text-center font-mono text-muted-foreground">
-                    {item.purchasedQty}
-                  </div>
-
-                  <div className="px-1">
-                    <Input
-                      type="number"
-                      value={item.purchaseQty}
-                      onChange={(e) => updateItemField(group.id, item.id, "purchaseQty", parseInt(e.target.value) || 0)}
-                      className="h-8 w-full text-sm text-center"
-                    />
-                  </div>
-
-                  <div className="px-1">
-                    <div className={`flex items-center h-8 rounded-md border overflow-hidden ${isManager ? "border-border" : "border-border bg-muted/30"}`}>
-                      <span className={`px-2 text-xs font-medium h-full flex items-center border-r border-border ${isManager ? "text-muted-foreground bg-muted/30" : "text-muted-foreground bg-muted/50"}`}>$</span>
+                    {/* Quote Qty */}
+                    <div className="px-1">
                       <Input
                         type="number"
-                        step="0.01"
-                        value={item.unitPrice}
-                        onChange={(e) => updateItemField(group.id, item.id, "unitPrice", parseFloat(e.target.value) || 0)}
-                        disabled={!isManager}
-                        className={`h-full border-0 bg-transparent text-sm text-right font-mono px-2 focus-visible:ring-0 font-medium ${!isManager ? "text-muted-foreground cursor-not-allowed" : ""}`}
+                        value={item.quoteQty}
+                        onChange={(e) => updateItemField(group.id, item.id, "quoteQty", parseInt(e.target.value) || 0)}
+                        className="h-9 w-full text-sm text-center"
                       />
                     </div>
-                  </div>
 
-                  <div className="px-1">
-                    <Select
-                      value={item.uom}
-                      onValueChange={(val) => updateItemField(group.id, item.id, "uom", val)}
-                    >
-                      <SelectTrigger className="h-8 text-xs px-2 w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {uomOptions.map((u) => (
-                          <SelectItem key={u} value={u} className="text-sm">{u}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                    {/* Purchased Qty */}
+                    <div className="px-2 text-sm text-center font-mono text-muted-foreground">{item.purchasedQty}</div>
 
-                  <div className="px-2 text-right">
-                    <span className={`text-xs font-semibold font-mono px-2 py-1 rounded-md ${getGMBgColor(item.gmPercent)}`}>
-                      {item.gmPercent.toFixed(1)}%
-                    </span>
-                  </div>
+                    {/* Purchase Qty */}
+                    <div className="px-1">
+                      <Input
+                        type="number"
+                        value={item.purchaseQty}
+                        onChange={(e) => updateItemField(group.id, item.id, "purchaseQty", parseInt(e.target.value) || 0)}
+                        className="h-9 w-full text-sm text-center font-semibold"
+                      />
+                    </div>
 
-                  <div className="px-2 text-sm text-right font-mono font-medium">
-                    {formatCurrency(item.unitPrice * item.quoteQty)}
-                  </div>
+                    {/* Price */}
+                    <div className="px-1">
+                      <div className={`flex items-center h-9 rounded-md border overflow-hidden ${isManager ? "border-border" : "border-border bg-muted/30"}`}>
+                        <span className={`px-2 text-xs font-medium h-full flex items-center border-r border-border ${isManager ? "text-muted-foreground bg-muted/30" : "text-muted-foreground bg-muted/50"}`}>$</span>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={item.unitPrice}
+                          onChange={(e) => updateItemField(group.id, item.id, "unitPrice", parseFloat(e.target.value) || 0)}
+                          disabled={!isManager}
+                          className={`h-full border-0 bg-transparent text-sm text-right font-mono px-2 focus-visible:ring-0 font-medium ${!isManager ? "text-muted-foreground cursor-not-allowed" : ""}`}
+                        />
+                      </div>
+                    </div>
 
-                  <div className="flex justify-center">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 text-muted-foreground/30 hover:text-destructive transition-colors"
-                      onClick={() => deleteItem(group.id, item.id)}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          );
-        })}
+                    {/* UOM (detail only) */}
+                    {showDetails && (
+                      <div className="px-1">
+                        <Select value={item.uom} onValueChange={(val) => updateItemField(group.id, item.id, "uom", val)}>
+                          <SelectTrigger className="h-9 text-xs px-2 w-full"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {uomOptions.map((u) => <SelectItem key={u} value={u} className="text-sm">{u}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
 
-        {/* Footer Totals */}
-        <div className="flex items-center justify-end gap-5 px-5 py-4 bg-muted/30 border-t border-border">
-          <span className={`text-sm font-semibold font-mono px-2.5 py-1 rounded-md ${getGMBgColor(overallGM)}`}>
-            {overallGM.toFixed(2)}%
-          </span>
-          <div className="text-right">
-            <span className="text-2xs uppercase tracking-wider text-muted-foreground font-medium block mb-0.5">Grand Total</span>
-            <span className="text-lg font-semibold font-mono">{formatCurrency(totalAmount)}</span>
-          </div>
+                    {/* GM% (detail only) */}
+                    {showDetails && (
+                      <div className="px-2 text-right">
+                        <span className={`text-xs font-semibold font-mono px-2 py-1 rounded-md ${getGMBgColor(item.gmPercent)}`}>
+                          {item.gmPercent.toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Ext Price */}
+                    <div className="px-2 text-sm text-right font-mono font-medium">{formatCurrency(item.unitPrice * item.quoteQty)}</div>
+
+                    {/* Delete */}
+                    <div className="flex justify-center">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground/30 hover:text-destructive" onClick={() => deleteItem(group.id, item.id)}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Add Item Modal */}
+      {/* RIGHT: Order Summary Panel */}
+      <div className="w-[340px] shrink-0 flex flex-col gap-4 overflow-auto">
+        {/* Quote info card */}
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Quote Info</h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground text-xs">Customer</span>
+              <span className="font-medium text-xs">{quote.customerName}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground text-xs">Branch</span>
+              <span className="text-xs">{quote.branchName}</span>
+            </div>
+            {quote.poNumber && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground text-xs">PO #</span>
+                <span className="text-xs font-mono">{quote.poNumber}</span>
+              </div>
+            )}
+            {quote.jobNumber && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground text-xs">Job #</span>
+                <span className="text-xs font-mono">{quote.jobNumber}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-muted-foreground text-xs">Expires</span>
+              <span className="text-xs">{quote.expirationDate}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Order summary */}
+        <div className="bg-card border border-border rounded-xl p-4 space-y-4 sticky top-0">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Order Summary</h3>
+
+          <div className="space-y-3">
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm text-muted-foreground">Total Items</span>
+              <span className="text-sm font-mono font-medium">{allItems.length}</span>
+            </div>
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm text-muted-foreground">Quote Total</span>
+              <span className="text-lg font-semibold font-mono">{formatCurrency(totalAmount)}</span>
+            </div>
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm text-muted-foreground">Quote GM%</span>
+              <span className={`text-base font-semibold font-mono ${getGMColor(overallGM)}`}>{overallGM.toFixed(1)}%</span>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm font-medium">Items to Purchase</span>
+              <span className="text-sm font-mono font-semibold text-brand">{orderableCount}</span>
+            </div>
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm font-medium">Purchase Total</span>
+              <span className="text-xl font-bold font-mono text-brand">{formatCurrency(orderableTotal)}</span>
+            </div>
+          </div>
+
+          {/* GM legend */}
+          <div className="flex flex-col gap-1.5 pt-2 border-t border-border">
+            <span className="text-2xs text-muted-foreground font-medium">GM% Legend</span>
+            <div className="flex items-center gap-3 text-2xs text-muted-foreground">
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-good" /> Good</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-ok" /> Below</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-bad" /> Low</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="space-y-2 sticky bottom-0 bg-background pt-2 pb-2">
+          <Button
+            size="sm"
+            className={`w-full h-9 text-xs font-semibold rounded-lg ${
+              populated
+                ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                : "bg-brand/10 text-brand hover:bg-brand/20 border border-brand/20"
+            }`}
+            onClick={populated ? resetQtyToZero : populateRemainingQty}
+          >
+            {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
+          </Button>
+
+          {showOrderButton && (
+            <Button
+              className="w-full h-12 text-sm gap-2 bg-brand text-brand-foreground hover:bg-brand/90 shadow-md rounded-xl font-semibold"
+              onClick={() => setCheckoutOpen(true)}
+              disabled={orderableCount === 0}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              Purchase Items ({orderableCount})
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Modals */}
       {addItemGroupId && (
         <AddItemModal
           open={!!addItemGroupId}
@@ -531,19 +574,12 @@ export default function QuoteDetail() {
           groupName={groups.find((g) => g.id === addItemGroupId)?.name || ""}
           existingProductIds={allItems.map((i) => i.productId)}
           onConfirm={(newItems) => {
-            setGroups((prev) =>
-              prev.map((g) =>
-                g.id === addItemGroupId
-                  ? { ...g, items: [...g.items, ...newItems] }
-                  : g
-              )
-            );
-            toast.success(`Added ${newItems.length} item${newItems.length > 1 ? "s" : ""} to ${groups.find((g) => g.id === addItemGroupId)?.name}`);
+            setGroups((prev) => prev.map((g) => g.id === addItemGroupId ? { ...g, items: [...g.items, ...newItems] } : g));
+            toast.success(`Added ${newItems.length} item${newItems.length > 1 ? "s" : ""}`);
             setAddItemGroupId(null);
           }}
         />
       )}
-
 
       <CheckoutModal
         open={checkoutOpen}
@@ -554,7 +590,6 @@ export default function QuoteDetail() {
         overallGM={overallGM}
       />
 
-      {/* Expired Resolution Dialog */}
       <Dialog open={expiredResolutionOpen} onOpenChange={setExpiredResolutionOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -564,16 +599,13 @@ export default function QuoteDetail() {
           <div className="space-y-2">
             {[
               { label: "Refresh Pricing", desc: "Update all line items to current catalog prices", icon: RefreshCw },
-              { label: "Re-quote", desc: "Create a new quote based on this one", icon: ChevronRight },
+              { label: "Re-quote", desc: "Create a new quote based on this one", icon: ArrowRightCircle },
               { label: "Notify Territory Manager", desc: "Send notification for review and approval", icon: AlertTriangle },
             ].map((opt) => (
               <button
                 key={opt.label}
                 className="w-full flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors text-left"
-                onClick={() => {
-                  toast.success(`${opt.label} initiated for ${quote.id}`);
-                  setExpiredResolutionOpen(false);
-                }}
+                onClick={() => { toast.success(`${opt.label} initiated for ${quote.id}`); setExpiredResolutionOpen(false); }}
               >
                 <opt.icon className="h-4 w-4 text-muted-foreground" />
                 <div>
