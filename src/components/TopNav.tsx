@@ -27,8 +27,7 @@ export function TopNav() {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
-
-
+  return (
     <header className="h-14 border-b border-border bg-card flex items-center px-5 gap-2 shrink-0">
       {/* Logo */}
       <div className="flex items-center gap-2.5 mr-6">
