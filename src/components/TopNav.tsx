@@ -22,8 +22,13 @@ const navItems = [
 export function TopNav() {
   const { role, setRole, isManager } = useRole();
   const location = useLocation();
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
-  return (
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
+
+
     <header className="h-14 border-b border-border bg-card flex items-center px-5 gap-2 shrink-0">
       {/* Logo */}
       <div className="flex items-center gap-2.5 mr-6">
