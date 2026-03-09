@@ -312,45 +312,52 @@ export default function QuoteDetail() {
             return (
               <div key={group.id} className="border-b border-border last:border-0">
                 {/* Group Header */}
-                <div className="flex items-center gap-2.5 px-4 py-2.5 bg-muted/20 border-b border-border">
-                  <button
-                    className="flex items-center gap-1 text-foreground hover:text-foreground/70 transition-colors"
-                    onClick={() => toggleGroup(group.id)}
-                  >
-                    {isCollapsed ? (
-                      <Plus className="h-3.5 w-3.5" />
-                    ) : (
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    )}
-                  </button>
-                  <span className="text-sm font-semibold text-foreground">{group.name}</span>
-                  <span className="text-2xs text-muted-foreground">({group.items.length})</span>
-                  <button
-                    className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors"
-                    onClick={() => setAddItemGroupId(group.id)}
-                  >
-                    <Plus className="h-3 w-3" /> Add
-                  </button>
-                  {(() => {
-                    const allFilled = group.items.every(item => item.purchaseQty === item.quoteQty - item.purchasedQty);
-                    return (
-                      <button
-                        className={`text-2xs font-medium px-2 py-0.5 rounded-md transition-colors ${
-                          allFilled
-                            ? "text-muted-foreground bg-muted hover:bg-muted/80"
-                            : "text-brand bg-brand/10 hover:bg-brand/20"
-                        }`}
-                        onClick={() => populateGroupQty(group.id)}
-                      >
-                        {allFilled ? "Reset Qty" : "Populate Qty"}
-                      </button>
-                    );
-                  })()}
-                  <div className="flex-1" />
-                  <span className={`text-xs font-semibold font-mono px-2 py-0.5 rounded-md border ${getGMBgColor(gt.gm)}`}>
-                    {gt.gm.toFixed(1)}%
-                  </span>
-                  <span className="text-sm font-semibold font-mono">{formatCurrency(gt.amount)}</span>
+                <div className={`grid ${colTemplate} gap-0 px-3 py-2.5 bg-muted/20 border-b border-border items-center`}>
+                  <div className="flex items-center gap-2.5 px-2">
+                    <button
+                      className="flex items-center gap-1 text-foreground hover:text-foreground/70 transition-colors"
+                      onClick={() => toggleGroup(group.id)}
+                    >
+                      {isCollapsed ? (
+                        <Plus className="h-3.5 w-3.5" />
+                      ) : (
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                    <span className="text-sm font-semibold text-foreground">{group.name}</span>
+                    <span className="text-2xs text-muted-foreground">({group.items.length})</span>
+                    <button
+                      className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors"
+                      onClick={() => setAddItemGroupId(group.id)}
+                    >
+                      <Plus className="h-3 w-3" /> Add
+                    </button>
+                    {(() => {
+                      const allFilled = group.items.every(item => item.purchaseQty === item.quoteQty - item.purchasedQty);
+                      return (
+                        <button
+                          className={`text-2xs font-medium px-2 py-0.5 rounded-md transition-colors ${
+                            allFilled
+                              ? "text-muted-foreground bg-muted hover:bg-muted/80"
+                              : "text-brand bg-brand/10 hover:bg-brand/20"
+                          }`}
+                          onClick={() => populateGroupQty(group.id)}
+                        >
+                          {allFilled ? "Reset Qty" : "Populate Qty"}
+                        </button>
+                      );
+                    })()}
+                  </div>
+                  {/* Spacer columns to align with grid */}
+                  <div /><div /><div /><div />
+                  {showDetails && <><div /><div /><div /></>}
+                  <div className="px-2 text-right">
+                    <span className={`text-xs font-semibold font-mono px-2 py-0.5 rounded-md border ${getGMBgColor(gt.gm)}`}>
+                      {gt.gm.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="px-2 text-sm text-right font-semibold font-mono">{formatCurrency(gt.amount)}</div>
+                  <div />
                 </div>
 
                 {/* Group Items */}
