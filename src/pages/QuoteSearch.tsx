@@ -93,7 +93,7 @@ export default function QuoteSearch() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
             <Input
-              placeholder="Search by Quote ID, Customer, PO#, Job#..."
+              placeholder="Search by Quote Name, ID, Customer, PO, Job, Reference"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-9 pl-9 text-sm bg-card"
