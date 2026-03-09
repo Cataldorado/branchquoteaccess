@@ -1,4 +1,5 @@
-import { Leaf, Search, Plus, BarChart3, Users, ShieldCheck, User, LogOut, Building2, Mail } from "lucide-react";
+import { Leaf, Search, Plus, BarChart3, Users, ShieldCheck, User, LogOut, Building2, Mail, Sun, Moon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -21,7 +22,11 @@ const navItems = [
 export function TopNav() {
   const { role, setRole, isManager } = useRole();
   const location = useLocation();
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-5 gap-2 shrink-0">
       {/* Logo */}
@@ -67,6 +72,15 @@ export function TopNav() {
       </nav>
 
       <div className="flex-1" />
+
+      {/* Dark mode toggle */}
+      <button
+        onClick={() => setDark(!dark)}
+        className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+        title={dark ? "Light mode" : "Dark mode"}
+      >
+        {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      </button>
 
       {/* Role toggle */}
       <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
