@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X, Clock, DollarSign, Building2, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { SearchableSelect } from "@/components/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   quotes, branches, customers, getStatusColor, getOriginColor, getDaysUntilExpiration, formatCurrency,
