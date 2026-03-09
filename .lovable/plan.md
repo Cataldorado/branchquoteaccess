@@ -1,89 +1,39 @@
 
 
-# POS-Style Redesign Plan
+## Plan: Quote Item Inventory Status Indicators
 
-## Overview
+### Overview
+Add a colored inventory status dot to each quote line item that indicates stock availability at the quoting branch. Clicking the dot opens a modal showing inventory across all eligible branches.
 
-Transform Heritage HQ from a back-office SaaS layout into a Point-of-Sale interface optimized for speed, scanability, and transaction flow. The redesign touches every screen: navigation, quote search, quote detail, dashboard, and quote creation.
+### 1. Mock Inventory Data (`src/data/mockData.ts`)
+- Add a `BranchInventory` type: `{ branchId: string; branchName: string; available: number }`
+- Add a `generateBranchInventory(productId: string, quoteQty: number)` function that returns mock inventory levels for each of the 6 existing branches, with randomized quantities (some zero, some partial, some full)
+- Export a `getInventoryForProduct(productId: string)` function returning `BranchInventory[]`
+- Export a helper `getInventoryStatus(quoteQty: number, branchInventory: number)` returning `"in-stock" | "partial" | "out-of-stock" | "unavailable"`
 
-## Current State vs. Target
+### 2. Inventory Status Dot Component (`src/components/InventoryStatusDot.tsx`)
+- Small colored circle: green (in-stock), yellow (partial), red (out-of-stock), gray (unavailable)
+- Accepts `productId`, `quoteQty`, `branchId` props
+- Computes status from the mock data using the quoting branch's inventory
+- Renders a clickable dot with a tooltip showing the status label
+- On click, opens the `InventoryAvailabilityModal`
 
-```text
-CURRENT                              TARGET (POS)
-┌──────┬─────────────────┐          ┌─────────────────────────────┐
-│      │                 │          │  [Logo] [Quotes] [Dashboard]│ ← slim top bar
-│ Side │   Content       │          │  [Customers] [New Quote]    │
-│ bar  │   (tables,      │          ├────────────────┬────────────┤
-│      │    forms)       │          │                │            │
-│      │                 │          │  Item List /   │  Order     │
-│      │                 │          │  Search Panel  │  Summary   │
-│      │                 │          │                │  Panel     │
-│      │                 │          │                │ (sticky)   │
-└──────┴─────────────────┘          └────────────────┴────────────┘
-```
+### 3. Inventory Availability Modal (`src/components/InventoryAvailabilityModal.tsx`)
+- Dialog showing a table of branches with available inventory for the selected product
+- Columns: Branch name, Available Inventory, Status dot per branch
+- Sorted by highest availability first
+- Highlights the quoting branch row
+- Shows "No eligible branches available" message when applicable
+- Shows product name and SKU in the header
 
-## Key Changes
+### 4. Integration into Quote Detail (`src/pages/QuoteDetail.tsx`)
+- Add the `InventoryStatusDot` to each item row, placed in the Product Description cell (left of the product name, alongside the existing StickyNote icon)
+- Pass the quote's `branchId` and item's `productId` and `quoteQty`
+- No changes to the grid column structure needed -- the dot fits inside the existing first column
 
-### 1. Navigation: Sidebar → Top Bar
-- Remove `AppSidebar` and `SidebarProvider` from `AppLayout`
-- Create a new `TopNav` component: slim horizontal bar (h-14) with logo left, nav links center, user/role controls right
-- Nav links as pill-style tabs: Quotes, New Quote, Dashboard, Customers
-- Full-width content area below, maximizing horizontal space for the item grid
-
-### 2. Quote Search (POS Register Lookup)
-- Larger search input with prominent focus state — feels like a barcode scanner input
-- Replace the dense table with quote cards in a grid (2-3 columns) showing key info: customer, amount, status, expiration
-- Cards have large click targets for fast selection
-- Filters move to horizontal pill toggles above the grid instead of dropdowns
-- Active quote count displayed prominently
-
-### 3. Quote Detail (The Core POS Screen)
-- **Split-panel layout**: items on the left (~65%), order summary on the right (~35%)
-- **Left panel**: Product groups shown as collapsible sections with larger row height, bigger touch targets for qty inputs, clearer item cards instead of dense grid columns
-- Reduce visible columns — hide Cost, UOM, GM% behind a "details" toggle; surface only: Product, SKU, Quote Qty, Purchased Qty, Purchase Qty, Price, Ext Price
-- **Right panel (sticky order summary)**: 
-  - Quote header info (customer, branch, PO, job)
-  - Running total with item count
-  - GM% indicator
-  - "Populate Remaining Qty" as a prominent action button
-  - Large "Purchase Items" CTA button at the bottom (always visible)
-- Checkout modal remains as-is (already well-structured)
-
-### 4. Dashboard
-- Keep mostly as-is but adapt to full-width layout (no sidebar constraint)
-- KPI cards scale to fill the wider space
-
-### 5. Quote Create
-- Adapt to full-width layout
-
-### 6. Visual System Updates
-- Increase base spacing and touch targets (min 44px hit areas)
-- Slightly larger font sizes for key data (prices, quantities)
-- Cards over tables where appropriate
-- Keep the existing color system (navy brand, GM color coding)
-- Rounder corners, more generous padding
-
-## Files to Modify
-
-| File | Change |
-|------|--------|
-| `src/components/AppLayout.tsx` | Remove sidebar, add TopNav, full-width content |
-| `src/components/AppSidebar.tsx` | Delete (replaced by TopNav) |
-| `src/components/TopNav.tsx` | **New** — horizontal nav bar |
-| `src/components/TopHeader.tsx` | Remove or merge into TopNav |
-| `src/pages/QuoteSearch.tsx` | Card grid layout, pill filters, larger search |
-| `src/pages/QuoteDetail.tsx` | Split-panel POS layout with sticky summary |
-| `src/pages/Dashboard.tsx` | Adapt to full-width |
-| `src/pages/QuoteCreate.tsx` | Adapt to full-width |
-| `src/index.css` | Adjust spacing/sizing tokens if needed |
-
-## Implementation Approach
-
-This is a large change touching ~8 files. I recommend breaking it into 3 steps:
-
-1. **Navigation swap** — Replace sidebar with top bar, update layout (3 files)
-2. **Quote Detail POS layout** — Split-panel with sticky summary (1 file, largest change)
-3. **Quote Search + polish** — Card grid, pill filters, visual density updates (2-3 files)
-
-Each step produces a working app so you can review and adjust direction between steps.
+### Technical Details
+- Grid layout remains unchanged (no new columns); the dot is prepended inside the product description cell
+- Inventory data is deterministic per product using a seeded approach (product ID hash) so it stays consistent across renders
+- Modal uses existing Dialog component from the UI library
+- Status colors use Tailwind classes: `bg-emerald-500`, `bg-amber-400`, `bg-red-500`, `bg-gray-300`
 

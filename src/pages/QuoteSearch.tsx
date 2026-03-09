@@ -1,16 +1,12 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Copy, X } from "lucide-react";
+import { Search, X, Clock, DollarSign, Building2, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
 import {
   quotes, branches, customers, getStatusColor, getOriginColor, getDaysUntilExpiration, formatCurrency,
   allStatusOptions, type QuoteStatus,
 } from "@/data/mockData";
-import { SearchableSelect } from "@/components/SearchableSelect";
 import { toast } from "sonner";
 
 const statusOptions = allStatusOptions;
@@ -52,169 +48,184 @@ export default function QuoteSearch() {
 
   const hasFilters = statusFilter !== "all" || branchFilter !== "all" || customerFilter !== "all";
 
-  const copyToClipboard = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(id);
-    toast.success(`Copied ${id} to clipboard`);
-  };
-
   const renderExpiration = (daysLeft: number) => {
     if (daysLeft < 0) {
       return (
-        <span className="inline-flex items-center text-2xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
+        <span className="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
           {Math.abs(daysLeft)}d overdue
         </span>
       );
     }
     if (daysLeft === 0) {
-      return <span className="text-sm font-medium text-amber-600">Today</span>;
+      return <span className="text-sm font-medium text-warning">Today</span>;
     }
     if (daysLeft <= 7) {
-      return <span className="text-sm font-medium text-amber-600">{daysLeft}d left</span>;
+      return <span className="text-sm font-medium text-warning">{daysLeft}d left</span>;
     }
     return <span className="text-sm text-muted-foreground">{daysLeft}d left</span>;
   };
 
   return (
-    <div className="space-y-6 max-w-[1400px]">
-      {/* Page header */}
-      <div className="flex items-baseline justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Quotes</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {filtered.length} of {quotes.length} quotes
-          </p>
-        </div>
+    <div className="space-y-5 max-w-[1600px] mx-auto">
+      {/* Search bar — large, scanner-style */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/50" />
+        <Input
+          placeholder="Search by Quote Name, ID, Customer, PO, Job, Reference"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="h-12 pl-12 pr-4 text-base bg-card border-border rounded-xl shadow-subtle focus-visible:ring-2 focus-visible:ring-brand/30"
+          autoFocus
+        />
+        {search && (
+          <button
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            onClick={() => setSearch("")}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
-      {/* Search + Filters */}
-      <div className="bg-muted/50 rounded-xl border border-border p-4 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
-            <Input
-              placeholder="Search by Quote Name, ID, Customer, PO, Job, Reference"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-9 pl-9 text-sm bg-card"
-            />
-          </div>
-          {hasFilters && (
-            <Button variant="ghost" size="sm" className="h-9 text-xs gap-1.5 text-muted-foreground hover:text-foreground" onClick={clearFilters}>
-              <X className="h-3.5 w-3.5" /> Clear filters
-            </Button>
-          )}
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Customer</label>
-            <SearchableSelect
-              value={customerFilter}
-              onValueChange={setCustomerFilter}
-              allLabel="All Customers"
-              options={customers.map((c) => ({ value: c.id, label: c.name }))}
-            />
-          </div>
-          <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Branch</label>
-            <SearchableSelect
-              value={branchFilter}
-              onValueChange={setBranchFilter}
-              allLabel="All Branches"
-              options={branches.map((b) => ({ value: b.id, label: b.name }))}
-            />
-          </div>
-          <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Status</label>
-            <SearchableSelect
-              value={statusFilter}
-              onValueChange={setStatusFilter}
-              allLabel="All Statuses"
-              options={statusOptions.map((s) => ({ value: s, label: s }))}
-            />
-          </div>
-        </div>
+      {/* Pill filters */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-xs text-muted-foreground font-medium mr-1">Filter:</span>
+
+        {/* Status pills */}
+        <button
+          onClick={() => setStatusFilter("all")}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+            statusFilter === "all"
+              ? "bg-brand text-brand-foreground shadow-sm"
+              : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
+          }`}
+        >
+          All Statuses
+        </button>
+        {statusOptions.map((s) => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(statusFilter === s ? "all" : s)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              statusFilter === s
+                ? "bg-brand text-brand-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
+            }`}
+          >
+            {s}
+          </button>
+        ))}
+
+        {(branchFilter !== "all" || customerFilter !== "all") && (
+          <div className="h-4 w-px bg-border mx-1" />
+        )}
+
+        {branchFilter !== "all" && (
+          <button
+            onClick={() => setBranchFilter("all")}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand/10 text-brand border border-brand/20"
+          >
+            <Building2 className="h-3 w-3" />
+            {branches.find(b => b.id === branchFilter)?.name}
+            <X className="h-3 w-3" />
+          </button>
+        )}
+
+        {customerFilter !== "all" && (
+          <button
+            onClick={() => setCustomerFilter("all")}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand/10 text-brand border border-brand/20"
+          >
+            <Users className="h-3 w-3" />
+            {customers.find(c => c.id === customerFilter)?.name}
+            <X className="h-3 w-3" />
+          </button>
+        )}
+
+        {hasFilters && (
+          <button
+            className="px-2.5 py-1.5 rounded-full text-xs text-muted-foreground hover:text-foreground transition-colors"
+            onClick={clearFilters}
+          >
+            Clear all
+          </button>
+        )}
+
+        <div className="flex-1" />
+        <span className="text-xs text-muted-foreground font-mono">
+          {filtered.length} of {quotes.length} quotes
+        </span>
       </div>
 
-      {/* Results Table */}
-      <div className="bg-card rounded-xl border border-border shadow-elevated overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent border-b border-border bg-muted/30">
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Quote Name</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Quote ID</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Customer</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Branch</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Origin</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Status</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4">Expiration</TableHead>
-              <TableHead className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground h-11 px-4 text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.map((q, i) => {
-              const daysLeft = getDaysUntilExpiration(q.expirationDate);
-              const isAgility = q.origin === "Agility";
-              const isEven = i % 2 === 0;
-              return (
-                <TableRow
-                  key={q.id}
-                  className={`${isAgility ? "" : "cursor-pointer"} group transition-colors duration-100 hover:bg-brand/[0.04] ${isEven ? "" : "bg-muted/25"}`}
-                  onClick={() => !isAgility && navigate(`/quotes/${q.id}`)}
-                >
-                  <TableCell className="px-4 py-3.5 text-sm font-medium">
-                    {isAgility ? (
-                      <span className="text-foreground">{q.quoteName}</span>
-                    ) : (
-                      <span className="text-brand font-semibold cursor-pointer hover:underline decoration-brand/40 underline-offset-2">{q.quoteName}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="px-4 py-3.5 text-sm font-mono">
-                    {isAgility ? (
-                      <span className="flex items-center gap-2 text-muted-foreground">
-                        {q.id}
-                        <button
-                          className="text-muted-foreground/40 hover:text-foreground transition-colors"
-                          onClick={(e) => copyToClipboard(e, q.id)}
-                          title="Copy Quote ID"
-                        >
-                          <Copy className="h-3.5 w-3.5" />
-                        </button>
-                      </span>
-                    ) : (
-                      <span className="text-brand">{q.id}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="px-4 py-3.5 text-sm text-muted-foreground">{q.customerName}</TableCell>
-                  <TableCell className="px-4 py-3.5 text-sm text-muted-foreground">{q.branchName}</TableCell>
-                  <TableCell className="px-4 py-3.5">
-                    <span className={`inline-flex items-center text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(q.origin)}`}>
-                      {q.origin}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-3.5">
-                    <span className={`inline-flex items-center text-2xs font-medium px-2.5 py-0.5 rounded-full ${getStatusColor(q.status)}`}>
-                      {q.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-3.5">
+      {/* Quote cards grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+        {filtered.map((q) => {
+          const daysLeft = getDaysUntilExpiration(q.expirationDate);
+          const isAgility = q.origin === "Agility";
+
+          return (
+            <button
+              key={q.id}
+              className={`text-left bg-card rounded-xl border border-border p-4 transition-all hover:shadow-elevated hover:border-brand/30 ${
+                isAgility ? "opacity-75" : "cursor-pointer active:scale-[0.99]"
+              }`}
+              onClick={() => !isAgility && navigate(`/quotes/${q.id}`)}
+              disabled={isAgility}
+            >
+              {/* Top: name + status */}
+              <div className="flex items-start justify-between gap-2 mb-3">
+                <div className="min-w-0 flex-1">
+                  <h3 className={`text-sm font-semibold truncate ${isAgility ? "text-foreground" : "text-brand"}`}>
+                    {q.quoteName}
+                  </h3>
+                  <p className="text-xs text-muted-foreground font-mono mt-0.5">{q.id}</p>
+                </div>
+                <span className={`inline-flex items-center text-2xs font-medium px-2.5 py-0.5 rounded-full shrink-0 ${getStatusColor(q.status)}`}>
+                  {q.status}
+                </span>
+              </div>
+
+              {/* Middle: customer + branch */}
+              <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
+                <span className="flex items-center gap-1 truncate">
+                  <Users className="h-3 w-3 shrink-0" />
+                  {q.customerName}
+                </span>
+                <span className="text-border">•</span>
+                <span className="flex items-center gap-1 truncate">
+                  <Building2 className="h-3 w-3 shrink-0" />
+                  {q.branchName}
+                </span>
+              </div>
+
+              {/* Bottom: amount + expiration + origin */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-base font-semibold font-mono">{formatCurrency(q.totalAmount)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3 text-muted-foreground" />
                     {renderExpiration(daysLeft)}
-                  </TableCell>
-                  <TableCell className="px-4 py-3.5 text-sm text-right font-mono font-medium">{formatCurrency(q.totalAmount)}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                  </div>
+                  <span className={`inline-flex items-center text-2xs font-medium px-2 py-0.5 rounded-full border ${getOriginColor(q.origin)}`}>
+                    {q.origin}
+                  </span>
+                </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Keyboard hint */}
-      <div className="flex items-center justify-center gap-6 text-2xs text-muted-foreground/60 py-1">
-        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">↑↓</kbd> Navigate</span>
-        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">Enter</kbd> Open</span>
-        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">/</kbd> Search</span>
-        <span><kbd className="px-1.5 py-0.5 bg-muted rounded text-2xs font-mono border border-border">N</kbd> New Quote</span>
-      </div>
+      {filtered.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+          <Search className="h-10 w-10 mb-3 opacity-30" />
+          <p className="text-sm font-medium">No quotes found</p>
+          <p className="text-xs mt-1">Try adjusting your search or filters</p>
+        </div>
+      )}
     </div>
   );
 }
