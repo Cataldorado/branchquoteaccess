@@ -194,11 +194,33 @@ export default function QuoteDetail() {
 
   // Column grid template based on details toggle
   const colTemplate = showDetails
-    ? "grid-cols-[minmax(220px,2fr)_90px_70px_65px_60px_65px_90px_65px_70px_80px_36px]"
-    : "grid-cols-[minmax(240px,2fr)_90px_65px_60px_65px_90px_80px_36px]";
+    ? "grid-cols-[minmax(200px,2fr)_90px_70px_65px_60px_65px_100px_65px_70px_90px_36px]"
+    : "grid-cols-[minmax(220px,2fr)_90px_65px_60px_65px_100px_90px_36px]";
+
+  // Per-group populate/reset
+  const groupPopulated = (groupId: string) => {
+    const group = groups.find(g => g.id === groupId);
+    if (!group) return false;
+    return group.items.every(item => item.purchaseQty === item.quoteQty - item.purchasedQty && item.purchaseQty > 0)
+      || group.items.some(item => item.purchaseQty > 0);
+  };
+
+  const populateGroupQty = (groupId: string) => {
+    setGroups(prev => prev.map(g => {
+      if (g.id !== groupId) return g;
+      const allFilled = g.items.every(item => item.purchaseQty === item.quoteQty - item.purchasedQty);
+      return {
+        ...g,
+        items: g.items.map(item => ({
+          ...item,
+          purchaseQty: allFilled ? 0 : item.quoteQty - item.purchasedQty,
+        })),
+      };
+    }));
+  };
 
   return (
-    <div className="flex gap-5 max-w-[1800px] mx-auto h-[calc(100vh-theme(spacing.14)-theme(spacing.10))]">
+    <div className="flex gap-5 h-[calc(100vh-theme(spacing.14)-theme(spacing.10))]">
       {/* LEFT: Item list panel */}
       <div className="flex-1 min-w-0 overflow-auto">
         {/* Back + quote name */}
