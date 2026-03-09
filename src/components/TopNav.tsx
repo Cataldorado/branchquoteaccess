@@ -73,6 +73,15 @@ export function TopNav() {
 
       <div className="flex-1" />
 
+      {/* Dark mode toggle */}
+      <button
+        onClick={() => setDark(!dark)}
+        className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+        title={dark ? "Light mode" : "Dark mode"}
+      >
+        {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      </button>
+
       {/* Role toggle */}
       <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
         <button
