@@ -23,7 +23,6 @@ const mainItems = [
 
 const managementItems = [
   { title: "Customers", url: "/customers", icon: Users, active: false },
-  { title: "Branches", url: "/branches", icon: Building2, active: false },
 ];
 
 export function AppSidebar() {
