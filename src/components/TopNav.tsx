@@ -1,4 +1,5 @@
-import { Leaf, Search, Plus, BarChart3, Users, ShieldCheck, User, LogOut, Building2, Mail } from "lucide-react";
+import { Leaf, Search, Plus, BarChart3, Users, ShieldCheck, User, LogOut, Building2, Mail, Sun, Moon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
