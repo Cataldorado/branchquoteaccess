@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X, Clock, DollarSign, Building2, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { SearchableSelect } from "@/components/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   quotes, branches, customers, getStatusColor, getOriginColor, getDaysUntilExpiration, formatCurrency,
@@ -87,74 +88,48 @@ export default function QuoteSearch() {
         )}
       </div>
 
-      {/* Pill filters */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-muted-foreground font-medium mr-1">Filter:</span>
-
-        {/* Status pills */}
-        <button
-          onClick={() => setStatusFilter("all")}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-            statusFilter === "all"
-              ? "bg-brand text-brand-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
-          }`}
-        >
-          All Statuses
-        </button>
-        {statusOptions.map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatusFilter(statusFilter === s ? "all" : s)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-              statusFilter === s
-                ? "bg-brand text-brand-foreground shadow-sm"
-                : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
-            }`}
-          >
-            {s}
-          </button>
-        ))}
-
-        {(branchFilter !== "all" || customerFilter !== "all") && (
-          <div className="h-4 w-px bg-border mx-1" />
-        )}
-
-        {branchFilter !== "all" && (
-          <button
-            onClick={() => setBranchFilter("all")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand/10 text-brand border border-brand/20"
-          >
-            <Building2 className="h-3 w-3" />
-            {branches.find(b => b.id === branchFilter)?.name}
-            <X className="h-3 w-3" />
-          </button>
-        )}
-
-        {customerFilter !== "all" && (
-          <button
-            onClick={() => setCustomerFilter("all")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand/10 text-brand border border-brand/20"
-          >
-            <Users className="h-3 w-3" />
-            {customers.find(c => c.id === customerFilter)?.name}
-            <X className="h-3 w-3" />
-          </button>
-        )}
-
-        {hasFilters && (
-          <button
-            className="px-2.5 py-1.5 rounded-full text-xs text-muted-foreground hover:text-foreground transition-colors"
-            onClick={clearFilters}
-          >
-            Clear all
-          </button>
-        )}
-
-        <div className="flex-1" />
-        <span className="text-xs text-muted-foreground font-mono">
-          {filtered.length} of {quotes.length} quotes
-        </span>
+      {/* Filters row: Customer, Branch, Status + pill statuses */}
+      <div className="bg-muted/50 rounded-xl border border-border p-4 space-y-3">
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Customer</label>
+            <SearchableSelect
+              value={customerFilter}
+              onValueChange={setCustomerFilter}
+              allLabel="All Customers"
+              options={customers.map((c) => ({ value: c.id, label: c.name }))}
+            />
+          </div>
+          <div>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Branch</label>
+            <SearchableSelect
+              value={branchFilter}
+              onValueChange={setBranchFilter}
+              allLabel="All Branches"
+              options={branches.map((b) => ({ value: b.id, label: b.name }))}
+            />
+          </div>
+          <div>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Status</label>
+            <SearchableSelect
+              value={statusFilter}
+              onValueChange={setStatusFilter}
+              allLabel="All Statuses"
+              options={statusOptions.map((s) => ({ value: s, label: s }))}
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          {hasFilters && (
+            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground" onClick={clearFilters}>
+              <X className="h-3.5 w-3.5" /> Clear filters
+            </Button>
+          )}
+          <div className="flex-1" />
+          <span className="text-xs text-muted-foreground font-mono">
+            {filtered.length} of {quotes.length} quotes
+          </span>
+        </div>
       </div>
 
       {/* Quote cards grid */}
