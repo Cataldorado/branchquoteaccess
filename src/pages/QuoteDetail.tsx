@@ -313,9 +313,9 @@ export default function QuoteDetail() {
               <div key={group.id} className="border-b border-border last:border-0">
                 {/* Group Header */}
                 <div className={`grid ${colTemplate} gap-0 px-3 py-2.5 bg-muted/20 border-b border-border items-center`}>
-                  <div className="flex items-center gap-2.5 px-2">
+                  <div className="flex items-center gap-2 px-2 min-w-0 col-span-5">
                     <button
-                      className="flex items-center gap-1 text-foreground hover:text-foreground/70 transition-colors"
+                      className="flex-shrink-0 flex items-center gap-1 text-foreground hover:text-foreground/70 transition-colors"
                       onClick={() => toggleGroup(group.id)}
                     >
                       {isCollapsed ? (
@@ -324,10 +324,17 @@ export default function QuoteDetail() {
                         <ChevronDown className="h-3.5 w-3.5" />
                       )}
                     </button>
-                    <span className="text-sm font-semibold text-foreground">{group.name}</span>
-                    <span className="text-2xs text-muted-foreground">({group.items.length})</span>
+                    <TooltipProvider delayDuration={300}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-sm font-semibold text-foreground truncate max-w-[300px]">{group.name}</span>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom"><p>{group.name}</p></TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <span className="text-2xs text-muted-foreground flex-shrink-0">({group.items.length})</span>
                     <button
-                      className="flex items-center gap-1 text-2xs text-brand hover:underline transition-colors"
+                      className="flex-shrink-0 flex items-center gap-1 text-2xs text-brand hover:underline transition-colors"
                       onClick={() => setAddItemGroupId(group.id)}
                     >
                       <Plus className="h-3 w-3" /> Add
@@ -336,7 +343,7 @@ export default function QuoteDetail() {
                       const allFilled = group.items.every(item => item.purchaseQty === item.quoteQty - item.purchasedQty);
                       return (
                         <button
-                          className={`text-2xs font-medium px-2 py-0.5 rounded-md transition-colors ${
+                          className={`flex-shrink-0 text-2xs font-medium px-2 py-0.5 rounded-md transition-colors ${
                             allFilled
                               ? "text-muted-foreground bg-muted hover:bg-muted/80"
                               : "text-brand bg-brand/10 hover:bg-brand/20"
@@ -348,8 +355,6 @@ export default function QuoteDetail() {
                       );
                     })()}
                   </div>
-                  {/* Spacer columns to align with grid */}
-                  <div /><div /><div /><div />
                   {showDetails && <><div /><div /><div /></>}
                   <div className="px-2 text-right">
                     <span className={`text-xs font-semibold font-mono px-2 py-0.5 rounded-md border ${getGMBgColor(gt.gm)}`}>
