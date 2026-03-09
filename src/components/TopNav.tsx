@@ -12,10 +12,10 @@ import {
 import { useRole } from "@/contexts/RoleContext";
 
 const navItems = [
-  { label: "Quotes", to: "/", icon: Search },
-  { label: "New Quote", to: "/quotes/new", icon: Plus },
-  { label: "Dashboard", to: "/dashboard", icon: BarChart3 },
-  { label: "Customers", to: "/customers", icon: Users },
+  { label: "Quotes", to: "/", icon: Search, enabled: true },
+  { label: "New Quote", to: "/quotes/new", icon: Plus, enabled: false },
+  { label: "Dashboard", to: "/dashboard", icon: BarChart3, enabled: false },
+  { label: "Customers", to: "/customers", icon: Users, enabled: false },
 ];
 
 export function TopNav() {
@@ -36,6 +36,18 @@ export function TopNav() {
       <nav className="flex items-center gap-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.to;
+          if (!item.enabled) {
+            return (
+              <span
+                key={item.to}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium text-muted-foreground/50 cursor-default select-none"
+              >
+                <item.icon className="h-4 w-4" />
+                <span className="hidden lg:inline">{item.label}</span>
+                <span className="text-2xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-medium">Soon</span>
+              </span>
+            );
+          }
           return (
             <NavLink
               key={item.to}
