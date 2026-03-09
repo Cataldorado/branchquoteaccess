@@ -107,12 +107,12 @@ export default function QuoteSearch() {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Status</label>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Customer</label>
             <SearchableSelect
-              value={statusFilter}
-              onValueChange={setStatusFilter}
-              allLabel="All Statuses"
-              options={statusOptions.map((s) => ({ value: s, label: s }))}
+              value={customerFilter}
+              onValueChange={setCustomerFilter}
+              allLabel="All Customers"
+              options={customers.map((c) => ({ value: c.id, label: c.name }))}
             />
           </div>
           <div>
@@ -125,12 +125,12 @@ export default function QuoteSearch() {
             />
           </div>
           <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Customer</label>
+            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Status</label>
             <SearchableSelect
-              value={customerFilter}
-              onValueChange={setCustomerFilter}
-              allLabel="All Customers"
-              options={customers.map((c) => ({ value: c.id, label: c.name }))}
+              value={statusFilter}
+              onValueChange={setStatusFilter}
+              allLabel="All Statuses"
+              options={statusOptions.map((s) => ({ value: s, label: s }))}
             />
           </div>
         </div>
