@@ -1,28 +1,22 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X, Clock, DollarSign, Building2, Users } from "lucide-react";
+import { Search, X, Clock, DollarSign, Building2, Users, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { SearchableSelect } from "@/components/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
-  quotes, branches, customers, getStatusColor, getOriginColor, getDaysUntilExpiration, formatCurrency,
-  allStatusOptions, type QuoteStatus,
+  quotes, getStatusColor, getOriginColor, getDaysUntilExpiration, formatCurrency,
 } from "@/data/mockData";
-import { toast } from "sonner";
-
-const statusOptions = allStatusOptions;
+import { useCustomer } from "@/contexts/CustomerContext";
 
 export default function QuoteSearch() {
   const navigate = useNavigate();
+  const { setActiveModule } = useCustomer();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [branchFilter, setBranchFilter] = useState<string>("all");
-  const [customerFilter, setCustomerFilter] = useState<string>("all");
 
   const filtered = useMemo(() => {
     return quotes.filter((q) => {
       const s = search.toLowerCase();
-      const matchesSearch =
+      return (
         !s ||
         q.id.toLowerCase().includes(s) ||
         q.quoteName.toLowerCase().includes(s) ||
@@ -30,24 +24,10 @@ export default function QuoteSearch() {
         q.branchName.toLowerCase().includes(s) ||
         q.poNumber?.toLowerCase().includes(s) ||
         q.jobNumber?.toLowerCase().includes(s) ||
-        q.transactionRef?.toLowerCase().includes(s);
-
-      const matchesStatus = statusFilter === "all" || q.status === statusFilter;
-      const matchesBranch = branchFilter === "all" || q.branchId === branchFilter;
-      const matchesCustomer = customerFilter === "all" || q.customerId === customerFilter;
-
-      return matchesSearch && matchesStatus && matchesBranch && matchesCustomer;
+        q.transactionRef?.toLowerCase().includes(s)
+      );
     });
-  }, [search, statusFilter, branchFilter, customerFilter]);
-
-  const clearFilters = () => {
-    setSearch("");
-    setStatusFilter("all");
-    setBranchFilter("all");
-    setCustomerFilter("all");
-  };
-
-  const hasFilters = statusFilter !== "all" || branchFilter !== "all" || customerFilter !== "all";
+  }, [search]);
 
   const renderExpiration = (daysLeft: number) => {
     if (daysLeft < 0) {
