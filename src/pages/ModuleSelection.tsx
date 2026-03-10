@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 const modules = [
   {
     id: "quotes",
-    label: "New Quote",
-    description: "Create and manage quotes for this customer",
+    label: "Quote Search",
+    description: "Search and manage quotes for this customer",
     icon: Search,
     enabled: true,
   },
