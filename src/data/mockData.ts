@@ -16,6 +16,9 @@ export interface Customer {
   accountNumber: string;
   contactEmail: string;
   contactPhone: string;
+  address: string;
+  city: string;
+  state: string;
 }
 
 export type UOM = "EA" | "FT" | "LF" | "BX" | "CS" | "RL";
