@@ -14,7 +14,7 @@ import { useRole } from "@/contexts/RoleContext";
 
 export function TopNav() {
   const { role, setRole, isManager } = useRole();
-  const { selectedCustomer } = useCustomer();
+  const { selectedCustomer, openSearch } = useCustomer();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
@@ -24,12 +24,16 @@ export function TopNav() {
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-5 gap-2 shrink-0">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 mr-4">
+      <button
+        onClick={() => openSearch()}
+        className="flex items-center gap-2.5 mr-4 hover:opacity-80 transition-opacity"
+        title="Search customers"
+      >
         <div className="h-8 w-8 rounded-lg bg-brand flex items-center justify-center">
           <Leaf className="h-4 w-4 text-brand-foreground" />
         </div>
         <span className="font-semibold text-foreground text-sm tracking-tight hidden md:inline">Heritage HQ</span>
-      </div>
+      </button>
 
       <div className="flex-1" />
 
