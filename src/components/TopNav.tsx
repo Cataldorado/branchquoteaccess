@@ -22,6 +22,7 @@ const navItems = [
 
 export function TopNav() {
   const { role, setRole, isManager } = useRole();
+  const { selectedCustomer, clearCustomer } = useCustomer();
   const location = useLocation();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
