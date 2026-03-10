@@ -1,14 +1,27 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 import type { Customer } from "@/data/mockData";
 
+export interface QuoteSearchFilters {
+  search: string;
+  showExpired: boolean;
+  showOtherBranches: boolean;
+}
+
+const defaultFilters: QuoteSearchFilters = {
+  search: "",
+  showExpired: false,
+  showOtherBranches: false,
+};
+
 export interface CustomerTab {
   customer: Customer;
-  activeModule: string | null; // null = module selection screen
+  activeModule: string | null;
+  quoteSearchFilters: QuoteSearchFilters;
 }
 
 interface CustomerContextType {
   tabs: CustomerTab[];
-  activeTabIndex: number | null; // null = search screen
+  activeTabIndex: number | null;
   selectedCustomer: Customer | null;
   isSearching: boolean;
   setSelectedCustomer: (customer: Customer | null) => void;
@@ -18,6 +31,8 @@ interface CustomerContextType {
   switchTab: (index: number) => void;
   openSearch: () => void;
   setActiveModule: (module: string | null) => void;
+  getQuoteSearchFilters: () => QuoteSearchFilters;
+  setQuoteSearchFilters: (filters: Partial<QuoteSearchFilters>) => void;
 }
 
 const CustomerContext = createContext<CustomerContextType | undefined>(undefined);
@@ -30,14 +45,13 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
   const selectedCustomer = activeTabIndex !== null ? tabs[activeTabIndex]?.customer ?? null : null;
 
   const addCustomerTab = useCallback((customer: Customer) => {
-    // Check if already open
     const existingIndex = tabs.findIndex(t => t.customer.id === customer.id);
     if (existingIndex !== -1) {
       setActiveTabIndex(existingIndex);
       setIsSearching(false);
       return;
     }
-    setTabs(prev => [...prev, { customer, activeModule: null }]);
+    setTabs(prev => [...prev, { customer, activeModule: null, quoteSearchFilters: { ...defaultFilters } }]);
     setActiveTabIndex(tabs.length);
     setIsSearching(false);
   }, [tabs]);
@@ -73,6 +87,20 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
     setTabs(prev => prev.map((tab, i) => i === activeTabIndex ? { ...tab, activeModule: module } : tab));
   }, [activeTabIndex]);
 
+  const getQuoteSearchFilters = useCallback((): QuoteSearchFilters => {
+    if (activeTabIndex === null) return { ...defaultFilters };
+    return tabs[activeTabIndex]?.quoteSearchFilters ?? { ...defaultFilters };
+  }, [activeTabIndex, tabs]);
+
+  const setQuoteSearchFilters = useCallback((filters: Partial<QuoteSearchFilters>) => {
+    if (activeTabIndex === null) return;
+    setTabs(prev => prev.map((tab, i) =>
+      i === activeTabIndex
+        ? { ...tab, quoteSearchFilters: { ...tab.quoteSearchFilters, ...filters } }
+        : tab
+    ));
+  }, [activeTabIndex]);
+
   const setSelectedCustomer = useCallback((customer: Customer | null) => {
     if (customer) {
       addCustomerTab(customer);
@@ -90,6 +118,7 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       tabs, activeTabIndex, selectedCustomer, isSearching,
       setSelectedCustomer, clearCustomer, addCustomerTab, closeTab,
       switchTab, openSearch, setActiveModule,
+      getQuoteSearchFilters, setQuoteSearchFilters,
     }}>
       {children}
     </CustomerContext.Provider>
