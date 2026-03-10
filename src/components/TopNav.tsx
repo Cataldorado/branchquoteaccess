@@ -1,6 +1,5 @@
-import { Leaf, Search, Plus, BarChart3, Users, ShieldCheck, User, LogOut, Building2, Mail, Sun, Moon, X } from "lucide-react";
+import { Leaf, Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -13,81 +12,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRole } from "@/contexts/RoleContext";
 
-const navItems = [
-  { label: "Quotes", to: "/", icon: Search, enabled: true },
-  { label: "New Quote", to: "/quotes/new", icon: Plus, enabled: false },
-  { label: "Dashboard", to: "/dashboard", icon: BarChart3, enabled: false },
-  { label: "Customers", to: "/customers", icon: Users, enabled: false },
-];
-
 export function TopNav() {
   const { role, setRole, isManager } = useRole();
-  const { selectedCustomer, clearCustomer } = useCustomer();
-  const location = useLocation();
+  const { selectedCustomer } = useCustomer();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
+
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-5 gap-2 shrink-0">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 mr-6">
+      <div className="flex items-center gap-2.5 mr-4">
         <div className="h-8 w-8 rounded-lg bg-brand flex items-center justify-center">
           <Leaf className="h-4 w-4 text-brand-foreground" />
         </div>
         <span className="font-semibold text-foreground text-sm tracking-tight hidden md:inline">Heritage HQ</span>
       </div>
-
-      {/* Selected customer badge */}
-      {selectedCustomer && (
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary border border-border mr-2">
-          <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium text-foreground">{selectedCustomer.name}</span>
-          <span className="text-xs font-mono text-muted-foreground">{selectedCustomer.accountNumber}</span>
-          <button
-            onClick={clearCustomer}
-            className="ml-1 h-4 w-4 rounded-full flex items-center justify-center hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-            title="Change customer"
-          >
-            <X className="h-3 w-3" />
-          </button>
-        </div>
-      )}
-
-      {/* Nav links */}
-      <nav className="flex items-center gap-1">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.to;
-          if (!item.enabled) {
-            return (
-              <span
-                key={item.to}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium text-muted-foreground/50 cursor-default select-none"
-              >
-                <item.icon className="h-4 w-4" />
-                <span className="hidden lg:inline">{item.label}</span>
-                <span className="text-2xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-medium">Soon</span>
-              </span>
-            );
-          }
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
-                isActive
-                  ? "bg-brand/10 text-brand"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-              }`}
-            >
-              <item.icon className="h-4 w-4" />
-              <span className="hidden lg:inline">{item.label}</span>
-            </NavLink>
-          );
-        })}
-      </nav>
 
       <div className="flex-1" />
 
