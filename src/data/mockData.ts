@@ -392,6 +392,9 @@ export function getOriginColor(origin: QuoteOrigin): string {
   return map[origin];
 }
 
+// Current logged-in user's branch (default to first branch)
+export const currentUserBranch: Branch = branches[0];
+
 export const hpStatusOptions: HPStatus[] = ["Customer Review", "Sales Review", "Received (Awarded)", "Received (Not Awarded)", "Partial", "Expired"];
 export const agilityStatusOptions: AgilityStatus[] = ["New", "Partially Released"];
 export const allStatusOptions: QuoteStatus[] = [...hpStatusOptions, ...agilityStatusOptions];
