@@ -141,21 +141,21 @@ export default function QuoteSearch() {
               {/* Top: name + status */}
               <div className="flex items-start justify-between gap-2 mb-3">
                 <div className="min-w-0 flex-1">
-                  <h3 className={`text-sm font-semibold truncate ${isAgility ? "text-foreground" : "text-brand"}`}>
-                    {q.quoteName}
-                  </h3>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <p className="text-xs text-muted-foreground font-mono">{q.id}</p>
+                  <div className="flex items-center gap-1.5">
+                    <h3 className={`text-sm font-semibold truncate ${isAgility ? "text-foreground" : "text-brand"}`}>
+                      {q.quoteName}
+                    </h3>
                     {isAgility && (
                       <button
                         onClick={(e) => handleCopyId(e, q.id)}
-                        className="p-0.5 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+                        className="p-0.5 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors shrink-0"
                         title="Copy Quote ID"
                       >
-                        <Copy className="h-3 w-3" />
+                        <Copy className="h-3.5 w-3.5" />
                       </button>
                     )}
                   </div>
+                  <p className="text-xs text-muted-foreground font-mono mt-0.5">{q.id}</p>
                 </div>
                 <span className={`inline-flex items-center text-2xs font-medium px-2.5 py-0.5 rounded-full shrink-0 ${getStatusColor(q.status)}`}>
                   {q.status}
