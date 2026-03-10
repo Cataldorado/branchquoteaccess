@@ -2,7 +2,7 @@ import { Search, BarChart3, Users } from "lucide-react";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { cn } from "@/lib/utils";
 
-const modules = [
+const tools = [
   {
     id: "quotes",
     label: "Quote Search",
