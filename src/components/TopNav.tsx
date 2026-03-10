@@ -39,6 +39,22 @@ export function TopNav() {
         <span className="font-semibold text-foreground text-sm tracking-tight hidden md:inline">Heritage HQ</span>
       </div>
 
+      {/* Selected customer badge */}
+      {selectedCustomer && (
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary border border-border mr-2">
+          <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="text-xs font-medium text-foreground">{selectedCustomer.name}</span>
+          <span className="text-xs font-mono text-muted-foreground">{selectedCustomer.accountNumber}</span>
+          <button
+            onClick={clearCustomer}
+            className="ml-1 h-4 w-4 rounded-full flex items-center justify-center hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            title="Change customer"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+      )}
+
       {/* Nav links */}
       <nav className="flex items-center gap-1">
         {navItems.map((item) => {
