@@ -39,7 +39,7 @@ export default function ModuleSelection() {
             {selectedCustomer.name}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Select a module to get started.
+            Select a tool to get started.
           </p>
         </div>
 
