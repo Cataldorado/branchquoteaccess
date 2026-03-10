@@ -48,7 +48,19 @@ export default function QuoteSearch() {
 
   return (
     <div className="space-y-5 max-w-[1600px] mx-auto">
-      {/* Search bar — large, scanner-style */}
+      {/* Back + Search bar */}
+      <div className="flex items-center gap-3">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 text-muted-foreground hover:text-foreground shrink-0"
+          onClick={() => setActiveModule(null)}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Modules
+        </Button>
+      </div>
+
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/50" />
         <Input
@@ -68,48 +80,10 @@ export default function QuoteSearch() {
         )}
       </div>
 
-      {/* Filters row: Customer, Branch, Status + pill statuses */}
-      <div className="bg-muted/50 rounded-xl border border-border p-4 space-y-3">
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Customer</label>
-            <SearchableSelect
-              value={customerFilter}
-              onValueChange={setCustomerFilter}
-              allLabel="All Customers"
-              options={customers.map((c) => ({ value: c.id, label: c.name }))}
-            />
-          </div>
-          <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Branch</label>
-            <SearchableSelect
-              value={branchFilter}
-              onValueChange={setBranchFilter}
-              allLabel="All Branches"
-              options={branches.map((b) => ({ value: b.id, label: b.name }))}
-            />
-          </div>
-          <div>
-            <label className="text-2xs uppercase tracking-wider text-muted-foreground font-medium mb-1.5 block">Status</label>
-            <SearchableSelect
-              value={statusFilter}
-              onValueChange={setStatusFilter}
-              allLabel="All Statuses"
-              options={statusOptions.map((s) => ({ value: s, label: s }))}
-            />
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          {hasFilters && (
-            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground" onClick={clearFilters}>
-              <X className="h-3.5 w-3.5" /> Clear filters
-            </Button>
-          )}
-          <div className="flex-1" />
-          <span className="text-xs text-muted-foreground font-mono">
-            {filtered.length} of {quotes.length} quotes
-          </span>
-        </div>
+      <div className="flex items-center justify-end">
+        <span className="text-xs text-muted-foreground font-mono">
+          {filtered.length} of {quotes.length} quotes
+        </span>
       </div>
 
       {/* Quote cards grid */}
