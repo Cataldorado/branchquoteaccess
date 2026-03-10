@@ -2,7 +2,7 @@ import { Search, BarChart3, Users } from "lucide-react";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { cn } from "@/lib/utils";
 
-const modules = [
+const tools = [
   {
     id: "quotes",
     label: "Quote Search",
@@ -39,12 +39,12 @@ export default function ModuleSelection() {
             {selectedCustomer.name}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Select a module to get started.
+            Select a tool to get started.
           </p>
         </div>
 
         <div className="grid gap-3">
-          {modules.map((mod) => (
+          {tools.map((mod) => (
             <button
               key={mod.id}
               disabled={!mod.enabled}
