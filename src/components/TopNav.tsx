@@ -14,7 +14,7 @@ import { useRole } from "@/contexts/RoleContext";
 
 export function TopNav() {
   const { role, setRole, isManager } = useRole();
-  const { selectedCustomer } = useCustomer();
+  const { selectedCustomer, openSearch } = useCustomer();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
