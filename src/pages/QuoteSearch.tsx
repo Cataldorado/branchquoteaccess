@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X, Clock, DollarSign, Building2, Users, ArrowLeft, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -14,10 +14,15 @@ import { useCustomer } from "@/contexts/CustomerContext";
 
 export default function QuoteSearch() {
   const navigate = useNavigate();
-  const { setActiveModule, selectedCustomer } = useCustomer();
-  const [search, setSearch] = useState("");
-  const [showExpired, setShowExpired] = useState(false);
-  const [showOtherBranches, setShowOtherBranches] = useState(false);
+  const { setActiveModule, selectedCustomer, getQuoteSearchFilters, setQuoteSearchFilters } = useCustomer();
+  const filters = getQuoteSearchFilters();
+  const search = filters.search;
+  const showExpired = filters.showExpired;
+  const showOtherBranches = filters.showOtherBranches;
+
+  const setSearch = (v: string) => setQuoteSearchFilters({ search: v });
+  const setShowExpired = (v: boolean) => setQuoteSearchFilters({ showExpired: v });
+  const setShowOtherBranches = (v: boolean) => setQuoteSearchFilters({ showOtherBranches: v });
 
   const filtered = useMemo(() => {
     return quotes.filter((q) => {
