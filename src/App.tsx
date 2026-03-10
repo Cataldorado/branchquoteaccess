@@ -13,15 +13,25 @@ import Dashboard from "@/pages/Dashboard";
 import Customers from "@/pages/Customers";
 import Branches from "@/pages/Branches";
 import CustomerSearch from "@/pages/CustomerSearch";
+import ModuleSelection from "@/pages/ModuleSelection";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
-  const { selectedCustomer } = useCustomer();
+  const { selectedCustomer, isSearching, activeTabIndex, tabs } = useCustomer();
+  const activeTab = activeTabIndex !== null ? tabs[activeTabIndex] : null;
 
-  if (!selectedCustomer) {
+  if (isSearching || tabs.length === 0) {
     return <CustomerSearch />;
+  }
+
+  if (!activeTab || activeTab.activeModule === null) {
+    return (
+      <AppLayout>
+        <ModuleSelection />
+      </AppLayout>
+    );
   }
 
   return (

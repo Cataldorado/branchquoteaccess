@@ -3,12 +3,13 @@ import { Search, Building2, MapPin, ArrowRight, Leaf } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { customers } from "@/data/mockData";
 import { useCustomer } from "@/contexts/CustomerContext";
+import { CustomerTabBar } from "@/components/CustomerTabBar";
 import { cn } from "@/lib/utils";
 
 export default function CustomerSearch() {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setSelectedCustomer } = useCustomer();
+  const { setSelectedCustomer, tabs } = useCustomer();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -39,6 +40,9 @@ export default function CustomerSearch() {
           <span className="font-semibold text-foreground text-sm tracking-tight">Heritage HQ</span>
         </div>
       </header>
+
+      {/* Show tab bar if there are open tabs */}
+      {tabs.length > 0 && <CustomerTabBar />}
 
       {/* Search area */}
       <div className="flex-1 flex flex-col items-center pt-[12vh] px-4">
