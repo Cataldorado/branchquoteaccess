@@ -44,7 +44,7 @@ export default function ModuleSelection() {
         </div>
 
         <div className="grid gap-3">
-          {modules.map((mod) => (
+          {tools.map((mod) => (
             <button
               key={mod.id}
               disabled={!mod.enabled}
