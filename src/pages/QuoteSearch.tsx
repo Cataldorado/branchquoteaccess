@@ -78,7 +78,7 @@ export default function QuoteSearch() {
           onClick={() => setActiveModule(null)}
         >
           <ArrowLeft className="h-4 w-4" />
-          Modules
+          Tools
         </Button>
       </div>
 
