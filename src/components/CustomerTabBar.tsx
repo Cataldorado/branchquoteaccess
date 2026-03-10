@@ -42,6 +42,7 @@ export function CustomerTabBar() {
         title="Add customer"
       >
         <Plus className="h-3.5 w-3.5" />
+        <span>New Customer</span>
       </button>
     </div>
   );
