@@ -16,6 +16,9 @@ export interface Customer {
   accountNumber: string;
   contactEmail: string;
   contactPhone: string;
+  address: string;
+  city: string;
+  state: string;
 }
 
 export type UOM = "EA" | "FT" | "LF" | "BX" | "CS" | "RL";
@@ -104,16 +107,16 @@ export const branches: Branch[] = [
 ];
 
 export const customers: Customer[] = [
-  { id: "C001", name: "Apex Construction", accountNumber: "ACX-10042", contactEmail: "orders@apexconst.com", contactPhone: "(555) 123-4567" },
-  { id: "C002", name: "Metro Plumbing Co", accountNumber: "MPC-20081", contactEmail: "purchasing@metroplumb.com", contactPhone: "(555) 234-5678" },
-  { id: "C003", name: "Valley Mechanical", accountNumber: "VME-30019", contactEmail: "quotes@valleymech.com", contactPhone: "(555) 345-6789" },
-  { id: "C004", name: "Summit HVAC Systems", accountNumber: "SHS-40055", contactEmail: "procurement@summithvac.com", contactPhone: "(555) 456-7890" },
-  { id: "C005", name: "Ironclad Fabrication", accountNumber: "ICF-50027", contactEmail: "orders@ironcladfab.com", contactPhone: "(555) 567-8901" },
-  { id: "C006", name: "Pacific Pipe & Supply", accountNumber: "PPS-60033", contactEmail: "buying@pacificpipe.com", contactPhone: "(555) 678-9012" },
-  { id: "C007", name: "Harbor Electric", accountNumber: "HBE-70014", contactEmail: "quotes@harborelec.com", contactPhone: "(555) 789-0123" },
-  { id: "C008", name: "Greenfield Builders", accountNumber: "GFB-80046", contactEmail: "orders@greenfieldbl.com", contactPhone: "(555) 890-1234" },
-  { id: "C009", name: "Titan Industrial", accountNumber: "TIN-90028", contactEmail: "purchasing@titanind.com", contactPhone: "(555) 901-2345" },
-  { id: "C010", name: "CrossPoint Contractors", accountNumber: "CPC-10061", contactEmail: "bids@crosspoint.com", contactPhone: "(555) 012-3456" },
+  { id: "C001", name: "Apex Construction", accountNumber: "ACX-10042", contactEmail: "orders@apexconst.com", contactPhone: "(555) 123-4567", address: "1420 Market St", city: "Denver", state: "CO" },
+  { id: "C002", name: "Metro Plumbing Co", accountNumber: "MPC-20081", contactEmail: "purchasing@metroplumb.com", contactPhone: "(555) 234-5678", address: "890 Industrial Blvd", city: "Boulder", state: "CO" },
+  { id: "C003", name: "Valley Mechanical", accountNumber: "VME-30019", contactEmail: "quotes@valleymech.com", contactPhone: "(555) 345-6789", address: "2255 Valley Dr", city: "Sanford", state: "FL" },
+  { id: "C004", name: "Summit HVAC Systems", accountNumber: "SHS-40055", contactEmail: "procurement@summithvac.com", contactPhone: "(555) 456-7890", address: "750 Summit Pkwy", city: "Westminster", state: "CO" },
+  { id: "C005", name: "Ironclad Fabrication", accountNumber: "ICF-50027", contactEmail: "orders@ironcladfab.com", contactPhone: "(555) 567-8901", address: "3310 Forge Rd", city: "McKinney", state: "TX" },
+  { id: "C006", name: "Pacific Pipe & Supply", accountNumber: "PPS-60033", contactEmail: "buying@pacificpipe.com", contactPhone: "(555) 678-9012", address: "4500 Harbor Ave", city: "Miami", state: "FL" },
+  { id: "C007", name: "Harbor Electric", accountNumber: "HBE-70014", contactEmail: "quotes@harborelec.com", contactPhone: "(555) 789-0123", address: "1100 Shoreline Dr", city: "Brooklyn Park", state: "MN" },
+  { id: "C008", name: "Greenfield Builders", accountNumber: "GFB-80046", contactEmail: "orders@greenfieldbl.com", contactPhone: "(555) 890-1234", address: "620 Elm St", city: "Parker", state: "CO" },
+  { id: "C009", name: "Titan Industrial", accountNumber: "TIN-90028", contactEmail: "purchasing@titanind.com", contactPhone: "(555) 901-2345", address: "8800 Commerce Way", city: "Lone Tree", state: "CO" },
+  { id: "C010", name: "CrossPoint Contractors", accountNumber: "CPC-10061", contactEmail: "bids@crosspoint.com", contactPhone: "(555) 012-3456", address: "5575 Crosspoint Ln", city: "Thornton", state: "CO" },
 ];
 
 export const products: Product[] = [
