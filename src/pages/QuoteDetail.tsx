@@ -221,9 +221,9 @@ export default function QuoteDetail() {
   };
 
   return (
-    <div className="flex gap-5 h-[calc(100vh-theme(spacing.14)-theme(spacing.10))]">
+    <div className={`flex ${panelHidden ? '' : 'gap-5'} h-[calc(100vh-theme(spacing.14)-theme(spacing.10))]`}>
       {/* LEFT: Item list panel */}
-      <div className="flex-1 min-w-0 overflow-auto">
+      <div className={`${panelHidden ? 'w-full' : 'flex-1'} min-w-0 overflow-auto`}>
         {/* Back + quote name */}
         <div className="flex items-center gap-3 mb-4">
           <button
