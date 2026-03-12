@@ -1,4 +1,4 @@
-import { Leaf } from "lucide-react";
+import heritageLogo from "@/assets/heritage-logo.svg";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
