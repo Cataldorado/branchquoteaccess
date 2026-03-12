@@ -10,7 +10,7 @@ import {
   SidebarContent,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import heritageLogo from "@/assets/heritage-logo.png";
+import heritageLogo from "@/assets/heritage-logo.svg";
 
 const sidebarItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, enabled: true },
