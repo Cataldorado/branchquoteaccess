@@ -1,29 +1,39 @@
 
 
-## Plan: Narrow Icon-Label Sidebar
+## Plan: Quote Item Inventory Status Indicators
 
-The screenshot shows a very narrow sidebar (~60px) where each item is displayed as a **vertically stacked icon + label** (no horizontal text). The sidebar is always in this compact "icon + label" format — it never expands to a wide text sidebar.
+### Overview
+Add a colored inventory status dot to each quote line item that indicates stock availability at the quoting branch. Clicking the dot opens a modal showing inventory across all eligible branches.
 
-### Changes
+### 1. Mock Inventory Data (`src/data/mockData.ts`)
+- Add a `BranchInventory` type: `{ branchId: string; branchName: string; available: number }`
+- Add a `generateBranchInventory(productId: string, quoteQty: number)` function that returns mock inventory levels for each of the 6 existing branches, with randomized quantities (some zero, some partial, some full)
+- Export a `getInventoryForProduct(productId: string)` function returning `BranchInventory[]`
+- Export a helper `getInventoryStatus(quoteQty: number, branchInventory: number)` returning `"in-stock" | "partial" | "out-of-stock" | "unavailable"`
 
-**1. `src/components/ui/sidebar.tsx`** — Update width constants:
-- Change `SIDEBAR_WIDTH` from `16rem` to `4.5rem` (~72px)
-- Change `SIDEBAR_WIDTH_ICON` from `3rem` to `4.5rem` (same, since it's always narrow)
+### 2. Inventory Status Dot Component (`src/components/InventoryStatusDot.tsx`)
+- Small colored circle: green (in-stock), yellow (partial), red (out-of-stock), gray (unavailable)
+- Accepts `productId`, `quoteQty`, `branchId` props
+- Computes status from the mock data using the quoting branch's inventory
+- Renders a clickable dot with a tooltip showing the status label
+- On click, opens the `InventoryAvailabilityModal`
 
-**2. `src/components/AppSidebar.tsx`** — Redesign to match the screenshot:
-- Remove the logo/header section entirely (the top nav already has the Heritage logo)
-- Remove the "Back to Home" footer
-- Set `collapsible="none"` since the sidebar is always the same narrow width
-- Each item renders as a vertical stack: icon on top, small label text below (centered)
-- Active item gets a left blue highlight bar matching the screenshot
-- Remove "Soon" badges — disabled items just appear muted
-- Use smaller text (~10-11px) for labels
+### 3. Inventory Availability Modal (`src/components/InventoryAvailabilityModal.tsx`)
+- Dialog showing a table of branches with available inventory for the selected product
+- Columns: Branch name, Available Inventory, Status dot per branch
+- Sorted by highest availability first
+- Highlights the quoting branch row
+- Shows "No eligible branches available" message when applicable
+- Shows product name and SKU in the header
 
-The result will be a slim, always-visible icon sidebar matching the Figma reference exactly.
+### 4. Integration into Quote Detail (`src/pages/QuoteDetail.tsx`)
+- Add the `InventoryStatusDot` to each item row, placed in the Product Description cell (left of the product name, alongside the existing StickyNote icon)
+- Pass the quote's `branchId` and item's `productId` and `quoteQty`
+- No changes to the grid column structure needed -- the dot fits inside the existing first column
 
-### Files to Edit
-| File | Change |
-|------|--------|
-| `src/components/ui/sidebar.tsx` | Update `SIDEBAR_WIDTH` to `4.5rem` |
-| `src/components/AppSidebar.tsx` | Rewrite to vertical icon+label layout, remove header/footer |
+### Technical Details
+- Grid layout remains unchanged (no new columns); the dot is prepended inside the product description cell
+- Inventory data is deterministic per product using a seeded approach (product ID hash) so it stays consistent across renders
+- Modal uses existing Dialog component from the UI library
+- Status colors use Tailwind classes: `bg-emerald-500`, `bg-amber-400`, `bg-red-500`, `bg-gray-300`
 
