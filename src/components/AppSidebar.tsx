@@ -51,11 +51,11 @@ export function AppSidebar() {
                 key={item.id}
                 onClick={() => handleClick(item)}
                 className={cn(
-                  "relative flex flex-col items-center justify-center w-full py-2 gap-0.5 transition-colors",
+                  "relative flex flex-col items-center justify-center w-full py-2 gap-0.5 transition-colors rounded-md mx-1",
                   item.enabled
                     ? "cursor-pointer hover:bg-sidebar-accent/50"
-                    : "cursor-default text-sidebar-foreground/25",
-                  active && "text-sidebar-primary"
+                    : "cursor-default text-sidebar-foreground/40",
+                  active && "bg-sidebar-accent text-sidebar-primary"
                 )}
               >
                 {active && (
