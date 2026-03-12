@@ -50,13 +50,7 @@ function AppRoutes() {
 
   // Dashboard tool: no customer needed
   if (activeTool === "dashboard") {
-    return (
-      <AppLayout>
-        <Routes>
-          <Route path="*" element={<Dashboard />} />
-        </Routes>
-      </AppLayout>
-    );
+    return <ToolDashboard />;
   }
 
   // Fallback for any other tool
