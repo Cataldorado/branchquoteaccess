@@ -1,21 +1,13 @@
 import {
   LayoutDashboard, Package, FileText, ShoppingCart, Truck,
-  ClipboardList, Receipt, Inbox, StickyNote, Leaf, Home,
+  ClipboardList, Receipt, Inbox, StickyNote,
 } from "lucide-react";
-import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCustomer } from "@/contexts/CustomerContext";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarFooter,
-  useSidebar,
 } from "@/components/ui/sidebar";
 
 const sidebarItems = [
@@ -31,80 +23,52 @@ const sidebarItems = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
-  const collapsed = state === "collapsed";
   const location = useLocation();
+  const navigate = useNavigate();
   const { goHome } = useCustomer();
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <Sidebar collapsible="icon" className="border-r-0">
-      <div className="px-4 py-5 border-b border-sidebar-border">
-        {!collapsed ? (
-          <button onClick={goHome} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className="h-7 w-7 rounded-lg bg-brand flex items-center justify-center">
-              <Leaf className="h-3.5 w-3.5 text-brand-foreground" />
-            </div>
-            <span className="font-semibold text-sidebar-accent-foreground text-sm tracking-tight">Heritage HQ</span>
-          </button>
-        ) : (
-          <button onClick={goHome} className="hover:opacity-80 transition-opacity">
-            <div className="h-7 w-7 rounded-lg bg-brand flex items-center justify-center mx-auto">
-              <Leaf className="h-3.5 w-3.5 text-brand-foreground" />
-            </div>
-          </button>
-        )}
-      </div>
-      <SidebarContent className="pt-4">
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {sidebarItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  {item.enabled ? (
-                    <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                      <NavLink
-                        to={item.url}
-                        end
-                        className="text-sidebar-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-150 rounded-lg text-[13px]"
-                        activeClassName="bg-sidebar-primary/15 text-sidebar-primary font-semibold shadow-[inset_0_0_0_1px_hsl(var(--sidebar-primary)/0.2)]"
-                      >
-                        <item.icon className="h-4 w-4" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  ) : (
-                    <SidebarMenuButton className="text-sidebar-foreground/30 cursor-not-allowed hover:bg-transparent hover:text-sidebar-foreground/30">
-                      <item.icon className="h-4 w-4 opacity-40" />
-                      {!collapsed && (
-                        <div className="flex items-center gap-2 flex-1">
-                          <span>{item.title}</span>
-                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-sidebar-foreground/15 text-sidebar-foreground/30 font-normal">
-                            Soon
-                          </Badge>
-                        </div>
-                      )}
-                    </SidebarMenuButton>
-                  )}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+    <Sidebar collapsible="none" className="border-r border-sidebar-border">
+      <SidebarContent className="py-2 px-0">
+        <nav className="flex flex-col items-center gap-0.5">
+          {sidebarItems.map((item) => {
+            const active = isActive(item.url);
+            return (
+              <button
+                key={item.title}
+                onClick={() => {
+                  if (!item.enabled) return;
+                  if (item.url === "/dashboard") {
+                    goHome();
+                  } else {
+                    navigate(item.url);
+                  }
+                }}
+                className={cn(
+                  "relative flex flex-col items-center justify-center w-full py-2.5 gap-1 transition-colors",
+                  item.enabled
+                    ? "cursor-pointer hover:bg-sidebar-accent/50"
+                    : "cursor-default text-sidebar-foreground/25",
+                  active && "text-sidebar-primary"
+                )}
+              >
+                {active && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-sidebar-primary" />
+                )}
+                <item.icon className={cn("h-[18px] w-[18px]", !active && item.enabled && "text-sidebar-foreground/70")} />
+                <span className={cn(
+                  "text-[10px] leading-tight",
+                  active ? "font-semibold" : "font-normal",
+                  !item.enabled && "text-sidebar-foreground/25"
+                )}>
+                  {item.title}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={goHome}
-              className="text-sidebar-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-150 rounded-lg text-[13px]"
-            >
-              <Home className="h-4 w-4" />
-              {!collapsed && <span>Back to Home</span>}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 }
