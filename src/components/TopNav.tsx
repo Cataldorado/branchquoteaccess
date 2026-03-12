@@ -1,4 +1,4 @@
-import { Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail } from "lucide-react";
+import { Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail, X, Plus, Search } from "lucide-react";
 import heritageLogo from "@/assets/heritage-logo.svg";
 import { useEffect, useState } from "react";
 import { useCustomer } from "@/contexts/CustomerContext";
@@ -12,10 +12,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRole } from "@/contexts/RoleContext";
+import { cn } from "@/lib/utils";
 
 export function TopNav() {
   const { role, setRole, isManager } = useRole();
-  const { selectedCustomer, openSearch } = useCustomer();
+  const { tabs, activeTabIndex, isSearching, switchTab, closeTab, openSearch, selectedCustomer, goHome } = useCustomer();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
@@ -23,17 +24,61 @@ export function TopNav() {
   }, [dark]);
 
   return (
-    <header className="h-14 border-b border-border bg-card flex items-center px-5 gap-2 shrink-0">
+    <header className="h-14 border-b border-border bg-card flex items-center px-4 gap-0 shrink-0">
       {/* Logo */}
       <button
-        onClick={() => openSearch()}
-        className="flex items-center gap-2.5 mr-4 hover:opacity-80 transition-opacity"
-        title="Search customers"
+        onClick={() => goHome()}
+        className="flex items-center gap-2.5 hover:opacity-80 transition-opacity shrink-0"
+        title="Home"
       >
         <img src={heritageLogo} alt="Heritage" className="h-8 object-contain" />
       </button>
 
+      {/* Customer tabs — styled as bordered segments matching the screenshot */}
+      {tabs.length > 0 && (
+        <div className="flex items-center ml-1 h-full">
+          {tabs.map((tab, index) => {
+            const isActive = index === activeTabIndex && !isSearching;
+            return (
+              <button
+                key={tab.customer.id}
+                onClick={() => switchTab(index)}
+                className={cn(
+                  "relative flex items-center gap-2 px-4 h-full border-r border-border text-xs transition-colors group",
+                  index === 0 && "border-l",
+                  isActive
+                    ? "bg-background text-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                )}
+              >
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="font-medium text-xs truncate max-w-[120px]">{tab.customer.name}</span>
+                  <span className="text-[10px] text-muted-foreground">Customer ID: {tab.customer.accountNumber}</span>
+                </div>
+                <span
+                  role="button"
+                  onClick={(e) => { e.stopPropagation(); closeTab(index); }}
+                  className="ml-1 h-5 w-5 rounded flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all shrink-0"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <div className="flex-1" />
+
+      {/* Look up Customer button */}
+      <button
+        onClick={openSearch}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-primary hover:bg-primary/10 transition-colors mr-2"
+        title="Look up Customer"
+      >
+        <Search className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">Look up Customer</span>
+      </button>
 
       {/* Dark mode toggle */}
       <button
@@ -45,7 +90,7 @@ export function TopNav() {
       </button>
 
       {/* Role toggle */}
-      <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
+      <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5 ml-1">
         <button
           onClick={() => setRole("branch-manager")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
