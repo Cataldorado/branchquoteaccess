@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export default function CustomerSearch() {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setSelectedCustomer, tabs } = useCustomer();
+  const { setSelectedCustomer, activeTool } = useCustomer();
 
   useEffect(() => {
     inputRef.current?.focus();
