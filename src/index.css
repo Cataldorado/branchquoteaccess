@@ -47,13 +47,13 @@
     --brand: 221 83% 53%;
     --brand-foreground: 0 0% 100%;
 
-    --sidebar-background: 208 100% 20%;
-    --sidebar-foreground: 210 15% 95%;
-    --sidebar-primary: 210 80% 65%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 208 80% 28%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 208 80% 16%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 9% 46%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 221 83% 53%;
+    --sidebar-accent: 214 32% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 220 13% 91%;
     --sidebar-ring: 221 83% 53%;
 
     --info: 217 91% 60%;
