@@ -58,24 +58,27 @@ export default function ToolDashboard() {
                   onClick={() => handleToolClick(tool)}
                   disabled={!tool.enabled}
                   className={cn(
-                    "relative aspect-[4/3] rounded-xl overflow-hidden group transition-all",
+                    "relative aspect-[4/3] rounded-xl overflow-hidden group transition-all border border-border bg-card",
                     tool.enabled
                       ? "cursor-pointer hover:ring-2 hover:ring-brand hover:shadow-lg"
-                      : "cursor-default opacity-70"
+                      : "cursor-default opacity-50"
                   )}
                 >
-                  <img
-                    src={tool.image}
-                    alt={tool.label}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                    <span className="text-white font-semibold text-lg tracking-tight drop-shadow-md">
+                  <div className={cn("absolute inset-0 bg-gradient-to-br", tool.color)} />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    <tool.icon
+                      className={cn(
+                        "transition-transform group-hover:scale-110 text-foreground/70",
+                        !tool.enabled && "text-muted-foreground/50"
+                      )}
+                      size={40}
+                      strokeWidth={1.5}
+                    />
+                    <span className="text-foreground font-semibold text-sm tracking-tight">
                       {tool.label}
                     </span>
                     {!tool.enabled && (
-                      <Badge className="bg-white/20 text-white border-white/30 text-2xs backdrop-blur-sm">
+                      <Badge variant="secondary" className="text-2xs">
                         Coming Soon
                       </Badge>
                     )}
