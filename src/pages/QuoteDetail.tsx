@@ -240,13 +240,28 @@ export default function QuoteDetail() {
               <span className={`text-2xs font-semibold px-2 py-0.5 rounded-full ${getStatusColor(quote.status)}`}>{quote.status}</span>
             </div>
           </div>
-          <button
-            onClick={() => setShowDetails(!showDetails)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 transition-all"
-          >
-            {showDetails ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-            {showDetails ? "Hide Details" : "Show Details"}
-          </button>
+          <div className="flex items-center gap-2">
+            {panelHidden && showOrderButton && (
+              <Button
+                size="sm"
+                className="h-9 text-sm gap-2 bg-brand text-brand-foreground hover:bg-brand/90 shadow-sm rounded-lg font-semibold"
+                disabled={orderableCount === 0}
+              >
+                <ShoppingCart className="h-4 w-4" /> Purchase Items ({orderableCount})
+              </Button>
+            )}
+            <button
+              onClick={() => {
+                setPanelHidden(!panelHidden);
+                if (!panelHidden) setShowDetails(true);
+                else setShowDetails(false);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 transition-all"
+            >
+              {panelHidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              {panelHidden ? "Hide Details" : "Show Details"}
+            </button>
+          </div>
         </div>
 
         {/* Toolbar */}
