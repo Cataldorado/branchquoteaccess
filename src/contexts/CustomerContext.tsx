@@ -24,6 +24,7 @@ interface CustomerContextType {
   activeTabIndex: number | null;
   selectedCustomer: Customer | null;
   isSearching: boolean;
+  activeTool: string | null;
   setSelectedCustomer: (customer: Customer | null) => void;
   clearCustomer: () => void;
   addCustomerTab: (customer: Customer) => void;
@@ -33,6 +34,8 @@ interface CustomerContextType {
   setActiveModule: (module: string | null) => void;
   getQuoteSearchFilters: () => QuoteSearchFilters;
   setQuoteSearchFilters: (filters: Partial<QuoteSearchFilters>) => void;
+  setActiveTool: (tool: string | null) => void;
+  goHome: () => void;
 }
 
 const CustomerContext = createContext<CustomerContextType | undefined>(undefined);
@@ -40,7 +43,8 @@ const CustomerContext = createContext<CustomerContextType | undefined>(undefined
 export function CustomerProvider({ children }: { children: ReactNode }) {
   const [tabs, setTabs] = useState<CustomerTab[]>([]);
   const [activeTabIndex, setActiveTabIndex] = useState<number | null>(null);
-  const [isSearching, setIsSearching] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
+  const [activeTool, setActiveTool] = useState<string | null>(null);
 
   const selectedCustomer = activeTabIndex !== null ? tabs[activeTabIndex]?.customer ?? null : null;
 
@@ -51,7 +55,7 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       setIsSearching(false);
       return;
     }
-    setTabs(prev => [...prev, { customer, activeModule: null, quoteSearchFilters: { ...defaultFilters } }]);
+    setTabs(prev => [...prev, { customer, activeModule: "quotes", quoteSearchFilters: { ...defaultFilters } }]);
     setActiveTabIndex(tabs.length);
     setIsSearching(false);
   }, [tabs]);
@@ -113,12 +117,19 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
     }
   }, [activeTabIndex, closeTab]);
 
+  const goHome = useCallback(() => {
+    setActiveTool(null);
+    setIsSearching(false);
+    setActiveTabIndex(null);
+  }, []);
+
   return (
     <CustomerContext.Provider value={{
-      tabs, activeTabIndex, selectedCustomer, isSearching,
+      tabs, activeTabIndex, selectedCustomer, isSearching, activeTool,
       setSelectedCustomer, clearCustomer, addCustomerTab, closeTab,
       switchTab, openSearch, setActiveModule,
       getQuoteSearchFilters, setQuoteSearchFilters,
+      setActiveTool, goHome,
     }}>
       {children}
     </CustomerContext.Provider>
