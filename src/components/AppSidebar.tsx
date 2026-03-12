@@ -1,5 +1,5 @@
 import {
-  Package, FileText, ShoppingCart, Truck,
+  LayoutDashboard, Package, FileText, ShoppingCart, Truck,
   ClipboardList, Receipt, Inbox, StickyNote,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const sidebarItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, enabled: true },
   { title: "Products", url: "/products", icon: Package, enabled: false },
   { title: "Quotes", url: "/", icon: FileText, enabled: true },
   { title: "Orders", url: "/orders", icon: ShoppingCart, enabled: false },
