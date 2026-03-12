@@ -107,9 +107,7 @@ function CustomerTabsCarousel({
 }
 
 export function TopNav() {
-  const { role, setRole, isManager } = useRole();
   const { tabs, activeTabIndex, isSearching, switchTab, closeTab, openSearch, selectedCustomer, goHome } = useCustomer();
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
