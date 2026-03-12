@@ -40,7 +40,8 @@ export default function ToolDashboard() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <SidebarProvider>
+    <div className="h-screen flex flex-col bg-background w-full">
       {/* Header with Heritage logo */}
       <header className="h-14 border-b border-border bg-card flex items-center px-5 shrink-0">
         <img src={heritageLogo} alt="Heritage" className="h-8 object-contain" />
