@@ -1,4 +1,4 @@
-import { Leaf } from "lucide-react";
+import heritageLogo from "@/assets/heritage-logo.svg";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -42,10 +42,7 @@ export default function ToolDashboard() {
       {/* Simple header */}
       <header className="h-14 border-b border-border bg-card flex items-center px-5 shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-brand flex items-center justify-center">
-            <Leaf className="h-4 w-4 text-brand-foreground" />
-          </div>
-          <span className="font-semibold text-foreground text-sm tracking-tight">Heritage HQ</span>
+          <img src={heritageLogo} alt="Heritage" className="h-8 object-contain" />
         </div>
       </header>
 

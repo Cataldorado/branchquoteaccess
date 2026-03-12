@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Package, FileText, ShoppingCart, Truck,
-  ClipboardList, Receipt, Inbox, StickyNote,
+  ClipboardList, Receipt, Inbox, StickyNote, ArrowLeft,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCustomer } from "@/contexts/CustomerContext";
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/sidebar";
 
 const sidebarItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, enabled: true },
   { title: "Products", url: "/products", icon: Package, enabled: false },
   { title: "Quotes", url: "/", icon: FileText, enabled: true },
   { title: "Orders", url: "/orders", icon: ShoppingCart, enabled: false },
@@ -32,6 +31,13 @@ export function AppSidebar() {
     <Sidebar collapsible="none" className="border-r border-sidebar-border">
       <SidebarContent className="py-2 px-0">
         <nav className="flex flex-col items-center gap-0.5">
+          <button
+            onClick={() => goHome()}
+            className="relative flex flex-col items-center justify-center w-full py-2.5 gap-1 transition-colors cursor-pointer hover:bg-sidebar-accent/50"
+          >
+            <ArrowLeft className="h-[18px] w-[18px] text-sidebar-foreground/70" />
+            <span className="text-[10px] leading-tight font-normal">Back</span>
+          </button>
           {sidebarItems.map((item) => {
             const active = isActive(item.url);
             return (
