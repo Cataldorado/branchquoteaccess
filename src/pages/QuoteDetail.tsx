@@ -603,7 +603,8 @@ export default function QuoteDetail() {
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-bad" /> Low</span>
             </div>
           </div>
-        </div>
+      )}
+      )}
 
         {/* Actions */}
         <div className="space-y-2 sticky bottom-0 bg-background pt-2 pb-2">
