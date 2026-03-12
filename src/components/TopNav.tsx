@@ -1,4 +1,5 @@
-import { Leaf, Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail } from "lucide-react";
+import { Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail } from "lucide-react";
+import heritageLogo from "@/assets/heritage-logo.svg";
 import { useEffect, useState } from "react";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -29,10 +30,7 @@ export function TopNav() {
         className="flex items-center gap-2.5 mr-4 hover:opacity-80 transition-opacity"
         title="Search customers"
       >
-        <div className="h-8 w-8 rounded-lg bg-brand flex items-center justify-center">
-          <Leaf className="h-4 w-4 text-brand-foreground" />
-        </div>
-        <span className="font-semibold text-foreground text-sm tracking-tight hidden md:inline">Heritage HQ</span>
+        <img src={heritageLogo} alt="Heritage" className="h-8 object-contain" />
       </button>
 
       <div className="flex-1" />
