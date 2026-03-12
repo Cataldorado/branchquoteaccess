@@ -75,7 +75,7 @@ function CustomerTabsCarousel({
                 "relative flex items-center gap-2 px-4 h-full border-r border-border text-xs transition-colors group shrink-0",
                 index === 0 && "border-l",
                 isActive
-                  ? "bg-background text-foreground font-medium"
+                  ? "bg-background text-foreground font-medium border-b-2 border-b-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
               )}
             >
