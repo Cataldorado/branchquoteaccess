@@ -31,7 +31,13 @@ export function AppSidebar() {
     <Sidebar collapsible="none" className="border-r border-sidebar-border">
       <SidebarContent className="py-2 px-0">
         <nav className="flex flex-col items-center gap-0.5">
-          {sidebarItems.map((item) => {
+          <button
+            onClick={() => goHome()}
+            className="relative flex flex-col items-center justify-center w-full py-2.5 gap-1 transition-colors cursor-pointer hover:bg-sidebar-accent/50"
+          >
+            <ArrowLeft className="h-[18px] w-[18px] text-sidebar-foreground/70" />
+            <span className="text-[10px] leading-tight font-normal">Back</span>
+          </button>
             const active = isActive(item.url);
             return (
               <button
