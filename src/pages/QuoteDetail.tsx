@@ -195,8 +195,8 @@ export default function QuoteDetail() {
 
   // Column grid template based on details toggle
   const colTemplate = showDetails
-    ? "grid-cols-[minmax(180px,3fr)_minmax(80px,1fr)_minmax(60px,0.7fr)_minmax(60px,0.7fr)_minmax(55px,0.6fr)_minmax(60px,0.7fr)_minmax(90px,1fr)_minmax(55px,0.6fr)_minmax(60px,0.7fr)_minmax(85px,1fr)_36px]"
-    : "grid-cols-[minmax(200px,3fr)_minmax(80px,1fr)_minmax(60px,0.7fr)_minmax(55px,0.6fr)_minmax(60px,0.7fr)_minmax(90px,1fr)_minmax(85px,1fr)_36px]";
+    ? "grid-cols-[minmax(180px,3fr)_minmax(80px,1fr)_minmax(70px,0.7fr)_minmax(70px,0.7fr)_minmax(70px,0.7fr)_minmax(70px,0.7fr)_minmax(100px,1fr)_minmax(60px,0.6fr)_minmax(70px,0.7fr)_minmax(100px,1fr)_36px]"
+    : "grid-cols-[minmax(200px,3fr)_minmax(80px,1fr)_minmax(70px,0.7fr)_minmax(70px,0.7fr)_minmax(70px,0.7fr)_minmax(100px,1fr)_minmax(100px,1fr)_36px]";
 
   // Per-group populate/reset
   const groupPopulated = (groupId: string) => {
