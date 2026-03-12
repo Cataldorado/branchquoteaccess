@@ -80,7 +80,7 @@ export default function QuoteSearch() {
           variant="ghost"
           size="sm"
           className="gap-1.5 text-muted-foreground hover:text-foreground shrink-0"
-          onClick={() => setActiveModule(null)}
+          onClick={() => openSearch()}
         >
           <ArrowLeft className="h-4 w-4" />
           Back
