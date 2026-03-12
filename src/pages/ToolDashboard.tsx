@@ -39,14 +39,9 @@ export default function ToolDashboard() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Simple header */}
+      {/* Header with Heritage logo */}
       <header className="h-14 border-b border-border bg-card flex items-center px-5 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-brand flex items-center justify-center">
-            <Leaf className="h-4 w-4 text-brand-foreground" />
-          </div>
-          <span className="font-semibold text-foreground text-sm tracking-tight">Heritage HQ</span>
-        </div>
+        <img src={heritageLogo} alt="Heritage" className="h-8 object-contain" />
       </header>
 
       {/* Grid */}
