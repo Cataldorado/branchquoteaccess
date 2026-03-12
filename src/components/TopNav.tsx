@@ -109,9 +109,6 @@ function CustomerTabsCarousel({
 export function TopNav() {
   const { tabs, activeTabIndex, isSearching, switchTab, closeTab, openSearch, selectedCustomer, goHome } = useCustomer();
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
 
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-4 gap-0 shrink-0">

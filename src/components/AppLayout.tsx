@@ -1,5 +1,6 @@
 import { TopNav } from "@/components/TopNav";
 import { AppSidebar } from "@/components/AppSidebar";
+import { BottomBar } from "@/components/BottomBar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -15,6 +16,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </main>
           </div>
         </div>
+        <BottomBar />
       </div>
     </SidebarProvider>
   );
