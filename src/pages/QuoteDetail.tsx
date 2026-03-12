@@ -385,7 +385,7 @@ export default function QuoteDetail() {
                 {!isCollapsed && group.items.map((item) => (
                   <div
                     key={item.id}
-                    className={`grid ${colTemplate} gap-0 px-3 py-2.5 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center`}
+                    className={`grid ${colTemplate} gap-0 px-3 py-1.5 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors items-center`}
                   >
                     {/* Product */}
                     <div className="flex flex-col gap-0.5 px-2 min-w-0">
