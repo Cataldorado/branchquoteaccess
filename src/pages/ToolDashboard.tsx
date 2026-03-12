@@ -3,7 +3,7 @@ import { useCustomer } from "@/contexts/CustomerContext";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-import imgDashboard from "@/assets/tool-dashboard.jpg";
+
 import imgQuotes from "@/assets/tool-quotes.jpg";
 import imgProducts from "@/assets/tool-products.jpg";
 import imgOrders from "@/assets/tool-orders.jpg";
@@ -14,7 +14,6 @@ import imgInbox from "@/assets/tool-inbox.jpg";
 import imgNotepad from "@/assets/tool-notepad.jpg";
 
 const tools = [
-  { id: "dashboard", label: "Dashboard", image: imgDashboard, enabled: true, needsCustomer: false },
   { id: "products", label: "Products", image: imgProducts, enabled: false, needsCustomer: false },
   { id: "quotes", label: "Quotes", image: imgQuotes, enabled: true, needsCustomer: true },
   { id: "orders", label: "Orders", image: imgOrders, enabled: false, needsCustomer: false },
