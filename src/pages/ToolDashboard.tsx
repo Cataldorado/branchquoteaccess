@@ -16,8 +16,8 @@ import imgInbox from "@/assets/tool-inbox.jpg";
 import imgNotepad from "@/assets/tool-notepad.jpg";
 
 const tools = [
-  { id: "products", label: "Products", image: imgProducts, enabled: false, needsCustomer: false },
   { id: "quotes", label: "Quotes", image: imgQuotes, enabled: true, needsCustomer: true },
+  { id: "products", label: "Products", image: imgProducts, enabled: false, needsCustomer: false },
   { id: "orders", label: "Orders", image: imgOrders, enabled: false, needsCustomer: false },
   { id: "deliveries", label: "Deliveries", image: imgDeliveries, enabled: false, needsCustomer: false },
   { id: "pickup", label: "Pickup", image: imgPickup, enabled: false, needsCustomer: false },
