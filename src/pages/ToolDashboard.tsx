@@ -3,7 +3,7 @@ import { useCustomer } from "@/contexts/CustomerContext";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-import imgDashboard from "@/assets/tool-dashboard.jpg";
+
 import imgQuotes from "@/assets/tool-quotes.jpg";
 import imgProducts from "@/assets/tool-products.jpg";
 import imgOrders from "@/assets/tool-orders.jpg";
