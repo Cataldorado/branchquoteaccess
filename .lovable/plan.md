@@ -1,39 +1,54 @@
 
 
-## Plan: Quote Item Inventory Status Indicators
+## Plan: Dashboard Grid Screen with Sidebar Integration
 
-### Overview
-Add a colored inventory status dot to each quote line item that indicates stock availability at the quoting branch. Clicking the dot opens a modal showing inventory across all eligible branches.
+### What Changes
 
-### 1. Mock Inventory Data (`src/data/mockData.ts`)
-- Add a `BranchInventory` type: `{ branchId: string; branchName: string; available: number }`
-- Add a `generateBranchInventory(productId: string, quoteQty: number)` function that returns mock inventory levels for each of the 6 existing branches, with randomized quantities (some zero, some partial, some full)
-- Export a `getInventoryForProduct(productId: string)` function returning `BranchInventory[]`
-- Export a helper `getInventoryStatus(quoteQty: number, branchInventory: number)` returning `"in-stock" | "partial" | "out-of-stock" | "unavailable"`
+**1. New Dashboard Grid Page (`src/pages/ToolDashboard.tsx`)**
+A full-page grid of clickable tool cards matching the screenshot style — placeholder images with dark gradient overlays and centered white text labels. Tools from the screenshot: Dashboard, Products, Quotes, Orders, Deliveries, Pickup, Invoices, Inbox, Notepad. Non-functional tools show a "Coming Soon" badge overlay; clicking them does nothing.
 
-### 2. Inventory Status Dot Component (`src/components/InventoryStatusDot.tsx`)
-- Small colored circle: green (in-stock), yellow (partial), red (out-of-stock), gray (unavailable)
-- Accepts `productId`, `quoteQty`, `branchId` props
-- Computes status from the mock data using the quoting branch's inventory
-- Renders a clickable dot with a tooltip showing the status label
-- On click, opens the `InventoryAvailabilityModal`
+Each card uses a placeholder image (from `public/placeholder.svg` or Unsplash-style gradient backgrounds) with a dark overlay and large white label text, arranged in a responsive 4-column grid.
 
-### 3. Inventory Availability Modal (`src/components/InventoryAvailabilityModal.tsx`)
-- Dialog showing a table of branches with available inventory for the selected product
-- Columns: Branch name, Available Inventory, Status dot per branch
-- Sorted by highest availability first
-- Highlights the quoting branch row
-- Shows "No eligible branches available" message when applicable
-- Shows product name and SKU in the header
+**2. Updated App Flow (`src/App.tsx`)**
+- The **first screen** (when no tool is active) renders `ToolDashboard` instead of `CustomerSearch` and `ModuleSelection`.
+- Clicking **Quotes** on the dashboard opens the existing `CustomerSearch` flow. After selecting a customer, it proceeds to `QuoteSearch` as it does today.
+- Clicking **Dashboard** navigates directly to the existing `Dashboard` page (no customer needed).
+- Other tools show as disabled/coming soon.
 
-### 4. Integration into Quote Detail (`src/pages/QuoteDetail.tsx`)
-- Add the `InventoryStatusDot` to each item row, placed in the Product Description cell (left of the product name, alongside the existing StickyNote icon)
-- Pass the quote's `branchId` and item's `productId` and `quoteQty`
-- No changes to the grid column structure needed -- the dot fits inside the existing first column
+**3. Sidebar Visibility (`src/components/AppLayout.tsx`)**
+- Integrate `AppSidebar` (already exists, currently unused) using `SidebarProvider` from shadcn.
+- The sidebar is rendered **only when the user is inside a tool** (not on the grid dashboard).
+- `AppLayout` wraps content with the sidebar; the dashboard grid page renders **without** `AppLayout`.
+
+**4. Updated Sidebar (`src/components/AppSidebar.tsx`)**
+- Match the screenshot's sidebar items: Dashboard, Products, Quotes, Orders, Deliveries, Pickup, Invoices, Inbox, Notepad.
+- Add a "Home" or logo click that returns to the dashboard grid.
+- Keep the icon-based collapsed sidebar style.
+
+### Flow Summary
+
+```text
+App Start → ToolDashboard (grid, no sidebar)
+  ├─ Click "Quotes" → CustomerSearch → Select Customer → QuoteSearch (with sidebar)
+  ├─ Click "Dashboard" → Dashboard page (with sidebar)
+  └─ Click others → Coming Soon (no navigation)
+```
 
 ### Technical Details
-- Grid layout remains unchanged (no new columns); the dot is prepended inside the product description cell
-- Inventory data is deterministic per product using a seeded approach (product ID hash) so it stays consistent across renders
-- Modal uses existing Dialog component from the UI library
-- Status colors use Tailwind classes: `bg-emerald-500`, `bg-amber-400`, `bg-red-500`, `bg-gray-300`
+
+- **No existing pages modified** — QuoteSearch, QuoteDetail, Dashboard, CustomerSearch all remain as-is.
+- The `CustomerContext` flow remains intact; clicking Quotes on the grid triggers `openSearch()` to show customer search, then flows into quote tools as before.
+- Add a new state to track whether the user is on the "home" dashboard grid vs. inside a tool, to control sidebar visibility.
+- Placeholder images: use colored gradient backgrounds with CSS (no external image dependencies) to mimic the screenshot's card aesthetic.
+- Sidebar items use lucide-react icons: `LayoutDashboard`, `Package`, `FileText`, `ShoppingCart`, `Truck`, `ClipboardList`, `Receipt`, `Inbox`, `StickyNote`.
+
+### Files to Create/Edit
+
+| File | Action |
+|------|--------|
+| `src/pages/ToolDashboard.tsx` | **Create** — Grid of tool cards |
+| `src/App.tsx` | **Edit** — Add dashboard as first screen, route tools |
+| `src/components/AppLayout.tsx` | **Edit** — Integrate SidebarProvider + AppSidebar |
+| `src/components/AppSidebar.tsx` | **Edit** — Update items to match screenshot, add home nav |
+| `src/contexts/CustomerContext.tsx` | **Minor edit** — Add state to distinguish dashboard vs tool mode |
 
