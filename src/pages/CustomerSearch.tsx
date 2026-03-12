@@ -93,7 +93,6 @@ export default function CustomerSearch() {
                 </button>
               ))
             )}
-          </div>
         </div>
       </div>
     </div>
