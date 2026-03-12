@@ -126,7 +126,17 @@ export function TopNav() {
         <img src={heritageLogo} alt="Heritage" className="h-8 object-contain" />
       </button>
 
-      {/* Customer tabs with overflow carousel */}
+      {/* Back button — shown when inside a tool with a customer selected */}
+      {activeTool && tabs.length > 0 && (
+        <button
+          onClick={() => goHome()}
+          className="flex items-center gap-1.5 px-3 h-full border-r border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors shrink-0"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Back</span>
+        </button>
+      )}
+
       {tabs.length > 0 && (
         <CustomerTabsCarousel
           tabs={tabs}
