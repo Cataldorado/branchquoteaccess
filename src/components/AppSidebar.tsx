@@ -38,6 +38,7 @@ export function AppSidebar() {
             <ArrowLeft className="h-[18px] w-[18px] text-sidebar-foreground/70" />
             <span className="text-[10px] leading-tight font-normal">Back</span>
           </button>
+          {sidebarItems.map((item) => {
             const active = isActive(item.url);
             return (
               <button
