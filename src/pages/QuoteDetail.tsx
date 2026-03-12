@@ -531,6 +531,7 @@ export default function QuoteDetail() {
       </div>
 
       {/* RIGHT: Order Summary Panel */}
+      {!panelHidden && (
       <div className="w-[340px] shrink-0 flex flex-col gap-4 overflow-auto">
         {/* Quote info card */}
         <div className="bg-card border border-border rounded-xl p-4 space-y-3">
