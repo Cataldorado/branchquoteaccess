@@ -410,7 +410,14 @@ export default function QuoteDetail() {
                             <StickyNote className="h-3.5 w-3.5" />
                           </button>
                         )}
-                        <span className="text-sm truncate min-w-0 flex-1">{item.productName}</span>
+                        <TooltipProvider delayDuration={300}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-sm truncate min-w-0 flex-1">{item.productName}</span>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="max-w-md"><p>{item.productName}</p></TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                         <button className="flex-shrink-0 text-muted-foreground/30 hover:text-brand transition-colors ml-auto" title="Replace">
                           <ArrowLeftRight className="h-3.5 w-3.5" />
                         </button>
