@@ -13,40 +13,54 @@ import Dashboard from "@/pages/Dashboard";
 import Customers from "@/pages/Customers";
 import Branches from "@/pages/Branches";
 import CustomerSearch from "@/pages/CustomerSearch";
-import ModuleSelection from "@/pages/ModuleSelection";
+import ToolDashboard from "@/pages/ToolDashboard";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
-  const { selectedCustomer, isSearching, activeTabIndex, tabs } = useCustomer();
-  const activeTab = activeTabIndex !== null ? tabs[activeTabIndex] : null;
+  const { selectedCustomer, isSearching, activeTabIndex, tabs, activeTool } = useCustomer();
 
-  if (isSearching || tabs.length === 0) {
-    return <CustomerSearch />;
+  // No tool selected → show tool dashboard grid
+  if (!activeTool) {
+    return <ToolDashboard />;
   }
 
-  if (!activeTab || activeTab.activeModule === null) {
+  // Quotes tool: needs customer selection first
+  if (activeTool === "quotes") {
+    if (isSearching || tabs.length === 0) {
+      return <CustomerSearch />;
+    }
+
+    const activeTab = activeTabIndex !== null ? tabs[activeTabIndex] : null;
+
     return (
       <AppLayout>
-        <ModuleSelection />
+        <Routes>
+          <Route path="/" element={<QuoteSearch />} />
+          <Route path="/quotes/new" element={<QuoteCreate />} />
+          <Route path="/quotes/:id" element={<QuoteDetail />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/branches" element={<Branches />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </AppLayout>
     );
   }
 
-  return (
-    <AppLayout>
-      <Routes>
-        <Route path="/" element={<QuoteSearch />} />
-        <Route path="/quotes/new" element={<QuoteCreate />} />
-        <Route path="/quotes/:id" element={<QuoteDetail />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/customers" element={<Customers />} />
-        <Route path="/branches" element={<Branches />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </AppLayout>
-  );
+  // Dashboard tool: no customer needed
+  if (activeTool === "dashboard") {
+    return (
+      <AppLayout>
+        <Routes>
+          <Route path="*" element={<Dashboard />} />
+        </Routes>
+      </AppLayout>
+    );
+  }
+
+  // Fallback for any other tool
+  return <ToolDashboard />;
 }
 
 const App = () => (
