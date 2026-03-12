@@ -1,4 +1,4 @@
-import { Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail, X, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, Building2, Mail, X, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import heritageLogo from "@/assets/heritage-logo.svg";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useCustomer } from "@/contexts/CustomerContext";
@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRole } from "@/contexts/RoleContext";
+
 import { cn } from "@/lib/utils";
 
 function CustomerTabsCarousel({
@@ -107,13 +107,8 @@ function CustomerTabsCarousel({
 }
 
 export function TopNav() {
-  const { role, setRole, isManager } = useRole();
   const { tabs, activeTabIndex, isSearching, switchTab, closeTab, openSearch, selectedCustomer, goHome } = useCustomer();
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
 
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-4 gap-0 shrink-0">
@@ -139,50 +134,15 @@ export function TopNav() {
 
       <div className="flex-1" />
 
-      {/* Look up Customer button */}
+      {/* + New Customer button */}
       <button
         onClick={openSearch}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-primary hover:bg-primary/10 transition-colors mr-2"
-        title="Look up Customer"
+        title="New Customer"
       >
-        <Search className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Look up Customer</span>
+        <Plus className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">New Customer</span>
       </button>
-
-      {/* Dark mode toggle */}
-      <button
-        onClick={() => setDark(!dark)}
-        className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-        title={dark ? "Light mode" : "Dark mode"}
-      >
-        {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-      </button>
-
-      {/* Role toggle */}
-      <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5 ml-1">
-        <button
-          onClick={() => setRole("branch-manager")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-            isManager
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <ShieldCheck className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">Manager</span>
-        </button>
-        <button
-          onClick={() => setRole("branch-associate")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-            !isManager
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <User className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">Associate</span>
-        </button>
-      </div>
 
       {/* User menu */}
       <DropdownMenu>
