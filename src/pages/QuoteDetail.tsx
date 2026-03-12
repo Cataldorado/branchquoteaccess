@@ -532,106 +532,105 @@ export default function QuoteDetail() {
 
       {/* RIGHT: Order Summary Panel */}
       {!panelHidden && (
-      <div className="w-[340px] shrink-0 flex flex-col gap-4 overflow-auto">
-        {/* Quote info card */}
-        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Quote Info</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground text-xs">Customer</span>
-              <span className="font-medium text-xs">{quote.customerName}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground text-xs">Branch</span>
-              <span className="text-xs">{quote.branchName}</span>
-            </div>
-            {quote.poNumber && (
+        <div className="w-[340px] shrink-0 flex flex-col gap-4 overflow-auto">
+          {/* Quote info card */}
+          <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Quote Info</h3>
+            <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground text-xs">PO #</span>
-                <span className="text-xs font-mono">{quote.poNumber}</span>
+                <span className="text-muted-foreground text-xs">Customer</span>
+                <span className="font-medium text-xs">{quote.customerName}</span>
               </div>
-            )}
-            {quote.jobNumber && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground text-xs">Job #</span>
-                <span className="text-xs font-mono">{quote.jobNumber}</span>
+                <span className="text-muted-foreground text-xs">Branch</span>
+                <span className="text-xs">{quote.branchName}</span>
               </div>
-            )}
-            <div className="flex justify-between">
-              <span className="text-muted-foreground text-xs">Expires</span>
-              <span className="text-xs">{quote.expirationDate}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Order summary */}
-        <div className="bg-card border border-border rounded-xl p-4 space-y-4 sticky top-0">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Order Summary</h3>
-
-          <div className="space-y-3">
-            <div className="flex justify-between items-baseline">
-              <span className="text-sm text-muted-foreground">Total Items</span>
-              <span className="text-sm font-mono font-medium">{allItems.length}</span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span className="text-sm text-muted-foreground">Quote Total</span>
-              <span className="text-lg font-semibold font-mono">{formatCurrency(totalAmount)}</span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span className="text-sm text-muted-foreground">Quote GM%</span>
-              <span className={`text-base font-semibold font-mono ${getGMColor(overallGM)}`}>{overallGM.toFixed(1)}%</span>
-            </div>
-
-            <div className="h-px bg-border" />
-
-            <div className="flex justify-between items-baseline">
-              <span className="text-sm font-medium">Items to Purchase</span>
-              <span className="text-sm font-mono font-semibold text-brand">{orderableCount}</span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span className="text-sm font-medium">Purchase Total</span>
-              <span className="text-xl font-bold font-mono text-brand">{formatCurrency(orderableTotal)}</span>
+              {quote.poNumber && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground text-xs">PO #</span>
+                  <span className="text-xs font-mono">{quote.poNumber}</span>
+                </div>
+              )}
+              {quote.jobNumber && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground text-xs">Job #</span>
+                  <span className="text-xs font-mono">{quote.jobNumber}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground text-xs">Expires</span>
+                <span className="text-xs">{quote.expirationDate}</span>
+              </div>
             </div>
           </div>
 
-          {/* GM legend */}
-          <div className="flex flex-col gap-1.5 pt-2 border-t border-border">
-            <span className="text-2xs text-muted-foreground font-medium">GM% Legend</span>
-            <div className="flex items-center gap-3 text-2xs text-muted-foreground">
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-good" /> Good</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-ok" /> Below</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-bad" /> Low</span>
+          {/* Order summary */}
+          <div className="bg-card border border-border rounded-xl p-4 space-y-4 sticky top-0">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Order Summary</h3>
+
+            <div className="space-y-3">
+              <div className="flex justify-between items-baseline">
+                <span className="text-sm text-muted-foreground">Total Items</span>
+                <span className="text-sm font-mono font-medium">{allItems.length}</span>
+              </div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-sm text-muted-foreground">Quote Total</span>
+                <span className="text-lg font-semibold font-mono">{formatCurrency(totalAmount)}</span>
+              </div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-sm text-muted-foreground">Quote GM%</span>
+                <span className={`text-base font-semibold font-mono ${getGMColor(overallGM)}`}>{overallGM.toFixed(1)}%</span>
+              </div>
+
+              <div className="h-px bg-border" />
+
+              <div className="flex justify-between items-baseline">
+                <span className="text-sm font-medium">Items to Purchase</span>
+                <span className="text-sm font-mono font-semibold text-brand">{orderableCount}</span>
+              </div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-sm font-medium">Purchase Total</span>
+                <span className="text-xl font-bold font-mono text-brand">{formatCurrency(orderableTotal)}</span>
+              </div>
+            </div>
+
+            {/* GM legend */}
+            <div className="flex flex-col gap-1.5 pt-2 border-t border-border">
+              <span className="text-2xs text-muted-foreground font-medium">GM% Legend</span>
+              <div className="flex items-center gap-3 text-2xs text-muted-foreground">
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-good" /> Good</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-ok" /> Below</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gm-bad" /> Low</span>
+              </div>
             </div>
           </div>
-          </div>
-        </div>
 
-        {/* Actions */}
-        <div className="space-y-2 sticky bottom-0 bg-background pt-2 pb-2">
-          <Button
-            size="sm"
-            className={`w-full h-9 text-xs font-semibold rounded-lg ${
-              populated
-                ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-                : "bg-brand/10 text-brand hover:bg-brand/20 border border-brand/20"
-            }`}
-            onClick={populated ? resetQtyToZero : populateRemainingQty}
-          >
-            {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
-          </Button>
-
-          {showOrderButton && (
+          {/* Actions */}
+          <div className="space-y-2 sticky bottom-0 bg-background pt-2 pb-2">
             <Button
-              className="w-full h-12 text-sm gap-2 bg-brand text-brand-foreground hover:bg-brand/90 shadow-md rounded-xl font-semibold"
-              onClick={() => setCheckoutOpen(true)}
-              disabled={orderableCount === 0}
+              size="sm"
+              className={`w-full h-9 text-xs font-semibold rounded-lg ${
+                populated
+                  ? "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                  : "bg-brand/10 text-brand hover:bg-brand/20 border border-brand/20"
+              }`}
+              onClick={populated ? resetQtyToZero : populateRemainingQty}
             >
-              <ShoppingCart className="h-5 w-5" />
-              Purchase Items ({orderableCount})
+              {populated ? "Reset Qty to 0" : "Populate Remaining Qty"}
             </Button>
-          )}
+
+            {showOrderButton && (
+              <Button
+                className="w-full h-12 text-sm gap-2 bg-brand text-brand-foreground hover:bg-brand/90 shadow-md rounded-xl font-semibold"
+                onClick={() => setCheckoutOpen(true)}
+                disabled={orderableCount === 0}
+              >
+                <ShoppingCart className="h-5 w-5" />
+                Purchase Items ({orderableCount})
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
       )}
 
       {/* Modals */}
