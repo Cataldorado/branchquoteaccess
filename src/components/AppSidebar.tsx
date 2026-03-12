@@ -61,11 +61,11 @@ export function AppSidebar() {
                 {active && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-sidebar-primary" />
                 )}
-                <item.icon className={cn("h-[18px] w-[18px]", !active && item.enabled && "text-sidebar-foreground/70")} />
+                <item.icon className={cn("h-[18px] w-[18px]", active ? "text-sidebar-primary" : item.enabled ? "text-sidebar-foreground/70" : "")} />
                 <span className={cn(
                   "text-[10px] leading-tight",
-                  active ? "font-semibold" : "font-normal",
-                  !item.enabled && "text-sidebar-foreground/25"
+                  active ? "font-semibold text-sidebar-primary" : "font-normal",
+                  !item.enabled && "text-sidebar-foreground/40"
                 )}>
                   {item.title}
                 </span>
