@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRole } from "@/contexts/RoleContext";
+
 import { cn } from "@/lib/utils";
 
 function CustomerTabsCarousel({
