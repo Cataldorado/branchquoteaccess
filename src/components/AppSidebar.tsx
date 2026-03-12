@@ -32,6 +32,11 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="none" className="border-r border-sidebar-border">
+      <SidebarHeader className="flex items-center justify-center py-3 px-2 border-b border-sidebar-border">
+        <button onClick={() => goHome()} className="hover:opacity-80 transition-opacity" title="Home">
+          <img src={heritageLogo} alt="Heritage" className="w-12 h-12 object-contain" />
+        </button>
+      </SidebarHeader>
       <SidebarContent className="py-2 px-0">
         <nav className="flex flex-col items-center gap-0.5">
           {sidebarItems.map((item) => {
