@@ -1,5 +1,7 @@
 import heritageLogo from "@/assets/heritage-logo.svg";
 import { useCustomer } from "@/contexts/CustomerContext";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
