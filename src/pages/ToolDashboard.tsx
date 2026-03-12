@@ -84,7 +84,8 @@ export default function ToolDashboard() {
             ))}
           </div>
         </main>
-      </div>
+    </div>
+    </SidebarProvider>
     </div>
   );
 }
