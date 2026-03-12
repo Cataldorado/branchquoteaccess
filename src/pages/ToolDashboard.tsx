@@ -4,26 +4,26 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { FileText, Package, ClipboardList, Truck, PackageCheck, Receipt, Inbox, StickyNote, type LucideIcon } from "lucide-react";
 
+interface Tool {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  color: string;
+  enabled: boolean;
+  needsCustomer: boolean;
+}
 
-import imgQuotes from "@/assets/tool-quotes.jpg";
-import imgProducts from "@/assets/tool-products.jpg";
-import imgOrders from "@/assets/tool-orders.jpg";
-import imgDeliveries from "@/assets/tool-deliveries.jpg";
-import imgPickup from "@/assets/tool-pickup.jpg";
-import imgInvoices from "@/assets/tool-invoices.jpg";
-import imgInbox from "@/assets/tool-inbox.jpg";
-import imgNotepad from "@/assets/tool-notepad.jpg";
-
-const tools = [
-  { id: "quotes", label: "Quotes", image: imgQuotes, enabled: true, needsCustomer: true },
-  { id: "products", label: "Products", image: imgProducts, enabled: false, needsCustomer: false },
-  { id: "orders", label: "Orders", image: imgOrders, enabled: false, needsCustomer: false },
-  { id: "deliveries", label: "Deliveries", image: imgDeliveries, enabled: false, needsCustomer: false },
-  { id: "pickup", label: "Pickup", image: imgPickup, enabled: false, needsCustomer: false },
-  { id: "invoices", label: "Invoices", image: imgInvoices, enabled: false, needsCustomer: false },
-  { id: "inbox", label: "Inbox", image: imgInbox, enabled: false, needsCustomer: false },
-  { id: "notepad", label: "Notepad", image: imgNotepad, enabled: false, needsCustomer: false },
+const tools: Tool[] = [
+  { id: "quotes", label: "Quotes", icon: FileText, color: "from-blue-500/20 to-blue-600/10", enabled: true, needsCustomer: true },
+  { id: "products", label: "Products", icon: Package, color: "from-amber-500/20 to-amber-600/10", enabled: false, needsCustomer: false },
+  { id: "orders", label: "Orders", icon: ClipboardList, color: "from-emerald-500/20 to-emerald-600/10", enabled: false, needsCustomer: false },
+  { id: "deliveries", label: "Deliveries", icon: Truck, color: "from-violet-500/20 to-violet-600/10", enabled: false, needsCustomer: false },
+  { id: "pickup", label: "Pickup", icon: PackageCheck, color: "from-rose-500/20 to-rose-600/10", enabled: false, needsCustomer: false },
+  { id: "invoices", label: "Invoices", icon: Receipt, color: "from-cyan-500/20 to-cyan-600/10", enabled: false, needsCustomer: false },
+  { id: "inbox", label: "Inbox", icon: Inbox, color: "from-orange-500/20 to-orange-600/10", enabled: false, needsCustomer: false },
+  { id: "notepad", label: "Notepad", icon: StickyNote, color: "from-teal-500/20 to-teal-600/10", enabled: false, needsCustomer: false },
 ];
 
 export default function ToolDashboard() {
@@ -58,24 +58,27 @@ export default function ToolDashboard() {
                   onClick={() => handleToolClick(tool)}
                   disabled={!tool.enabled}
                   className={cn(
-                    "relative aspect-[4/3] rounded-xl overflow-hidden group transition-all",
+                    "relative aspect-[4/3] rounded-xl overflow-hidden group transition-all border border-border bg-card",
                     tool.enabled
                       ? "cursor-pointer hover:ring-2 hover:ring-brand hover:shadow-lg"
-                      : "cursor-default opacity-70"
+                      : "cursor-default opacity-50"
                   )}
                 >
-                  <img
-                    src={tool.image}
-                    alt={tool.label}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                    <span className="text-white font-semibold text-lg tracking-tight drop-shadow-md">
+                  <div className={cn("absolute inset-0 bg-gradient-to-br", tool.color)} />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    <tool.icon
+                      className={cn(
+                        "transition-transform group-hover:scale-110 text-foreground/70",
+                        !tool.enabled && "text-muted-foreground/50"
+                      )}
+                      size={40}
+                      strokeWidth={1.5}
+                    />
+                    <span className="text-foreground font-semibold text-sm tracking-tight">
                       {tool.label}
                     </span>
                     {!tool.enabled && (
-                      <Badge className="bg-white/20 text-white border-white/30 text-2xs backdrop-blur-sm">
+                      <Badge variant="secondary" className="text-2xs">
                         Coming Soon
                       </Badge>
                     )}
