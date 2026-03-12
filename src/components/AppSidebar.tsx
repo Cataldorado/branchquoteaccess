@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
+import heritageLogo from "@/assets/heritage-logo.png";
 
 const sidebarItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, enabled: true },
