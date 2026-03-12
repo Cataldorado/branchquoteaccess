@@ -17,13 +17,13 @@ interface Tool {
 
 const tools: Tool[] = [
   { id: "quotes", label: "Quotes", icon: FileText, color: "from-blue-500/20 to-blue-600/10", enabled: true, needsCustomer: true },
-  { id: "products", label: "Products", icon: Package, color: "from-amber-500/20 to-amber-600/10", enabled: false, needsCustomer: false },
-  { id: "orders", label: "Orders", icon: ClipboardList, color: "from-emerald-500/20 to-emerald-600/10", enabled: false, needsCustomer: false },
-  { id: "deliveries", label: "Deliveries", icon: Truck, color: "from-violet-500/20 to-violet-600/10", enabled: false, needsCustomer: false },
-  { id: "pickup", label: "Pickup", icon: PackageCheck, color: "from-rose-500/20 to-rose-600/10", enabled: false, needsCustomer: false },
-  { id: "invoices", label: "Invoices", icon: Receipt, color: "from-cyan-500/20 to-cyan-600/10", enabled: false, needsCustomer: false },
-  { id: "inbox", label: "Inbox", icon: Inbox, color: "from-orange-500/20 to-orange-600/10", enabled: false, needsCustomer: false },
-  { id: "notepad", label: "Notepad", icon: StickyNote, color: "from-teal-500/20 to-teal-600/10", enabled: false, needsCustomer: false },
+  { id: "products", label: "Products", icon: Package, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
+  { id: "orders", label: "Orders", icon: ClipboardList, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
+  { id: "deliveries", label: "Deliveries", icon: Truck, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
+  { id: "pickup", label: "Pickup", icon: PackageCheck, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
+  { id: "invoices", label: "Invoices", icon: Receipt, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
+  { id: "inbox", label: "Inbox", icon: Inbox, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
+  { id: "notepad", label: "Notepad", icon: StickyNote, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
 ];
 
 export default function ToolDashboard() {
