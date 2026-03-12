@@ -1,9 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, Building2, MapPin, ArrowRight, Leaf } from "lucide-react";
+import { Search, Building2, MapPin, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { customers } from "@/data/mockData";
 import { useCustomer } from "@/contexts/CustomerContext";
-import { CustomerTabBar } from "@/components/CustomerTabBar";
 import { cn } from "@/lib/utils";
 
 export default function CustomerSearch() {

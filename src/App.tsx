@@ -29,7 +29,11 @@ function AppRoutes() {
   // Quotes tool: needs customer selection first
   if (activeTool === "quotes") {
     if (isSearching || tabs.length === 0) {
-      return <CustomerSearch />;
+      return (
+        <AppLayout>
+          <CustomerSearch />
+        </AppLayout>
+      );
     }
 
     const activeTab = activeTabIndex !== null ? tabs[activeTabIndex] : null;
