@@ -1,8 +1,7 @@
 import {
   LayoutDashboard, Package, FileText, ShoppingCart, Truck,
-  ClipboardList, Receipt, Inbox, StickyNote,
+  Receipt, Inbox, StickyNote,
 } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { cn } from "@/lib/utils";
 import {
@@ -11,42 +10,48 @@ import {
 } from "@/components/ui/sidebar";
 
 const sidebarItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, enabled: true },
-  { title: "Products", url: "/products", icon: Package, enabled: false },
-  { title: "Quotes", url: "/", icon: FileText, enabled: true },
-  { title: "Orders", url: "/orders", icon: ShoppingCart, enabled: false },
-  { title: "Deliveries", url: "/deliveries", icon: Truck, enabled: false },
-  { title: "Pickup", url: "/pickup", icon: ClipboardList, enabled: false },
-  { title: "Invoices", url: "/invoices", icon: Receipt, enabled: false },
-  { title: "Inbox", url: "/inbox", icon: Inbox, enabled: false },
-  { title: "Notepad", url: "/notepad", icon: StickyNote, enabled: false },
+  { id: "dashboard", title: "Dashboard", icon: LayoutDashboard, enabled: true },
+  { id: "products", title: "Products", icon: Package, enabled: false },
+  { id: "quotes", title: "Quotes", icon: FileText, enabled: true },
+  { id: "orders", title: "Orders", icon: ShoppingCart, enabled: false },
+  { id: "deliveries", title: "Deliveries", icon: Truck, enabled: false },
+  { id: "invoices", title: "Invoices", icon: Receipt, enabled: false },
+  { id: "inbox", title: "Inbox", icon: Inbox, enabled: false },
+  { id: "notepad", title: "Notepad", icon: StickyNote, enabled: false },
 ];
 
 export function AppSidebar() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { goHome } = useCustomer();
-  const isActive = (path: string) => location.pathname === path;
+  const { activeTool, setActiveTool, goHome, openSearch } = useCustomer();
+
+  const isActive = (id: string) => {
+    if (id === "dashboard") return !activeTool;
+    return activeTool === id;
+  };
+
+  const handleClick = (item: typeof sidebarItems[0]) => {
+    if (!item.enabled) return;
+    if (item.id === "dashboard") {
+      goHome();
+    } else if (item.id === "quotes") {
+      setActiveTool("quotes");
+      openSearch();
+    } else {
+      setActiveTool(item.id);
+    }
+  };
 
   return (
     <Sidebar collapsible="none" className="border-r border-sidebar-border">
       <SidebarContent className="py-2 px-0">
         <nav className="flex flex-col items-center gap-0.5">
           {sidebarItems.map((item) => {
-            const active = isActive(item.url);
+            const active = isActive(item.id);
             return (
               <button
-                key={item.title}
-                onClick={() => {
-                  if (!item.enabled) return;
-                  if (item.url === "/dashboard") {
-                    goHome();
-                  } else {
-                    navigate(item.url);
-                  }
-                }}
+                key={item.id}
+                onClick={() => handleClick(item)}
                 className={cn(
-                  "relative flex flex-col items-center justify-center w-full py-2.5 gap-1 transition-colors",
+                  "relative flex flex-col items-center justify-center w-full py-2 gap-0.5 transition-colors",
                   item.enabled
                     ? "cursor-pointer hover:bg-sidebar-accent/50"
                     : "cursor-default text-sidebar-foreground/25",
