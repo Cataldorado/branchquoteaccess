@@ -97,6 +97,7 @@ export default function QuoteDetail() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
   const [showDetails, setShowDetails] = useState(false);
+  const [panelHidden, setPanelHidden] = useState(false);
   const noteInputRef = useRef<HTMLInputElement>(null);
 
   if (!quote) {
