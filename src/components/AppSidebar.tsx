@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Package, FileText, ShoppingCart, Truck,
-  ClipboardList, Receipt, Inbox, StickyNote,
+  ClipboardList, Receipt, Inbox, StickyNote, ArrowLeft,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCustomer } from "@/contexts/CustomerContext";
