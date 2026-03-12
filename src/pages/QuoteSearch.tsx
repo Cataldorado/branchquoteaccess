@@ -14,7 +14,7 @@ import { useCustomer } from "@/contexts/CustomerContext";
 
 export default function QuoteSearch() {
   const navigate = useNavigate();
-  const { setActiveModule, selectedCustomer, getQuoteSearchFilters, setQuoteSearchFilters } = useCustomer();
+  const { setActiveModule, selectedCustomer, getQuoteSearchFilters, setQuoteSearchFilters, openSearch } = useCustomer();
   const filters = getQuoteSearchFilters();
   const search = filters.search;
   const showExpired = filters.showExpired;
