@@ -1,6 +1,6 @@
-import { Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail, X, Plus, Search } from "lucide-react";
+import { Sun, Moon, ShieldCheck, User, LogOut, Building2, Mail, X, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import heritageLogo from "@/assets/heritage-logo.svg";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
