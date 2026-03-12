@@ -55,8 +55,8 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       setIsSearching(false);
       return;
     }
-    setTabs(prev => [...prev, { customer, activeModule: "quotes", quoteSearchFilters: { ...defaultFilters } }]);
-    setActiveTabIndex(tabs.length);
+    setTabs(prev => [{ customer, activeModule: "quotes", quoteSearchFilters: { ...defaultFilters } }, ...prev]);
+    setActiveTabIndex(0);
     setIsSearching(false);
   }, [tabs]);
 
