@@ -1,15 +1,14 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, Building2, MapPin, ArrowRight, Leaf } from "lucide-react";
+import { Search, Building2, MapPin, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { customers } from "@/data/mockData";
 import { useCustomer } from "@/contexts/CustomerContext";
-import { CustomerTabBar } from "@/components/CustomerTabBar";
 import { cn } from "@/lib/utils";
 
 export default function CustomerSearch() {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setSelectedCustomer, tabs } = useCustomer();
+  const { setSelectedCustomer, activeTool } = useCustomer();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -29,32 +28,19 @@ export default function CustomerSearch() {
     );
   }, [query]);
 
+  const toolLabel = activeTool ? activeTool.charAt(0).toUpperCase() + activeTool.slice(1) : "";
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Minimal header */}
-      <header className="h-14 border-b border-border bg-card flex items-center px-5 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-brand flex items-center justify-center">
-            <Leaf className="h-4 w-4 text-brand-foreground" />
-          </div>
-          <span className="font-semibold text-foreground text-sm tracking-tight">Heritage HQ</span>
+    <div className="flex-1 flex flex-col items-center pt-[12vh] px-4">
+      <div className="w-full max-w-xl space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">
+            {toolLabel} – Select a Customer
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Search by name, account number, or address to get started.
+          </p>
         </div>
-      </header>
-
-      {/* Show tab bar if there are open tabs */}
-      {tabs.length > 0 && <CustomerTabBar />}
-
-      {/* Search area */}
-      <div className="flex-1 flex flex-col items-center pt-[12vh] px-4">
-        <div className="w-full max-w-xl space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl font-semibold text-foreground tracking-tight">
-              Select a Customer
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Search by name, account number, or address to get started.
-            </p>
-          </div>
 
           {/* Search input */}
           <div className="relative">
@@ -107,7 +93,6 @@ export default function CustomerSearch() {
                 </button>
               ))
             )}
-          </div>
         </div>
       </div>
     </div>
