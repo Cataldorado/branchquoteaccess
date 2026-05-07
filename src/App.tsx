@@ -15,6 +15,8 @@ import Branches from "@/pages/Branches";
 import CustomerSearch from "@/pages/CustomerSearch";
 import ToolDashboard from "@/pages/ToolDashboard";
 import NotFound from "@/pages/NotFound";
+import CommercialProjects from "@/pages/CommercialProjects";
+import CommercialProjectNew from "@/pages/CommercialProjectNew";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,19 @@ function AppRoutes() {
   // Dashboard tool: no customer needed
   if (activeTool === "dashboard") {
     return <ToolDashboard />;
+  }
+
+  // Commercial Projects: branch-scoped, no customer needed
+  if (activeTool === "commercial-projects") {
+    return (
+      <AppLayout>
+        <Routes>
+          <Route path="/commercial-projects" element={<CommercialProjects />} />
+          <Route path="/commercial-projects/new" element={<CommercialProjectNew />} />
+          <Route path="*" element={<CommercialProjects />} />
+        </Routes>
+      </AppLayout>
+    );
   }
 
   // Fallback for any other tool
