@@ -4,7 +4,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { FileText, Package, ClipboardList, Truck, PackageCheck, Receipt, Inbox, StickyNote, type LucideIcon } from "lucide-react";
+import { FileText, Package, ClipboardList, Truck, PackageCheck, Receipt, Inbox, StickyNote, Building2, type LucideIcon } from "lucide-react";
 
 interface Tool {
   id: string;
@@ -17,6 +17,7 @@ interface Tool {
 
 const tools: Tool[] = [
   { id: "quotes", label: "Quotes", icon: FileText, color: "from-blue-500/20 to-blue-600/10", enabled: true, needsCustomer: true },
+  { id: "commercial-projects", label: "Commercial Projects", icon: Building2, color: "from-blue-500/20 to-blue-600/10", enabled: true, needsCustomer: false },
   { id: "products", label: "Products", icon: Package, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
   { id: "orders", label: "Orders", icon: ClipboardList, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
   { id: "deliveries", label: "Deliveries", icon: Truck, color: "from-blue-500/20 to-blue-600/10", enabled: false, needsCustomer: false },
